@@ -69,7 +69,7 @@ conda:
 pip:
   - facets-overview: 1.0.0
   - jupyterlab-wipp: 0.3.0
-  - bfio: 2.1.8
+  - bfio: 2.0.7
   - filepattern: 1.4.6
   - jupyterlab-spreadsheet-editor: 0.6.0
   - jupyterlab-quickopen: 1.0.0
