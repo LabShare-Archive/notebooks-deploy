@@ -4,7 +4,7 @@ apt:
 conda:
   - octave_kernel
 pip:
-  - sos-matlab: 0.18.3
+  - sos-matlab: 0.18.5
 scripts:
   - octave_kernel_install: |
       python -m octave_kernel install --user
