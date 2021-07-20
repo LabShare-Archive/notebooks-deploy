@@ -88,10 +88,6 @@ RUN cd /tmp && \
 # Installation scripts
 {% for s in scripts %}{{ s | dockerfileBlock('RUN') | safe }}{% endfor %}
 
-RUN jupyter labextension install --no-build {% for package in labextensions %}{{ package.key }}{% if package.value %}@{{package.value}}{% endif %} {% endfor %}&& \
-    jupyter lab build --dev-build=False && \
-    npm cache clean --force
-
 # Add symbolic link to the shared filesystem
 RUN ln -s /opt/shared shared
 
