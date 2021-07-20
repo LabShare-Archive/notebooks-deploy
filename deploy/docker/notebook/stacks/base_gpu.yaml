@@ -68,17 +68,12 @@ conda:
   - jupyterlab-transient-display-data: 0.4.0
 pip:
   - facets-overview: 1.0.0
-  - jupyterlab-wipp: 0.3.0
+  - jupyterlab-wipp: 1.2.0
   - bfio: 2.0.7
   - filepattern: 1.4.6
   - jupyterlab-spreadsheet-editor: 0.6.0
   - jupyterlab-quickopen: 1.0.0
   - aquirdturtle-collapsible-headings: 3.1.0
-labextensions:
-  - jupyterlab_wipp: 1.1.0
-scripts:
-  - jupyterlab_wipp_activate: |
-      jupyter serverextension enable --py jupyterlab_wipp
 addfiles:
   - fix-permissions:
       destination: /usr/local/bin/fix-permissions
