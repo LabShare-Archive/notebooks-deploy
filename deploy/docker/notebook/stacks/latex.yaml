@@ -7,9 +7,4 @@ conda:
   - chktex
 scripts:
   - latex: |
-      git clone https://github.com/joequant/jupyterlab-latex.git /opt/jupyterlab_latex && \
-      pip install /opt/jupyterlab_latex && \
-      jupyter serverextension enable --sys-prefix jupyterlab_latex && \
-      jlpm install --cwd /opt/jupyterlab_latex && \
-      jlpm run --cwd=/opt/jupyterlab_latex build && \
-      jupyter labextension install /opt/jupyterlab_latex
+      pip install git+git://github.com/ktaletsk/jupyterlab-latex.git@1e79ba29b8c7e51205661f874ff6d7ec90825021
