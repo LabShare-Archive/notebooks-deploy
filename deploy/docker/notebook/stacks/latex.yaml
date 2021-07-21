@@ -2,7 +2,9 @@ name: latex
 apt:
   - texlive-xetex
   - texlive-fonts-recommended
-pip:
-  - jupyterlab_latex: 1.0.0
-labextensions:
-  - "@jupyterlab/latex": 1.0.0
+conda:
+  - texlab
+  - chktex
+scripts:
+  - latex: |
+      pip install git+git://github.com/ktaletsk/jupyterlab-latex.git@1e79ba29b8c7e51205661f874ff6d7ec90825021

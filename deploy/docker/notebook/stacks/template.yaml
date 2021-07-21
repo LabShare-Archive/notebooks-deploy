@@ -9,8 +9,6 @@ conda:
   - 
 pip:
   - 
-labextensions:
-  - 
 scripts:
   - 
 addfiles:

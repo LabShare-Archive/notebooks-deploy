@@ -22,19 +22,20 @@ ENV DEBIAN_FRONTEND=noninteractive \
 
 {% set indent = joiner(' \\\n    ') %}ENV {% for v in env %}{{ indent() }}{{ v.key }}={% if v.value %}{{v.value}}{% endif %}{% endfor %}
 
+{% set indent = joiner(':') %}ENV PATH={% for v in path %}{{ indent() }}{{ v.key }}{% endfor %}:$PATH
+
 USER root
 
 RUN apt-get update && \
     apt-get -y install software-properties-common && \
     add-apt-repository ppa:apt-fast/stable && \
     apt-get update && \
-    apt-get -y install apt-fast && \
+    apt-get -y install apt-fast locales && \
     apt-fast update && \
+    echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
+    locale-gen && \
     apt-fast install -yq --no-install-recommends {% for package in apt %}{{ package.key }} {% endfor %} && \
-    rm -rf /var/lib/apt/lists/*
-
-RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
-    locale-gen
+    rm -rf /var/lib/apt/lists/*    
 
 # Create NB_USER wtih name jovyan user with UID=1000 and in the 'users' group
 # and make sure these dirs are writable by the `users` group.
@@ -60,7 +61,7 @@ RUN mkdir /home/$NB_USER/work && \
 # Clear all temporary and auxiliary files to minimize image size
 RUN cd /tmp && \
     wget --quiet https://repo.continuum.io/miniconda/Miniconda3-${MINICONDA_VERSION}-Linux-x86_64.sh && \
-    echo "0dba759b8ecfc8948f626fa18785e3d8 *Miniconda3-${MINICONDA_VERSION}-Linux-x86_64.sh" | md5sum -c - && \
+    echo "${MINICONDA_INSTALLER_HASHSUM}  Miniconda3-${MINICONDA_VERSION}-Linux-x86_64.sh" | md5sum -c - && \
     /bin/bash Miniconda3-${MINICONDA_VERSION}-Linux-x86_64.sh -f -b -p $CONDA_DIR && \
     rm Miniconda3-${MINICONDA_VERSION}-Linux-x86_64.sh && \
     echo "conda ${CONDA_VERSION}" >> $CONDA_DIR/conda-meta/pinned && \
@@ -68,8 +69,8 @@ RUN cd /tmp && \
     $CONDA_DIR/bin/conda config --system --set auto_update_conda false && \
     $CONDA_DIR/bin/conda config --system --set show_channel_urls true && \
     $CONDA_DIR/bin/conda config --system --set channel_priority strict && \
-    $CONDA_DIR/bin/conda install pycryptosat && \
-    $CONDA_DIR/bin/conda install -y {% for package in conda %}{{ package.key }}{% if package.value %}={{package.value}}{% endif %} {% endfor %}&& \
+    $CONDA_DIR/bin/conda install mamba -n base -c conda-forge && \
+    mamba install -y {% for package in conda %}{{ package.key }}{% if package.value %}={{package.value}}{% endif %} {% endfor %}&& \
     pip install {% for package in pip %}{{ package.key }}{% if package.value %}=={{package.value}}{% endif %} {% endfor %}&& \
     $CONDA_DIR/bin/conda list python | grep '^python ' | tr -s ' ' | cut -d '.' -f 1,2 | sed 's/$/.*/' >> $CONDA_DIR/conda-meta/pinned && \
     $CONDA_DIR/bin/conda list tini | grep tini | tr -s ' ' | cut -d ' ' -f 1,2 >> $CONDA_DIR/conda-meta/pinned && \
@@ -86,10 +87,6 @@ RUN cd /tmp && \
 
 # Installation scripts
 {% for s in scripts %}{{ s | dockerfileBlock('RUN') | safe }}{% endfor %}
-
-RUN jupyter labextension install --no-build {% for package in labextensions %}{{ package.key }}{% if package.value %}@{{package.value}}{% endif %} {% endfor %}&& \
-    jupyter lab build --dev-build=False && \
-    npm cache clean --force
 
 # Add symbolic link to the shared filesystem
 RUN ln -s /opt/shared shared
