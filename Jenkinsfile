@@ -153,8 +153,8 @@ pipeline {
                                         image.push()
                                     }
                                 }
-                                println """Removing container image: ${tag}"""
-                                sh """docker rmi labshare/polyglot-notebook:${tag} -f"""
+                                println """Clean Docker cache to save disk"""
+                                sh """docker system prune -a -f"""
                             }
                         }
                     }
