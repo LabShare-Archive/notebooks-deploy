@@ -97,27 +97,19 @@ pipeline {
                     dir('deploy/docker/notebook/base/manifests') {
                         def files = findFiles(glob: '**/Dockerfile')
                         files.each {
+                            def hash = it.path.minus(it.name).minus('/')
                             def tag = 'base-' + NOTEBOOK_VERSION
-                            TAG_EXISTS = sh (
-                                script: """docker --config ~/ manifest inspect labshare/polyglot-notebook:${tag} > /dev/null""",
-                                returnStatus: true
-                            ) == 0
 
-                            if (TAG_EXISTS) {
-                                println """Container image ${tag} already exists in registry. Skipping building and pushing"""
-                            }
-                            else {
-                                dir("""${tag}""") {
-                                    docker.withRegistry('https://registry-1.docker.io/v2/', 'f16c74f9-0a60-4882-b6fd-bec3b0136b84') {
-                                        println """Building container image: ${tag}..."""
-                                        def image = docker.build("""labshare/polyglot-notebook:${tag}""", '--no-cache ./')
-                                        println """Pushing container image: ${tag}..."""
-                                        image.push()
-                                    }
+                            dir("""${hash}""") {
+                                docker.withRegistry('https://registry-1.docker.io/v2/', 'f16c74f9-0a60-4882-b6fd-bec3b0136b84') {
+                                    println """Building container image: ${tag}..."""
+                                    def image = docker.build("""labshare/polyglot-notebook:${tag}""", '--no-cache ./')
+                                    println """Pushing container image: ${tag}..."""
+                                    image.push()
                                 }
-                                println """Clean Docker cache to save disk"""
-                                sh """docker system prune -a -f"""
                             }
+                            println """Clean Docker cache to save disk"""
+                            sh """docker system prune -a -f"""
                         }
                     }
                 }
