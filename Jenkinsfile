@@ -63,6 +63,69 @@ pipeline {
                 }
             }
         }
+        stage('Assemble Jupyter Notebook base Docker image') {
+            when {
+                environment name: 'SKIP_BUILD', value: 'false'
+            }
+            agent {
+                docker {
+                    image 'labshare/polus-railyard:0.3.2'
+                    registryUrl 'https://registry-1.docker.io/v2/'
+                    registryCredentialsId 'f16c74f9-0a60-4882-b6fd-bec3b0136b84'
+                    args '--network=host'
+                    reuseNode true
+                }
+            }
+            steps {
+                script {
+                    dir('deploy/docker/notebook/stacks/base') {
+                        withEnv(["HOME=${env.WORKSPACE}"]) {
+                            sh 'mkdir -p manifests'
+
+                            // CPU-based images
+                            // Image without additional stacks
+                            sh 'railyard assemble -t Dockerfile.template -b base.yaml -p manifests'
+                        }
+                    }
+                }
+            }
+        }
+        stage('Build Jupyter Notebook base Docker image') {
+            when {
+                environment name: 'SKIP_BUILD', value: 'false'
+            }
+            steps {
+                script {
+                    sh """echo '{"experimental": "enabled"}' > ~/config.json"""
+                    dir('deploy/docker/notebook/base/manifests') {
+                        def files = findFiles(glob: '**/Dockerfile')
+                        files.each {
+                            def tag = 'base-' + NOTEBOOK_VERSION
+                            TAG_EXISTS = sh (
+                                script: """docker --config ~/ manifest inspect labshare/polyglot-notebook:${tag} > /dev/null""",
+                                returnStatus: true
+                            ) == 0
+
+                            if (TAG_EXISTS) {
+                                println """Container image ${tag} already exists in registry. Skipping building and pushing"""
+                            }
+                            else {
+                                dir("""${tag}""") {
+                                    docker.withRegistry('https://registry-1.docker.io/v2/', 'f16c74f9-0a60-4882-b6fd-bec3b0136b84') {
+                                        println """Building container image: ${tag}..."""
+                                        def image = docker.build("""labshare/polyglot-notebook:${tag}""", '--no-cache ./')
+                                        println """Pushing container image: ${tag}..."""
+                                        image.push()
+                                    }
+                                }
+                                println """Clean Docker cache to save disk"""
+                                sh """docker system prune -a -f"""
+                            }
+                        }
+                    }
+                }
+            }
+        }
         stage('Assemble Jupyter Notebook Docker files') {
             when {
                 environment name: 'SKIP_BUILD', value: 'false'
