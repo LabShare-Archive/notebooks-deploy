@@ -78,12 +78,9 @@ pipeline {
             }
             steps {
                 script {
-                    dir('deploy/docker/notebook/stacks/base') {
+                    dir('deploy/docker/notebook/base') {
                         withEnv(["HOME=${env.WORKSPACE}"]) {
                             sh 'mkdir -p manifests'
-
-                            // CPU-based images
-                            // Image without additional stacks
                             sh 'railyard assemble -t Dockerfile.template -b base.yaml -p manifests'
                         }
                     }
