@@ -26,7 +26,7 @@ WORKDIR $HOME
 # Clear all temporary and auxiliary files to minimize image size
 RUN {% if conda_channels %}{% set indent = joiner(' && \\\n    ') %}{% for channel in conda_channels %}{{ indent() | safe }}$CONDA_DIR/bin/conda config --system --prepend channels {{ channel.key }}{% endfor %}&& \{% endif -%}
     {% if conda %}mamba install -y {% for package in conda %}{{ package.key }}{% if package.value %}={{package.value}}{% endif %} {% endfor %}&& \{% endif -%}
-    {% if conda %}pip install {% for package in pip %}{{ package.key }}{% if package.value %}=={{package.value}}{% endif %} {% endfor %}&& \{% endif -%}
+    {% if pip %}pip install {% for package in pip %}{{ package.key }}{% if package.value %}=={{package.value}}{% endif %} {% endfor %}&& \{% endif -%}
     npm cache clean --force && \
     rm -rf $CONDA_DIR/share/jupyter/lab/staging && \
     conda clean --all -f -y && \
