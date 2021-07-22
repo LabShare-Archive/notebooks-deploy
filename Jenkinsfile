@@ -48,7 +48,7 @@ pipeline {
         stage('Build JupyterHub Docker') {
             when {
                 environment name: 'SKIP_BUILD', value: 'false'
-                environment name: 'BUILD_HUB', value: '0'
+                //environment name: 'BUILD_HUB', value: '0'
             }
             steps {
                 script {
