@@ -139,6 +139,7 @@ pipeline {
                                 ['R.yaml'],
                                 ['octave.yaml'],
                                 ['java.yaml', 'scala.yaml'],
+                                ['julia.yaml'],
                                 ['cpp.yaml'],
                                 ['bash.yaml'],
                                 ['tensorflow.yaml', 'pytorch.yaml', 'fastai.yaml'],
