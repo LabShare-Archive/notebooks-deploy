@@ -159,6 +159,9 @@ pipeline {
                                 sh "railyard assemble -t Dockerfile.template -b base.yaml " + it.collect{"-a " + it}.join(" ") + " -p manifests"
                             }
 
+                            // Image with all stacks included
+                            sh "railyard assemble -t Dockerfile.template -b base.yaml " + stacks.flatten().collect{"-a " + it}.join(" ") + " -p manifests"
+
                             // // GPU-based images
                             // // Image without additional stacks
                             // sh 'railyard assemble -t Dockerfile.template -b base_gpu.yaml -p manifests'
