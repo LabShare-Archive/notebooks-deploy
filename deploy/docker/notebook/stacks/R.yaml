@@ -35,4 +35,5 @@ conda:
   - r-threejs: 0.3.3
   - r-rglwidget: 0.2.1
   - r-stringi: 1.6.2
+  - r-languageserver: 0.3.10
   - sos-r: 0.19.6
