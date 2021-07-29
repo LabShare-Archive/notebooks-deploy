@@ -134,7 +134,7 @@ pipeline {
                     dir('deploy/docker/notebook/stacks') {
                         withEnv(["HOME=${env.WORKSPACE}"]) {
                             // Insert notebook version
-                            sh 'sed -i.bak -e "s/NOTEBOOK_VERSION_VALUE/' + NOTEBOOK_VERSION + '/g" deploy/docker/notebook/stacks/base.yaml'
+                            sh 'sed -i.bak -e "s/NOTEBOOK_VERSION_VALUE/' + NOTEBOOK_VERSION + '/g" base.yaml'
                             
                             sh 'mkdir -p manifests'
 
