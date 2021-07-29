@@ -2,6 +2,7 @@ pipeline {
     agent {
         node { label 'aws && ci && linux && polus' }
     }
+    options { timestamps () }
     parameters {
         booleanParam(name: 'SKIP_BUILD', defaultValue: false, description: 'Skips Docker builds')
 	string(name: 'AWS_REGION', defaultValue: 'us-east-1', description: 'AWS Region to deploy')
