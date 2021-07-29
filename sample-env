@@ -1,15 +1,12 @@
 SHARED_STORAGE=<pvc storage size>
-STORAGE_CLASS=<storage class>
-
-NOTEBOOK_VERSION=<docker image version>
 STORAGE_PER_USER=<pvc storage size>
+STORAGE_CLASS=<storage class>
+BASE_STACK=base.yaml
+STACKS="[['Python-datascience.yaml', 'Python-dataviz.yaml'],['R.yaml'],['octave.yaml'],['java.yaml', 'scala.yaml'],['julia.yaml'],['cpp.yaml'],['bash.yaml'],['tensorflow.yaml', 'pytorch.yaml', 'fastai.yaml'],['latex.yaml']]"
+STACKS_NAMES="['Python Data Science', 'R', 'Octave', 'Java+Scala', 'Julia', 'C++', 'Bash', 'Deep Learning', 'LaTeX']"
+NOTEBOOKS_DEPLOY_TAG=notebook-<x.x.x>
 WIPP_STORAGE_PVC=<shared pvc name>
 WIPP_UI=<WIPP UI url>
 WIPP_API_INTERNAL=<WIPP API service name>
-WIPP_NOTEBOOKS_PATH=<directory path to temp notebooks folder>
-
-HUB_VERSION=<docker image version>
-
+WIPP_NOTEBOOKS_PATH=<WIPP mount path in notebooks>/temp/notebooks
 JUPYTERHUB_URL=<host name>
-ARGO_URL=<argo dashboard host name>
-ROOK_CEPH_URL=<rook-ceph dashboard host name>
