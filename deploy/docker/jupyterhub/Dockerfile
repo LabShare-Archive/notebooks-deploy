@@ -4,9 +4,6 @@ LABEL maintainer="Labshare <konstantin.taletskiy@labshare.org>"
 # Track semantic versioning
 COPY VERSION /
 
-# Copy current Dockerfile templates and stacks (from deploy/docker/notebook/stacks) for choosing modular images
-COPY stacks stacks
-
 # Copy cull-idle script
 COPY cull-idle-servers.py /srv/jupyterhub/config/cull-idle-servers.py
 
@@ -14,14 +11,21 @@ COPY cull-idle-servers.py /srv/jupyterhub/config/cull-idle-servers.py
 COPY modularspawner /modularspawner
 
 RUN conda install --yes -c conda-forge \
-      sqlalchemy tornado jinja2 traitlets requests pycurl \
-      nodejs=12 configurable-http-proxy && \
-    pip install jupyterhub==1.4.1 \
+      sqlalchemy \
+      tornado \
+      jinja2 \
+      traitlets \
+      requests \
+      pycurl \
+      nodejs=12 \
+      configurable-http-proxy && \
+    pip install \
+      jupyterhub==1.4.1 \
       oauthenticator==14.0.0 \
       jupyterhub-kubespawner==1.0.0 \
       /modularspawner && \
     npm install -g polus-railyard && \
-    rm -rf ~/.cache ~/.npm
+    rm -rf ~/.cache ~/.npm /modularspawner
 
 RUN mkdir -p /srv/jupyterhub/
 WORKDIR /srv/jupyterhub/

@@ -12,7 +12,7 @@ data:
     c.ModularSpawner.start_timeout=1000
 
     # Choose which stacks to use in modular spawner
-    c.ModularSpawner.stacks_path = '/stacks'
+    c.ModularSpawner.stacks_path = '/stacks/deploy/docker/notebook/stacks'
     c.ModularSpawner.base = 'BASE_STACK_VALUE'
     c.ModularSpawner.stacks = STACKS_VALUE
     c.ModularSpawner.stacks_names = STACKS_NAMES_VALUE
@@ -23,7 +23,7 @@ data:
     c.ModularSpawner.cmd = ['jupyter-labhub']
     c.ModularSpawner.working_dir = '/home/jovyan'
     c.ModularSpawner.service_account='jupyteruser-sa'
-
+    
     # Per-user storage configuration
     c.ModularSpawner.pvc_name_template = 'claim-{username}'
     c.ModularSpawner.storage_class = 'STORAGE_CLASS_VALUE'

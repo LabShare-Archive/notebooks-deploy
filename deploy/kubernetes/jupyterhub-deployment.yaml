@@ -16,6 +16,25 @@ spec:
       annotations:
         configHash: CONFIG_HASH_VALUE
     spec:
+      initContainers:
+      # This container clones the git repo with stacks
+      - name: git-clone
+        image: alpine/git
+        args:
+          - clone
+          - --branch
+          - NOTEBOOKS_DEPLOY_TAG
+          - --single-branch
+          - --
+          - https://github.com/LabShare/notebooks-deploy
+          - /stacks
+        securityContext:
+          runAsUser: 1
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+        volumeMounts:
+          - name: git-repo
+            mountPath: /stacks
       serviceAccountName: jupyterhub-sa
       containers:
         - name: jupyterhub
@@ -75,6 +94,8 @@ spec:
             - mountPath: /srv/jupyterhub/config/jupyterhub-config.py
               name: jupyterhub-config
               subPath: jupyterhub-config.py
+            - name: stacks
+              mountPath: /stacks
       volumes:
         - name: jupyterhub-config
           configMap:
@@ -82,3 +103,5 @@ spec:
               items:
               - key: jupyterhub-config.py
                 path: jupyterhub-config.py
+        - name: stacks
+          emptyDir: {}

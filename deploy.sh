@@ -27,6 +27,7 @@ CONFIG_HASH=$(shasum deploy/kubernetes/jupyterhub-configs.yaml | cut -d ' ' -f 1
 sed -i.bak \
     -e "s/HUB_VERSION_VALUE/${HUB_VERSION}/g" \
     -e "s/CONFIG_HASH_VALUE/${CONFIG_HASH}/g" \
+    -e "s/NOTEBOOKS_DEPLOY_TAG_VALUE/${NOTEBOOKS_DEPLOY_TAG}/g" \
     deploy/kubernetes/jupyterhub-deployment.yaml
 rm deploy/kubernetes/jupyterhub-deployment.yaml.bak
 
