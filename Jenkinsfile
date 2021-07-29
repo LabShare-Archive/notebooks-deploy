@@ -49,7 +49,7 @@ pipeline {
         stage('Build JupyterHub Docker') {
             when {
                 environment name: 'SKIP_BUILD', value: 'false'
-                //environment name: 'BUILD_HUB', value: '0'
+                environment name: 'BUILD_HUB', value: '0'
             }
             steps {
                 script {
@@ -133,6 +133,9 @@ pipeline {
                 script {
                     dir('deploy/docker/notebook/stacks') {
                         withEnv(["HOME=${env.WORKSPACE}"]) {
+                            // Insert notebook version
+                            sh 'sed -i.bak -e "s/NOTEBOOK_VERSION_VALUE/' + NOTEBOOK_VERSION + '/g" deploy/docker/notebook/stacks/base.yaml'
+                            
                             sh 'mkdir -p manifests'
 
                             stacks = [

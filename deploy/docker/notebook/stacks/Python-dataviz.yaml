@@ -7,7 +7,6 @@ conda:
   - hvplot: 0.7*
   - panel: 0.11*
   - voila: 0.2.10*
-  # - itkwidgets: 0.32* # not supported in py3.9
   - plotly: 4.14*
   - seaborn: 0.11*
   - vincent: 0.4*
@@ -16,8 +15,4 @@ conda:
   - bqplot: 0.12*
   - pythreejs: 2.3*
   - py4j: 0.10.9
-  # - beakerx: 1.4.1 #causing conflicts with Java stack; creates multiple additional language kernels
   - pyviz_comms: 2.0*
-# labextensions:
-#   - itkwidgets: 0.22.0
-#   - beakerx-jupyterlab: 1.4.1 # not updated for JLab 3

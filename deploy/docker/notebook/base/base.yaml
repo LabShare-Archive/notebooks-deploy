@@ -45,7 +45,7 @@ conda:
   - tini: 0.18.0
   - notebook: 6.4.0
   - jupyterhub
-  - jupyterlab: 3.0.16
+  - jupyterlab: 3.1.1
   - ipywidgets: 7.6*
   - jupyter-archive: 3.0.1
   - numexpr: 2.7*
@@ -56,24 +56,23 @@ conda:
   - sos-notebook: 0.22*
   - jupyterlab-sos: 0.8.1
   - sos-papermill: 0.2.1
-  - sos-python: 0.18*
+  - sos-python: 0.18.4
   - nbdime: 3.1*
-  - jupyterlab-git: 0.30*
+  - jupyterlab-git: 0.31.0
   - jupyterlab-topbar: 0.6.1
   - jupyterlab-python-file: 0.5.2
   - ipywidgets: 7.6.3
-  - jupyterlab-lsp: 3.7.0
+  - jupyterlab-lsp: 3.8.0
   - python-lsp-server
   - jupyterlab-system-monitor: 0.8.0
-  - jupyterlab-transient-display-data: 0.4.0
 pip:
   - facets-overview: 1.0.0
   - jupyterlab-wipp: 1.2.0
-  - bfio: 2.0.7
+  - bfio: 2.1.9
   - filepattern: 1.4.6
   - jupyterlab-spreadsheet-editor: 0.6.0
   - jupyterlab-quickopen: 1.0.0
-  - aquirdturtle-collapsible-headings: 3.1.0
+  - jupyterlab-link-share: 0.2.0
 addfiles:
   - fix-permissions:
       destination: /usr/local/bin/fix-permissions
@@ -83,7 +82,7 @@ addfiles:
           # set permissions on a directory
           # after any installation, if a directory needs to be (human) user-writable,
           # run this script on it.
-          # It will make everything in the directory owned by the group $NB_GID
+          # It will make everything in the directory owned by the group ${NB_GID}
           # and writable by that group.
           # Deployments that want to set a specific user id can preserve permissions
           # by adding the `--group-add users` line to `docker run`.
@@ -92,27 +91,27 @@ addfiles:
           # which would cause massive image explosion
 
           # right permissions are:
-          # group=$NB_GID
+          # group=${NB_GID}
           # AND permissions include group rwX (directory-execute)
           # AND directories have setuid,setgid bits set
 
           set -e
 
           for d in "$@"; do
-            find "$d" \
-              ! \( \
-                -group $NB_GID \
-                -a -perm -g+rwX  \
-              \) \
-              -exec chgrp $NB_GID {} \; \
-              -exec chmod g+rwX {} \;
-            # setuid,setgid *on directories only*
-            find "$d" \
-              \( \
-                  -type d \
-                  -a ! -perm -6000  \
-              \) \
-              -exec chmod +6000 {} \;
+              find "${d}" \
+                  ! \( \
+                      -group "${NB_GID}" \
+                      -a -perm -g+rwX \
+                  \) \
+                  -exec chgrp "${NB_GID}" {} \; \
+                  -exec chmod g+rwX {} \;
+              # setuid, setgid *on directories only*
+              find "${d}" \
+                  \( \
+                      -type d \
+                      -a ! -perm -6000 \
+                  \) \
+                  -exec chmod +6000 {} \;
           done
   - start-notebook.sh: 
       destination: /usr/local/bin/
@@ -126,16 +125,19 @@ addfiles:
 
           wrapper=""
           if [[ "${RESTARTABLE}" == "yes" ]]; then
-            wrapper="run-one-constantly"
+              wrapper="run-one-constantly"
           fi
 
-          if [[ ! -z "${JUPYTERHUB_API_TOKEN}" ]]; then
-            # launched by JupyterHub, use single-user entrypoint
-            exec /usr/local/bin/start-singleuser.sh "$@"
-          elif [[ ! -z "${JUPYTER_ENABLE_LAB}" ]]; then
-            . /usr/local/bin/start.sh $wrapper jupyter lab "$@"
+          if [[ -n "${JUPYTERHUB_API_TOKEN}" ]]; then
+              # launched by JupyterHub, use single-user entrypoint
+              exec /usr/local/bin/start-singleuser.sh "$@"
+          elif [[ -n "${JUPYTER_ENABLE_LAB}" ]]; then
+              # shellcheck disable=SC1091
+              . /usr/local/bin/start.sh ${wrapper} jupyter lab "$@"
           else
-            . /usr/local/bin/start.sh $wrapper jupyter notebook "$@"
+              echo "WARN: Jupyter Notebook deprecation notice https://github.com/jupyter/docker-stacks#jupyter-notebook-deprecation-notice."
+              # shellcheck disable=SC1091
+              . /usr/local/bin/start.sh ${wrapper} jupyter notebook "$@"
           fi
   - start-singleuser.sh: 
       destination: /usr/local/bin/
@@ -148,42 +150,40 @@ addfiles:
           set -e
 
           # set default ip to 0.0.0.0
-          if [[ "$NOTEBOOK_ARGS $@" != *"--ip="* ]]; then
-            NOTEBOOK_ARGS="--ip=0.0.0.0 $NOTEBOOK_ARGS"
+          if [[ "${NOTEBOOK_ARGS} $*" != *"--ip="* ]]; then
+              NOTEBOOK_ARGS="--ip=0.0.0.0 ${NOTEBOOK_ARGS}"
           fi
 
           # handle some deprecated environment variables
           # from DockerSpawner < 0.8.
           # These won't be passed from DockerSpawner 0.9,
           # so avoid specifying --arg=empty-string
-          if [ ! -z "$NOTEBOOK_DIR" ]; then
-            NOTEBOOK_ARGS="--notebook-dir='$NOTEBOOK_DIR' $NOTEBOOK_ARGS"
+          if [ -n "${NOTEBOOK_DIR}" ]; then
+              # shellcheck disable=SC2089
+              NOTEBOOK_ARGS="--notebook-dir='${NOTEBOOK_DIR}' ${NOTEBOOK_ARGS}"
           fi
-          if [ ! -z "$JPY_PORT" ]; then
-            NOTEBOOK_ARGS="--port=$JPY_PORT $NOTEBOOK_ARGS"
+          if [ -n "${JPY_PORT}" ]; then
+              NOTEBOOK_ARGS="--port=${JPY_PORT} ${NOTEBOOK_ARGS}"
           fi
-          if [ ! -z "$JPY_USER" ]; then
-            NOTEBOOK_ARGS="--user=$JPY_USER $NOTEBOOK_ARGS"
+          if [ -n "${JPY_USER}" ]; then
+              NOTEBOOK_ARGS="--user=${JPY_USER} ${NOTEBOOK_ARGS}"
           fi
-          if [ ! -z "$JPY_COOKIE_NAME" ]; then
-            NOTEBOOK_ARGS="--cookie-name=$JPY_COOKIE_NAME $NOTEBOOK_ARGS"
+          if [ -n "${JPY_COOKIE_NAME}" ]; then
+              NOTEBOOK_ARGS="--cookie-name=${JPY_COOKIE_NAME} ${NOTEBOOK_ARGS}"
           fi
-          if [ ! -z "$JPY_BASE_URL" ]; then
-            NOTEBOOK_ARGS="--base-url=$JPY_BASE_URL $NOTEBOOK_ARGS"
+          if [ -n "${JPY_BASE_URL}" ]; then
+              NOTEBOOK_ARGS="--base-url=${JPY_BASE_URL} ${NOTEBOOK_ARGS}"
           fi
-          if [ ! -z "$JPY_HUB_PREFIX" ]; then
-            NOTEBOOK_ARGS="--hub-prefix=$JPY_HUB_PREFIX $NOTEBOOK_ARGS"
+          if [ -n "${JPY_HUB_PREFIX}" ]; then
+              NOTEBOOK_ARGS="--hub-prefix=${JPY_HUB_PREFIX} ${NOTEBOOK_ARGS}"
           fi
-          if [ ! -z "$JPY_HUB_API_URL" ]; then
-            NOTEBOOK_ARGS="--hub-api-url=$JPY_HUB_API_URL $NOTEBOOK_ARGS"
+          if [ -n "${JPY_HUB_API_URL}" ]; then
+              NOTEBOOK_ARGS="--hub-api-url=${JPY_HUB_API_URL} ${NOTEBOOK_ARGS}"
           fi
-          if [ ! -z "$JUPYTER_ENABLE_LAB" ]; then
-            NOTEBOOK_BIN="jupyter labhub"
-          else
-            NOTEBOOK_BIN="jupyterhub-singleuser"
-          fi
+          NOTEBOOK_BIN="jupyterhub-singleuser"
 
-          . /usr/local/bin/start.sh $NOTEBOOK_BIN $NOTEBOOK_ARGS "$@"
+          # shellcheck disable=SC1091,SC2086,SC2090
+          . /usr/local/bin/start.sh "${NOTEBOOK_BIN}" ${NOTEBOOK_ARGS} "$@"
   - start.sh: 
       destination: /usr/local/bin/
       permissions: 775
@@ -343,7 +343,6 @@ addfiles:
       destination: /etc/jupyter/
       permissions: 775
       source: |
-          #!/bin/bash
           # Copyright (c) Jupyter Development Team.
           # Distributed under the terms of the Modified BSD License.
 
@@ -353,18 +352,18 @@ addfiles:
           import errno
           import stat
 
-          c = get_config()
-          c.NotebookApp.ip = '0.0.0.0'
-          c.NotebookApp.port = 8888
+          c = get_config()  # noqa: F821
+          c.ServerApp.ip = '0.0.0.0'
+          c.ServerApp.port = 8888
           c.NotebookApp.open_browser = False
 
           # https://github.com/jupyter/notebook/issues/3130
           c.FileContentsManager.delete_to_trash = False
 
           # Generate a self-signed certificate
-          if 'GEN_CERT' in os.environ:
+          if "GEN_CERT" in os.environ:
               dir_name = jupyter_data_dir()
-              pem_file = os.path.join(dir_name, 'notebook.pem')
+              pem_file = os.path.join(dir_name, "notebook.pem")
               try:
                   os.makedirs(dir_name)
               except OSError as exc:  # Python >2.5
@@ -374,28 +373,37 @@ addfiles:
                       raise
 
               # Generate an openssl.cnf file to set the distinguished name
-              cnf_file = os.path.join(os.getenv('CONDA_DIR', '/usr/lib'), 'ssl', 'openssl.cnf')
+              cnf_file = os.path.join(os.getenv("CONDA_DIR", "/usr/lib"), "ssl", "openssl.cnf")
               if not os.path.isfile(cnf_file):
-                  with open(cnf_file, 'w') as fh:
-                      fh.write('''\
+                  with open(cnf_file, "w") as fh:
+                      fh.write(
+                          """\
           [req]
           distinguished_name = req_distinguished_name
           [req_distinguished_name]
-          ''')
+          """
+                      )
 
               # Generate a certificate if one doesn't exist on disk
-              subprocess.check_call(['openssl', 'req', '-new',
-                                      '-newkey', 'rsa:2048',
-                                      '-days', '365',
-                                      '-nodes', '-x509',
-                                      '-subj', '/C=XX/ST=XX/L=XX/O=generated/CN=generated',
-                                      '-keyout', pem_file,
-                                      '-out', pem_file])
+              subprocess.check_call(
+                  [
+                      "openssl",
+                      "req",
+                      "-new",
+                      "-newkey=rsa:2048",
+                      "-days=365",
+                      "-nodes",
+                      "-x509",
+                      "-subj=/C=XX/ST=XX/L=XX/O=generated/CN=generated",
+                      f"-keyout={pem_file}",
+                      f"-out={pem_file}",
+                  ]
+              )
               # Restrict access to the file
               os.chmod(pem_file, stat.S_IRUSR | stat.S_IWUSR)
               c.NotebookApp.certfile = pem_file
 
           # Change default umask for all subprocesses of the notebook server if set in
           # the environment
-          if 'NB_UMASK' in os.environ:
-              os.umask(int(os.environ['NB_UMASK'], 8))
+          if "NB_UMASK" in os.environ:
+              os.umask(int(os.environ["NB_UMASK"], 8))

@@ -1,3 +1,3 @@
 name: tensorflow
 pip:
-  - tf-nightly-gpu: "2.7.0.dev20210630"
+  - tf-nightly-gpu: "2.7.0.dev20210729"

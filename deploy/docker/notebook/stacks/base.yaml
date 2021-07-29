@@ -1,2 +1,2 @@
 name: base
-base: "labshare/polyglot-notebook:base-0.7.1"
+base: "labshare/polyglot-notebook:base-NOTEBOOK_VERSION_VALUE"
