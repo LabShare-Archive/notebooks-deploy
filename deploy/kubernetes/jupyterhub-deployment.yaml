@@ -33,7 +33,7 @@ spec:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
         volumeMounts:
-          - name: git-repo
+          - name: stacks
             mountPath: /stacks
       serviceAccountName: jupyterhub-sa
       containers:
