@@ -32,10 +32,6 @@ sed -i.bak \
 rm deploy/kubernetes/jupyterhub-deployment.yaml.bak
 
 sed -i.bak \
-    deploy/kubernetes/jupyterhub-services.yaml
-rm deploy/kubernetes/jupyterhub-services.yaml.bak
-
-sed -i.bak \
     -e "s|JUPYTERHUB_URL_VALUE|${JUPYTERHUB_URL}|g" \
     deploy/kubernetes/jupyterhub-ingress.yaml
 rm deploy/kubernetes/jupyterhub-ingress.yaml.bak
