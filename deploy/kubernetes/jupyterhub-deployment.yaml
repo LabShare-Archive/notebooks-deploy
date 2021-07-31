@@ -23,7 +23,7 @@ spec:
         args:
           - clone
           - --branch
-          - NOTEBOOKS_DEPLOY_TAG
+          - NOTEBOOKS_DEPLOY_TAG_VALUE
           - --single-branch
           - --
           - https://github.com/LabShare/notebooks-deploy
