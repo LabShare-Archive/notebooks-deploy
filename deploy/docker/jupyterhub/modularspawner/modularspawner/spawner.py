@@ -40,6 +40,7 @@ class ModularSpawner(KubeSpawner):
         
         # Get image hash by running `polus-railyard`
         tag = subprocess.run(('railyard hash ' + '-b ' + self.base + ''.join([f' -a {item}' for stack,included in zip(self.stacks,options) for item in stack if included])).split(' '), capture_output=True).stdout.decode("utf-8").rstrip()
+        self.log.debug("Spawning tag: %s", tag)
 
         #Check if image exist to avoid PullErrors
         if requests.get('https://hub.docker.com/v2/repositories/labshare/polyglot-notebook/tags/' + tag).status_code != 200:
