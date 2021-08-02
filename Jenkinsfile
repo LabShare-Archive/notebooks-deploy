@@ -15,6 +15,10 @@ pipeline {
             script: "git diff --name-only ${GIT_PREVIOUS_SUCCESSFUL_COMMIT} ${GIT_COMMIT} | grep 'jupyterhub/VERSION'",
             returnStatus: true
         )}"""
+        BUILD_NOTEBOOK = """${sh (
+            script: "git diff --name-only ${GIT_PREVIOUS_SUCCESSFUL_COMMIT} ${GIT_COMMIT} | grep 'jupyterhub/VERSION'",
+            returnStatus: true
+        )}"""
         BUILD_DOCS = """${sh (
             script: "git diff --name-only ${GIT_PREVIOUS_SUCCESSFUL_COMMIT} ${GIT_COMMIT} | grep 'docs/VERSION'",
             returnStatus: true
@@ -49,7 +53,7 @@ pipeline {
         stage('Build JupyterHub Docker') {
             when {
                 environment name: 'SKIP_BUILD', value: 'false'
-                // environment name: 'BUILD_HUB', value: '0'
+                environment name: 'BUILD_HUB', value: '0'
             }
             steps {
                 script {
@@ -67,6 +71,7 @@ pipeline {
         stage('Assemble Jupyter Notebook base Docker image') {
             when {
                 environment name: 'SKIP_BUILD', value: 'false'
+                environment name: 'BUILD_NOTEBOOK', value: '0'
             }
             agent {
                 docker {
@@ -91,6 +96,7 @@ pipeline {
         stage('Build Jupyter Notebook base Docker image') {
             when {
                 environment name: 'SKIP_BUILD', value: 'false'
+                environment name: 'BUILD_NOTEBOOK', value: '0'
             }
             steps {
                 script {
