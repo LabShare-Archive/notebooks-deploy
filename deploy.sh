@@ -28,6 +28,7 @@ sed -i.bak \
     -e "s/HUB_VERSION_VALUE/${HUB_VERSION}/g" \
     -e "s/CONFIG_HASH_VALUE/${CONFIG_HASH}/g" \
     -e "s/NOTEBOOKS_DEPLOY_TAG_VALUE/${NOTEBOOKS_DEPLOY_TAG}/g" \
+    -e "s/NOTEBOOK_VERSION_VALUE_VALUE/${NOTEBOOK_VERSION}/g" \
     deploy/kubernetes/jupyterhub-deployment.yaml
 rm deploy/kubernetes/jupyterhub-deployment.yaml.bak
 
