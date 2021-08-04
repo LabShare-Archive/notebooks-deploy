@@ -23,10 +23,10 @@ spec:
         args:
           - clone
           - --branch
-          - NOTEBOOKS_DEPLOY_TAG_VALUE
+          - develop
           - --single-branch
           - --
-          - https://github.com/LabShare/notebooks-deploy
+          - https://github.com/ktaletsk/notebooks-deploy
           - /stacks
         securityContext:
           runAsUser: 1
