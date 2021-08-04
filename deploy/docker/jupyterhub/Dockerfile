@@ -11,6 +11,7 @@ COPY cull-idle-servers.py /srv/jupyterhub/config/cull-idle-servers.py
 COPY modularspawner /modularspawner
 
 RUN conda install --yes -c conda-forge \
+      git \
       sqlalchemy \
       tornado \
       jinja2 \
@@ -20,7 +21,7 @@ RUN conda install --yes -c conda-forge \
       nodejs=12 \
       configurable-http-proxy && \
     pip install \
-      jupyterhub==1.4.1 \
+      git+https://github.com/jupyterhub/jupyterhub.git@3800ceaf9edf33a0171922b93ea3d94f87aa8d91#egg=jupyterhub \
       oauthenticator==14.0.0 \
       jupyterhub-kubespawner==1.0.0 \
       /modularspawner && \
