@@ -74,7 +74,6 @@ data:
         {
             'display_name': 'Minimal Notebook',
             'slug': 'minimal-notebook',
-            'default': True,
             'kubespawner_override': {
                 'image': 'jupyter/minimal-notebook'
             }
