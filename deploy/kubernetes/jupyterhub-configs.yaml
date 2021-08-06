@@ -70,6 +70,29 @@ data:
         }
     ]
 
+    c.ModularSpawner.profile_list = [
+        {
+            'display_name': 'Minimal Notebook',
+            'slug': 'minimal-notebook',
+            'default': True,
+            'kubespawner_override': {
+                'image': 'jupyter/minimal-notebook'
+            }
+        }, {
+            'display_name': 'Streamlit Dashboard Variable App',
+            'slug': 'jhsingle-streamlit-variable',  
+            'kubespawner_override': {
+                'image': 'swazonic/basic-images:labshare-jhsingle-streamlit-variable-sharedpv'
+            }
+        }, {
+            'display_name': 'Voila Dashboard Variable App',
+            'slug': 'jhsingle-voila-variable',  
+            'kubespawner_override': {
+                'image': 'swazonic/basic-images:labshare-jhsingle-voila-variable-sharedpv'
+            }
+        }
+    ]
+
     c.JupyterHub.allow_named_servers=True
     c.JupyterHub.ip='0.0.0.0'
     c.JupyterHub.hub_ip='0.0.0.0'
