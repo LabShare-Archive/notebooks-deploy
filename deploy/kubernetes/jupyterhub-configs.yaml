@@ -72,10 +72,6 @@ data:
 
     c.ModularSpawner.profile_list = [
         {
-            'display_name': 'Chosen image', 
-            'default': True
-        },
-        {
             'display_name': 'Minimal Notebook',
             'slug': 'minimal-notebook',
             'kubespawner_override': {

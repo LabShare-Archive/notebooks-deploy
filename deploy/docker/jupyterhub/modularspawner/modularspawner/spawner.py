@@ -52,8 +52,14 @@ class ModularSpawner(KubeSpawner):
         # Get full image tag
         image = 'labshare/polyglot-notebook:' + tag
 
-        setattr(self, 'image', image)
-        return dict(profile={'display_name': 'Chosen image', 'default': True, 'kubespawner_override': {'image': image,}})
+        # Update profile list
+        profile={'display_name': tag, 'default': True, 'kubespawner_override': {'image': image}}
+
+        profile_list = self.profile_list
+        profile_list.append(profile)
+        setattr(self, 'profile_list', profile_list)
+        
+        return dict(profile_list=profile_list)
     
     stacks_path = Unicode(
         config=True,
