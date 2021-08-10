@@ -112,7 +112,7 @@ data:
     # Enable Notebooks Hub
     c.JupyterHub.services = [
         {
-            "name": "jupyteruser-sa",
+            "name": "service-token",
             "admin": True,
             "api_token": "f97ceeffbd9449b683a9ca776594437b",
         },
