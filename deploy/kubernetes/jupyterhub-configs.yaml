@@ -109,6 +109,32 @@ data:
 
     c.JupyterHub.authenticator_class = GenericOAuthenticator
 
+    # Enable Notebooks Hub
+    c.JupyterHub.services = [
+        {
+            "name": "jupyteruser-sa",
+            "admin": True,
+            "api_token": "fff6cea84cff4f4aba855c6afae9a13b",
+        },
+    ]
+    c.ConfigurableHTTPProxy.api_token = 'fff6cea84cff4f4aba855c6afae9a13b'
+
+        c.JupyterHub.tornado_settings = {
+        'headers': {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': '*',
+        'Access-Control-Allow-Methods': '*'
+    },
+    }
+    c.NotebookApp.allow_origin = '*'
+    c.NotebookApp.tornado_settings = {
+    'headers': {
+        'Access-Control-Allow-Headers': '*',
+        'Access-Control-Allow-Methods': '*'
+    },
+    }
+    # TODO: check to maybe remove later
+
     c.Authenticator.admin_users = set(ADMIN_USERS.split(';'))
 
     c.GenericOAuthenticator.client_id = OAUTH_CLIENT_ID
