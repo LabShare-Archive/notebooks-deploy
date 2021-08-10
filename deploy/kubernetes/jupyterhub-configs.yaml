@@ -114,10 +114,10 @@ data:
         {
             "name": "jupyteruser-sa",
             "admin": True,
-            "api_token": "fff6cea84cff4f4aba855c6afae9a13b",
+            "api_token": "f97ceeffbd9449b683a9ca776594437b",
         },
     ]
-    c.ConfigurableHTTPProxy.api_token = 'fff6cea84cff4f4aba855c6afae9a13b'
+    c.ConfigurableHTTPProxy.api_token = 'f97ceeffbd9449b683a9ca776594437b'
 
     c.JupyterHub.tornado_settings = {
         'headers': {
