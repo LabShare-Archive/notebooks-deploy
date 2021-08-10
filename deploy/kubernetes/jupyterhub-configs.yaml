@@ -106,6 +106,7 @@ data:
     OAUTH_CLIENT_ID = os.getenv('OAUTH_CLIENT_ID')
     OAUTH_CLIENT_SECRET = os.getenv('OAUTH_CLIENT_SECRET')
     ADMIN_USERS = os.getenv('ADMIN_USERS')
+    ADMIN_SERVICE_ACC = os.getenv('ADMIN_SERVICE_ACC')
 
     c.JupyterHub.authenticator_class = GenericOAuthenticator
 
@@ -173,7 +174,7 @@ data:
         {
             "name": "service-token",
             "admin": True,
-            "api_token": "f97ceeffbd9449b683a9ca776594437b",
+            "api_token": ADMIN_SERVICE_ACC,
         },
     ]
 ---

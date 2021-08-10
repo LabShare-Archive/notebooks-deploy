@@ -99,6 +99,11 @@ spec:
                 secretKeyRef:
                   name: jupyterhub-auth-config
                   key: admin_users
+            - name: ADMIN_SERVICE_ACC
+              valueFrom:
+                secretKeyRef:
+                  name: notebooks-hub-auth-config
+                  key: notebooks_hub_api_key
             - name: OAUTH2_AUTHORIZE_URL
               value: "$(AUTH_URL)/auth/$(TENANT)/authorize"
             - name: OAUTH2_TOKEN_URL
