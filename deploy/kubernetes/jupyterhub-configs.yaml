@@ -110,13 +110,6 @@ data:
     c.JupyterHub.authenticator_class = GenericOAuthenticator
 
     # Enable Notebooks Hub
-    c.JupyterHub.services = [
-        {
-            "name": "service-token",
-            "admin": True,
-            "api_token": "f97ceeffbd9449b683a9ca776594437b",
-        },
-    ]
     c.ConfigurableHTTPProxy.api_token = 'f97ceeffbd9449b683a9ca776594437b'
 
     c.JupyterHub.tornado_settings = {
@@ -176,6 +169,11 @@ data:
             'name': 'cull-idle',
             'admin': True,
             'command': [sys.executable, '/srv/jupyterhub/config/cull-idle-servers.py', '--timeout=3600'],
-        }
+        },
+        {
+            "name": "service-token",
+            "admin": True,
+            "api_token": "f97ceeffbd9449b683a9ca776594437b",
+        },
     ]
 ---
