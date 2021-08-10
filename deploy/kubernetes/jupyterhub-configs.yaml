@@ -119,7 +119,7 @@ data:
     ]
     c.ConfigurableHTTPProxy.api_token = 'fff6cea84cff4f4aba855c6afae9a13b'
 
-        c.JupyterHub.tornado_settings = {
+    c.JupyterHub.tornado_settings = {
         'headers': {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Headers': '*',
