@@ -70,12 +70,17 @@ data:
         }
     ]
 
+    # Calculate minimal image using railyard
+    import subprocess
+    tag = subprocess.run(('railyard hash -b BASE_STACK_VALUE').split(' '), capture_output=True).stdout.decode("utf-8").rstrip()
+
+
     c.ModularSpawner.profile_list = [
         {
             'display_name': 'Minimal Notebook',
             'slug': 'minimal-notebook',
             'kubespawner_override': {
-                'image': 'jupyter/minimal-notebook'
+                'image': 'labshare/polyglot-notebook:' + tag
             }
         }, {
             'display_name': 'Streamlit Dashboard Variable App',
@@ -100,7 +105,6 @@ data:
     c.JupyterHub.hub_connect_ip='jupyterhub-internal'
 
     c.JupyterHub.cleanup_servers=False
-    # c.ConfigurableHTTPProxy.should_start=False
     c.JupyterHub.cookie_secret_file = '/srv/jupyterhub/jupyterhub_cookie_secret'
 
     OAUTH_CLIENT_ID = os.getenv('OAUTH_CLIENT_ID')
@@ -110,9 +114,7 @@ data:
 
     c.JupyterHub.authenticator_class = GenericOAuthenticator
 
-    # Enable Notebooks Hub
-    c.ConfigurableHTTPProxy.api_token = 'f97ceeffbd9449b683a9ca776594437b'
-
+    # Enable Notebooks Hub dashboards
     c.JupyterHub.tornado_settings = {
         'headers': {
         'Access-Control-Allow-Origin': '*',
