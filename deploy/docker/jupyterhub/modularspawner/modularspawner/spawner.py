@@ -61,6 +61,40 @@ class ModularSpawner(KubeSpawner):
         
         return dict(profile_list=profile_list)
     
+    async def load_user_options(self):
+        """Load user options from self.user_options dict
+        This can be set via POST to the API or via options_from_form
+        Overrides the KubeSpawner's load_user_options to support 'request_profile'
+        """
+        
+        if self._profile_list is None:
+            if callable(self.profile_list):
+                profile_list = await gen.maybe_future(self.profile_list(self))
+            else:
+                profile_list = self.profile_list
+
+            self._profile_list = self._init_profile_list(profile_list)
+
+        # TODO: Check if new profile was requested
+        # 
+
+        selected_profile = self.user_options.get('profile', None)
+        if self._profile_list:
+            await self._load_profile(selected_profile)
+        elif selected_profile:
+            self.log.warning(
+                "Profile %r requested, but profiles are not enabled", selected_profile
+            )
+
+        # help debugging by logging any option fields that are not recognized
+        option_keys = set(self.user_options)
+        unrecognized_keys = option_keys.difference(self._user_option_keys)
+        if unrecognized_keys:
+            self.log.warning(
+                "Ignoring unrecognized KubeSpawner user_options: %s",
+                ", ".join(map(str, sorted(unrecognized_keys))),
+            )
+    
     stacks_path = Unicode(
         config=True,
         help="""
