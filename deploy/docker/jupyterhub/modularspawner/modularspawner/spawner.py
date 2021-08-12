@@ -53,7 +53,14 @@ class ModularSpawner(KubeSpawner):
         image = 'labshare/polyglot-notebook:' + tag
 
         # Update profile list
-        profile={'display_name': tag, 'default': True, 'kubespawner_override': {'image': image}}
+        profile={
+            'display_name': tag,
+            'slug': tag,
+            'default': True, 
+            'kubespawner_override': {
+                'image': image
+            }
+        }
 
         profile_list = self.profile_list
         profile_list.append(profile)
