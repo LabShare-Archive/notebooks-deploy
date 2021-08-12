@@ -12,7 +12,8 @@ data:
     c.ModularSpawner.start_timeout=1000
 
     # Choose which stacks to use in modular spawner
-    c.ModularSpawner.stacks_path = '/stacks/deploy/docker/notebook/stacks'
+    stacks_path = '/stacks/deploy/docker/notebook/stacks'
+    c.ModularSpawner.stacks_path = stacks_path
     c.ModularSpawner.base = 'BASE_STACK_VALUE'
     c.ModularSpawner.stacks = STACKS_VALUE
     c.ModularSpawner.stacks_names = STACKS_NAMES_VALUE
@@ -72,7 +73,7 @@ data:
 
     # Calculate minimal image using railyard
     import subprocess
-    tag = subprocess.run(('railyard hash -b BASE_STACK_VALUE').split(' '), capture_output=True).stdout.decode("utf-8").rstrip()
+    tag = subprocess.run(('railyard hash -b ' + os.path.join(stacks_path, 'BASE_STACK_VALUE')).split(' '), capture_output=True).stdout.decode("utf-8").rstrip()
 
 
     c.ModularSpawner.profile_list = [
