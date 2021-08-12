@@ -68,6 +68,12 @@ class ModularSpawner(KubeSpawner):
         
         return dict(profile=tag)
     
+    async def _add_profile(self, profile):
+        """Add profile to the profile list"""
+        profile_list = self.profile_list
+        profile_list.append(profile)
+        setattr(self, 'profile_list', profile_list)
+    
     async def load_user_options(self):
         """Load user options from self.user_options dict
         This can be set via POST to the API or via options_from_form
@@ -82,8 +88,25 @@ class ModularSpawner(KubeSpawner):
 
             self._profile_list = self._init_profile_list(profile_list)
 
-        # TODO: Check if new profile was requested
-        # 
+        # Check if new profile was requested
+        requested_profile = self.user_options.get('profile', None)
+        if isinstance(requested_profile,dict):
+            # New profile was requested
+            # It should come in a format
+            # {
+            #   'display_name': 'name', 
+            #   'slug': 'slug',
+            #   'default': True/False, 
+            #   'kubespawner_override': 
+            #   {
+            #       'image': 'image'
+            #   }
+            # }
+            await self._add_profile(requested_profile)
+            selected_profile = requested_profile['slug']
+        else:
+            # Existing profile was requested by it's slug
+            selected_profile = requested_profile
 
         selected_profile = self.user_options.get('profile', None)
         if self._profile_list:
