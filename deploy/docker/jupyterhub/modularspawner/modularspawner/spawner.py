@@ -59,7 +59,7 @@ class ModularSpawner(KubeSpawner):
         profile_list.append(profile)
         setattr(self, 'profile_list', profile_list)
         
-        return dict(profile_list=profile_list)
+        return dict(profile=profile)
     
     async def load_user_options(self):
         """Load user options from self.user_options dict
