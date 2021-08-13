@@ -108,7 +108,6 @@ class ModularSpawner(KubeSpawner):
             # Existing profile was requested by it's slug
             selected_profile = requested_profile
 
-        selected_profile = self.user_options.get('profile', None)
         if self._profile_list:
             await self._load_profile(selected_profile)
         elif selected_profile:
