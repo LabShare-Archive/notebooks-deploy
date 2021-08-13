@@ -61,12 +61,8 @@ class ModularSpawner(KubeSpawner):
                 'image': image
             }
         }
-
-        profile_list = self.profile_list
-        profile_list.append(profile)
-        setattr(self, 'profile_list', profile_list)
         
-        return dict(profile=tag)
+        return dict(profile=profile)
     
     async def _add_profile(self, profile):
         """Add profile to the profile list"""
