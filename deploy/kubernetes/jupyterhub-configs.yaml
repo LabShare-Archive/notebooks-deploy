@@ -20,7 +20,7 @@ data:
 
     # Which container to spawn
     c.ModularSpawner.default_url = '/lab'
-    c.ModularSpawner.uid = 0 #uid 1000 corresponds to jovyan, uid 0 to root
+    c.ModularSpawner.uid = 1000 #uid 1000 corresponds to jovyan, uid 0 to root
     c.ModularSpawner.cmd = ['jupyter-labhub']
     c.ModularSpawner.args = ['--collaborative']
     c.ModularSpawner.working_dir = '/home/jovyan'
