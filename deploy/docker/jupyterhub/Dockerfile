@@ -21,7 +21,7 @@ RUN conda install --yes -c conda-forge \
       nodejs=12 \
       configurable-http-proxy && \
     pip install \
-      git+https://github.com/jupyterhub/jupyterhub.git@3800ceaf9edf33a0171922b93ea3d94f87aa8d91#egg=jupyterhub \
+      git+https://github.com/jupyterhub/jupyterhub.git@17ba49117c79628b475f161d33debbf03c35fd94#egg=jupyterhub \
       oauthenticator==14.0.0 \
       jupyterhub-kubespawner==1.0.0 \
       /modularspawner && \
