@@ -31,9 +31,10 @@ RUN conda install --yes -c conda-forge \
     rm -rf ~/.cache ~/.npm /modularspawner
 
 RUN mkdir -p /srv/jupyterhub/
+COPY config-wrapper.py /srv/jupyterhub/config-wrapper.py
 WORKDIR /srv/jupyterhub/
 EXPOSE 8000
 
 LABEL org.jupyter.service="jupyterhub"
 
-CMD ["jupyterhub", "-f", "/srv/jupyterhub/jupyterhub_config.py"]
+CMD ["python", "/srv/jupyterhub/config-wrapper.py"]

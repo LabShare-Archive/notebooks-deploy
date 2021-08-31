@@ -62,12 +62,6 @@ spec:
             - containerPort: 8081
               # This name will be used in the Service.
               name: jupyter-in
-          command: [
-            "jupyterhub",
-            "-f",
-            "/srv/jupyterhub/config/jupyterhub-config.py",
-            "--debug"
-          ]
           env:
             - name: OAUTH_CLIENT_ID
               valueFrom:
