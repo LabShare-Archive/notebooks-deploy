@@ -4,6 +4,11 @@ source .env
 
 # Backup file extension required to support Mac versions of sed
 sed -i.bak \
+    -e "s/STORAGE_CLASS_VALUE/${STORAGE_CLASS}/g" \
+    deploy/kubernetes/postgres.yaml
+rm deploy/kubernetes/postgres.yaml.bak
+
+sed -i.bak \
     -e "s/SHARED_STORAGE_VALUE/${SHARED_STORAGE}/g" \
     -e "s/STORAGE_CLASS_VALUE/${STORAGE_CLASS}/g" \
     deploy/kubernetes/storage.yaml
@@ -38,7 +43,7 @@ sed -i.bak \
 rm deploy/kubernetes/jupyterhub-ingress.yaml.bak
 
 
-
+kubectl apply --kubeconfig=${KUBECONFIG} -f deploy/kubernetes/postgres.yaml
 kubectl apply --kubeconfig=${KUBECONFIG} -f deploy/kubernetes/jupyterhub-predefined.yaml
 kubectl apply --kubeconfig=${KUBECONFIG} -f deploy/kubernetes/storage.yaml
 kubectl apply --kubeconfig=${KUBECONFIG} -f deploy/kubernetes/jupyterhub-configs.yaml
