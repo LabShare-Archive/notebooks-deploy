@@ -186,10 +186,10 @@ data:
         roles.append(sharing_group_editing_role)
         roles.append(usernames_reading_role)
 
-    # Required for getting full scope in the JUPYTERHUB_API_TOKEN on user server
+    # Required for getting user reading scope in the JUPYTERHUB_API_TOKEN on user server
     roles.append({
         'name': 'server',
-        'scopes': ['all'],
+        'scopes': ['list:users'],
     })
 
     c.JupyterHub.load_groups = groups
