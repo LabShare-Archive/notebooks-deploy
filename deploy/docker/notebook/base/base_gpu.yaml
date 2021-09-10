@@ -44,12 +44,11 @@ conda_channels:
 conda:
   - tini: 0.18.0
   - notebook: 6.4.0
-  - jupyterlab: 3.1.1
-  - ipywidgets: 7.6*
-  - jupyter-archive: 3.0.1
-  - numexpr: 2.7*
+  - jupyterlab: 3.1.11
+  - jupyter-archive: 3.0.3
+  - numexpr: 2.7.3
   - matplotlib-base: 3.4*
-  - scipy: 1.6*
+  - scipy: 1.7*
   - feather-format
   - nbformat
   - sos-notebook: 0.22*
@@ -57,13 +56,14 @@ conda:
   - sos-papermill: 0.2.1
   - sos-python: 0.18.4
   - nbdime: 3.1*
-  - jupyterlab-git: 0.31.0
+  - jupyterlab-git: 0.32.2
   - jupyterlab-topbar: 0.6.1
-  - jupyterlab-python-file: 0.5.2
-  - ipywidgets: 7.6.3
-  - jupyterlab-lsp: 3.8.0
-  - python-lsp-server
+  - jupyterlab-python-file: 0.5.5
+  - ipywidgets: 7.6.4
+  - jupyterlab-lsp: 3.8.1
+  - python-lsp-server: 1.2.2
   - jupyterlab-system-monitor: 0.8.0
+  - yarn
 pip:
   - git+https://github.com/jupyterhub/jupyterhub.git@17ba49117c79628b475f161d33debbf03c35fd94#egg=jupyterhub
   - facets-overview: 1.0.0
@@ -71,8 +71,13 @@ pip:
   - bfio: 2.1.9
   - filepattern: 1.4.6
   - jupyterlab-spreadsheet-editor: 0.6.0
-  - jupyterlab-quickopen: 1.0.0
+  - jupyterlab-quickopen: 1.1.0
   - jupyterlab-link-share: 0.2.0
+  - jupyterlab-rtc-hub-settings: 0.1.1
+scripts:
+  - beakerx-tabledisplay: |
+      pip install git+https://github.com/twosigma/beakerx_tabledisplay.git\#egg\=beakerx-tabledisplay\&subdirectory=beakerx_tabledisplay && \
+      beakerx_tabledisplay install
 addfiles:
   - fix-permissions:
       destination: /usr/local/bin/fix-permissions
