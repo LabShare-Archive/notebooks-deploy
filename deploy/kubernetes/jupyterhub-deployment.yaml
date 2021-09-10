@@ -23,10 +23,10 @@ spec:
         args:
           - clone
           - --branch
-          - develop
+          - STACKS_BRANCH_VALUE
           - --single-branch
           - --
-          - https://github.com/ktaletsk/notebooks-deploy
+          - STACKS_REPO_VALUE
           - /stacks
         securityContext:
           runAsUser: 1
