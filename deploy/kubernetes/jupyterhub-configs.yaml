@@ -90,13 +90,13 @@ data:
             'display_name': 'Streamlit Dashboard Variable App',
             'slug': 'jhsingle-streamlit-variable',  
             'kubespawner_override': {
-                'image': 'swazonic/basic-images:labshare-jhsingle-streamlit-variable-sharedpv'
+                'image': 'polusai/hub-streamlit'
             }
         }, {
             'display_name': 'Voila Dashboard Variable App',
             'slug': 'jhsingle-voila-variable',  
             'kubespawner_override': {
-                'image': 'swazonic/basic-images:labshare-jhsingle-voila-variable-sharedpv'
+                'image': 'polusai/hub-voila'
             }
         }
     ]
