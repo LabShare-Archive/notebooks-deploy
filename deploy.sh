@@ -34,8 +34,8 @@ sed -i.bak \
     -e "s/CONFIG_HASH_VALUE/${CONFIG_HASH}/g" \
     -e "s/NOTEBOOKS_DEPLOY_TAG_VALUE/${NOTEBOOKS_DEPLOY_TAG}/g" \
     -e "s/NOTEBOOK_VERSION_VALUE_VALUE/${NOTEBOOK_VERSION}/g" \
-    -e "s/STACKS_BRANCH_VALUE/${STACKS_BRANCH}/g" \
-    -e "s/STACKS_REPO_VALUE/${STACKS_REPO}/g" \
+    -e "s|STACKS_BRANCH_VALUE|${STACKS_BRANCH}|g" \
+    -e "s|STACKS_REPO_VALUE|${STACKS_REPO}|g" \
     deploy/kubernetes/jupyterhub-deployment.yaml
 rm deploy/kubernetes/jupyterhub-deployment.yaml.bak
 
