@@ -71,7 +71,7 @@ pipeline {
         stage('Assemble Jupyter Notebook base Docker image') {
             when {
                 environment name: 'SKIP_BUILD', value: 'false'
-                environment name: 'BUILD_NOTEBOOK', value: '0'
+                // environment name: 'BUILD_NOTEBOOK', value: '0'
             }
             agent {
                 docker {
