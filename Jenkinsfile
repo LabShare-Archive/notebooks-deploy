@@ -71,7 +71,7 @@ pipeline {
         stage('Assemble Jupyter Notebook base Docker image') {
             when {
                 environment name: 'SKIP_BUILD', value: 'false'
-                // environment name: 'BUILD_NOTEBOOK', value: '0'
+                environment name: 'BUILD_NOTEBOOK', value: '0'
             }
             agent {
                 docker {
@@ -96,7 +96,7 @@ pipeline {
         stage('Build Jupyter Notebook base Docker image') {
             when {
                 environment name: 'SKIP_BUILD', value: 'false'
-                // environment name: 'BUILD_NOTEBOOK', value: '0'
+                environment name: 'BUILD_NOTEBOOK', value: '0'
             }
             steps {
                 script {
@@ -166,7 +166,9 @@ pipeline {
                             }
 
                             // Images with combinations of 2 additional stacks
-                            [stacks, stacks].combinations().findAll{item -> item[0].join(" ") < item[1].join(" ")}.collect{it.flatten()}.each {
+                            combinations = [stacks, stacks].combinations()
+                            println combinations
+                            combinations.[stacks, stacks].combinations().findAll{item -> item[0].join(" ") < item[1].join(" ")}.collect{it.flatten()}.each {
                                 sh "railyard assemble -t Dockerfile.template -b base.yaml " + it.collect{"-a " + it}.join(" ") + " -p manifests"
                             }
 
