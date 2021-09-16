@@ -27,6 +27,7 @@ data:
     c.ModularSpawner.args = ['--collaborative']
     c.ModularSpawner.working_dir = '/home/jovyan'
     c.ModularSpawner.service_account='jupyteruser-sa'
+    c.ModularSpawner.automount_service_account_token = True
     c.ModularSpawner.singleuser_image_pull_policy= 'Always'
 
     # Per-user storage configuration
