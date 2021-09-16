@@ -98,6 +98,12 @@ data:
             'kubespawner_override': {
                 'image': 'polusai/hub-voila'
             }
+        }, {
+        'display_name': 'JupyterLab WIPP Plugin Creator testing',
+            'slug': 'jupyterlab-plugin-creator',  
+            'kubespawner_override': {
+                'image': 'ktaletsk/jupyterlab-plugin-creator'
+            }
         }
     ]
 
