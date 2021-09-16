@@ -34,19 +34,9 @@ kind: Role
 metadata:
   name: jupyteruser-role
 rules:
-- apiGroups:
-  - argoproj.io
-  resources:
-  - workflows
-  verbs:
-  - delete
-  - deletecollection
-  - get
-  - list
-  - patch
-  - create
-  - update
-  - watch
+  - apiGroups: [""]
+    resources: ["*"]
+    verbs: ["get", "list", "watch", "create", "delete"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
