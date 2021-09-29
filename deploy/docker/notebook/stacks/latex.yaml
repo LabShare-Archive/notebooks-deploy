@@ -5,6 +5,4 @@ apt:
 conda:
   - texlab
   - chktex
-scripts:
-  - latex: |
-      pip install git+git://github.com/ktaletsk/jupyterlab-latex.git@1e79ba29b8c7e51205661f874ff6d7ec90825021
+  - jupyterlab-latex: 3.1.0
