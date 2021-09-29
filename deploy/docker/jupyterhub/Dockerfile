@@ -23,7 +23,7 @@ RUN conda install --yes -c conda-forge \
     pip install \
       escapism==1.0.1 \
       psycopg2-binary==2.9.1 \
-      git+https://github.com/jupyterhub/jupyterhub.git@7533cb76021f0ceda5102f9316746fa326a30246#egg=jupyterhub \
+      jupyterhub==2.0.0b2 \
       oauthenticator==14.2.0 \
       jupyterhub-kubespawner==1.1.0 \
       /modularspawner && \

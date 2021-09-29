@@ -184,7 +184,7 @@ data:
         usernames_reading_role = {
             'name': f'usernames_reading_{safe_username}_role',
             'description': 'Usernames reading group',
-            'scopes': ['read:users:name'],
+            'scopes': ['list:users'],
             'users': [user]
         }
 
