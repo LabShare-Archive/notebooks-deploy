@@ -3,7 +3,7 @@ apiVersion: v1
 metadata:
   name: jupyterhub-postgres-claim
 spec:
-  storageClassName: aws-efs
+  storageClassName: STORAGE_CLASS_VALUE
   accessModes:
     - ReadWriteOnce
   resources:
