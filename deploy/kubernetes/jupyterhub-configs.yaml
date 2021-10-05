@@ -102,7 +102,7 @@ data:
         'display_name': 'JupyterLab WIPP Plugin Creator testing',
             'slug': 'jupyterlab-plugin-creator',  
             'kubespawner_override': {
-                'image': 'ktaletsk/jupyterlab-plugin-creator:0.1.8'
+                'image': 'ktaletsk/jupyterlab-plugin-creator:0.1.9'
             }
         }
     ]
