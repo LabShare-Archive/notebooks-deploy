@@ -64,6 +64,7 @@ conda:
   - jupyterlab-lsp: 3.8.1
   - python-lsp-server: 1.2.2
   - jupyterlab-system-monitor: 0.8.0
+  - python-kubernetes: 18.20.0
   - yarn
 pip:
   - jupyterhub: 2.0.0b2
