@@ -206,7 +206,7 @@ data:
         'WIPP_UI_URL': 'WIPP_UI_VALUE',
         'WIPP_API_INTERNAL_URL': 'WIPP_API_INTERNAL_VALUE',
         'WIPP_NOTEBOOKS_PATH': 'WIPP_NOTEBOOKS_PATH_VALUE',
-        'PLUGIN_TEMP_PATH': WIPP_PLUGIN_TEMP_PATH_VALUE,
+        'PLUGIN_TEMP_PATH': 'WIPP_PLUGIN_TEMP_PATH_VALUE',
         'USER_OPTIONS': lambda spawner: str(spawner.user_options)
     }
 
