@@ -44,7 +44,7 @@ conda_channels:
 conda:
   - tini: 0.18.0
   - notebook: 6.4.0
-  - jupyterlab: 3.1.18
+  - jupyterlab: 3.2.0
   - jupyter-archive: 3.1.0
   - numexpr: 2.7.3
   - matplotlib-base: 3.4*
@@ -64,11 +64,12 @@ conda:
   - jupyterlab-lsp: 3.8.1
   - python-lsp-server: 1.2.2
   - jupyterlab-system-monitor: 0.8.0
+  - python-kubernetes: 18.20.0
   - yarn
 pip:
-  - jupyterhub: 2.0.0b2
+  - jupyterhub: 2.0.0b3
   - facets-overview: 1.0.0
-  - jupyterlab-wipp-plugin-creator: 0.2.0
+  - jupyterlab-wipp-plugin-creator: 0.2.1
   - bfio: 2.1.9
   - filepattern: 1.4.6
   - jupyterlab-spreadsheet-editor: 0.6.0
