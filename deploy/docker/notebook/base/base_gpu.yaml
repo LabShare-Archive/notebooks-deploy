@@ -80,6 +80,8 @@ pip:
 scripts:
   - beakerx-tabledisplay: |
       beakerx_tabledisplay install
+  - jupyterlab-wipp-plugin-creator: |
+      jupyter server extension enable jupyterlab_wipp_plugin_creator
 addfiles:
   - fix-permissions:
       destination: /usr/local/bin/fix-permissions
