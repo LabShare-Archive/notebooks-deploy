@@ -432,7 +432,7 @@ addfiles:
 
               logging.getLogger().info(f"Saved notebook at {os_path}")
               try:
-                    r = requests.post("https://polus-notebooks-hub-backend.ci.aws.labshare.org/file-data/new-file", data={"user": os.getenv("JUPYTERHUB_USER"), "filePath": os_path}, timeout=1)
+                    r = requests.post("https://polus-notebooks-hub-backend.ci.aws.labshare.org/file-data/new-file", json={"user": os.getenv("JUPYTERHUB_USER"), "filePath": os_path}, timeout=1)
                     if r.status_code == 200:
                         logging.getLogger().info(f"Registered {os_path} with Notebooks Hub")
                     else:
