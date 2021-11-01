@@ -361,6 +361,7 @@ addfiles:
           import errno
           import stat
           import logging
+          import requests
 
           c = get_config()  # noqa: F821
           c.ServerApp.ip = '0.0.0.0'
@@ -417,13 +418,27 @@ addfiles:
           # the environment
           if "NB_UMASK" in os.environ:
               os.umask(int(os.environ["NB_UMASK"], 8))
+
+          def is_inside_path(path_to_test, path):
+              return os.path.samefile(os.path.commonpath([path, path_to_test]), path)
         
           # Configure file post-save hook
           def script_post_save(model, os_path, contents_manager, **kwargs):
               work_path = '/home/jovyan/work/'
-              if model['type'] != 'notebook' and os.path.samefile(os.path.commonpath([work_path, os_path]), work_path):
+              shared_path = '/home/jovyan/shared/notebooks'
+
+              if model['type'] != 'notebook' or not (is_inside_path(os_path, work_path) or is_inside_path(os_path, shared_path)):
                     return
 
               logging.getLogger().info(f"Saved notebook at {os_path}")
+              try:
+                    r = requests.post("https://polus-notebooks-hub-backend.ci.aws.labshare.org/file-data/new-file", data={"user": os.getenv("JUPYTERHUB_USER"), "filePath": os_path}, timeout=1)
+                    if r.status_code == 200:
+                        logging.getLogger().info(f"Registered {os_path} with Notebooks Hub")
+                    else:
+                        logging.getLogger().error(f"Could not register {os_path} with Notebooks Hub. Return code: {r.status_code}")
+              except Exception as e:
+                    logging.getLogger().error(f"Could not register {os_path} with Notebooks Hub", exc_info=e)
+              
           
           c.FileContentsManager.post_save_hook = script_post_save
