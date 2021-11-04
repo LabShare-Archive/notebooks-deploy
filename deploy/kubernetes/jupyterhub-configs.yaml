@@ -195,7 +195,7 @@ data:
     # Required for getting user reading scope in the JUPYTERHUB_API_TOKEN on user server
     roles.append({
         'name': 'server',
-        'scopes': ['all'],
+        'scopes': ['inherit'],
     })
 
     c.JupyterHub.load_groups = groups
