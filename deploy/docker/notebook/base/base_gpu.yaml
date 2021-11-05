@@ -67,6 +67,7 @@ conda:
   - jupyterlab-system-monitor: 0.8.0
   - python-kubernetes: 18.20.0
   - yarn
+  - typing-extensions: 3.10.0.0
 pip:
   - jupyterhub: 2.0.0rc3
   - facets-overview: 1.0.0
