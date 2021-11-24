@@ -25,6 +25,8 @@ sed -i.bak \
     -e "s|WIPP_API_INTERNAL_VALUE|${WIPP_API_INTERNAL}|g" \
     -e "s|WIPP_NOTEBOOKS_PATH_VALUE|${WIPP_NOTEBOOKS_PATH}|g" \
     -e "s|WIPP_PLUGIN_TEMP_PATH_VALUE|${WIPP_PLUGIN_TEMP_PATH}|g" \
+    -e "s|POLUS_NOTEBOOKS_HUB_API_VALUE|${POLUS_NOTEBOOKS_HUB_API}|g" \
+    -e "s|POLUS_NOTEBOOKS_HUB_FILE_LOGGING_ENABLED_VALUE|${POLUS_NOTEBOOKS_HUB_FILE_LOGGING_ENABLED}|g" \
     deploy/kubernetes/jupyterhub-configs.yaml
 rm deploy/kubernetes/jupyterhub-configs.yaml.bak
 
