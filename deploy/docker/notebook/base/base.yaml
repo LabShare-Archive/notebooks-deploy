@@ -504,6 +504,6 @@ addfiles:
                   self.script_post_rename(os_old_path, os_new_path)
                   return returned
 
-              #### Set contents manager class ####   
-              if os.environ["POLUS_NOTEBOOKS_HUB_FILE_LOGGING_ENABLED"] == "True":
-                  c.NotebookApp.contents_manager_class = HookFileContentsManager  
+          #### Set contents manager class ####   
+          if os.environ["POLUS_NOTEBOOKS_HUB_FILE_LOGGING_ENABLED"] == "True":
+              c.NotebookApp.contents_manager_class = HookFileContentsManager
