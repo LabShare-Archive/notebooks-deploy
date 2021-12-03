@@ -364,6 +364,11 @@ addfiles:
           import stat
           import logging
           import requests
+          import sys
+          from pathlib import Path
+          from notebook.services.contents.filemanager import FileContentsManager
+          from traitlets import Any
+          from urllib.parse import urljoin
 
           c = get_config()  # noqa: F821
           c.ServerApp.ip = '0.0.0.0'
@@ -421,26 +426,84 @@ addfiles:
           if "NB_UMASK" in os.environ:
               os.umask(int(os.environ["NB_UMASK"], 8))
 
-          def is_inside_path(path_to_test, path):
-              return os.path.samefile(os.path.commonpath([path, path_to_test]), path)
-        
-          # Configure file post-save hook
-          def script_post_save(model, os_path, contents_manager, **kwargs):
-              work_path = '/home/jovyan/work/'
-              shared_path = '/home/jovyan/shared/notebooks'
+          class HookFileContentsManager(FileContentsManager):
+              """ Jupyter Server Hook Class for database synchronization with Notebooks Hub
+              Note: os_path, os_old_path, and os_new_path only track relative file paths instead of absolute 
+              So we have to pre-pend the full path resolution with Path().resolve()
+              """
 
-              if not (is_inside_path(os_path, work_path) or is_inside_path(os_path, shared_path)):
-                    return
-
-              logging.getLogger().info(f"Saved notebook at {os_path}")
-              try:
-                    r = requests.post("https://polus-notebooks-hub-backend.ci.aws.labshare.org/file-data/new-file", json={"user": os.getenv("JUPYTERHUB_USER"), "filePath": os_path}, timeout=1)
-                    if r.status_code == 200:
-                        logging.getLogger().info(f"Registered {os_path} with Notebooks Hub")
-                    else:
-                        logging.getLogger().error(f"Could not register {os_path} with Notebooks Hub. Return code: {r.status_code}")
-              except Exception as e:
-                    logging.getLogger().error(f"Could not register {os_path} with Notebooks Hub", exc_info=e)
+              polus_notebooks_hub_api = os.environ["POLUS_NOTEBOOKS_HUB_API"]
+              delete_uri = urljoin(polus_notebooks_hub_api, '/file-data/delete-file')
+              rename_uri = urljoin(polus_notebooks_hub_api, '/file-data/rename-file')
+              save_uri = urljoin(polus_notebooks_hub_api, '/file-data/new-file')
+              tracked_paths = ['/home/jovyan/work/', '/home/jovyan/shared/notebooks']
               
-          
-          c.FileContentsManager.post_save_hook = script_post_save
+              def is_inside_tracked_paths(self, path_to_test):
+
+                  for path in self.tracked_paths:
+                      if os.path.samefile(os.path.commonpath([path, path_to_test]), path):
+                          return True 
+                  
+                  return False
+              
+              def script_post_delete(self, os_path):
+
+                  os_path = str(Path().resolve()) + os_path
+                  
+                  if not (self.is_inside_tracked_paths(os_path)):
+                      return
+                  
+                  try:
+                      r = requests.post(self.delete_uri, json={"user": os.getenv("JUPYTERHUB_USER"), "filePath": os_path}, timeout=1)
+                  except Exception as e:
+                      logging.getLogger().error(f"Failed to delete {os_path} from Notebooks Hub", exc_info=e)
+
+              def script_post_save(self, os_path):
+                  
+                  os_path = str(Path().resolve()) + os_path
+
+                  if not (self.is_inside_tracked_paths(os_path)):
+                      return
+
+                  try:
+                      r = requests.post(self.save_uri, json={"user": os.getenv("JUPYTERHUB_USER"), "filePath": os_path}, timeout=1)
+                  except Exception as e:
+                      logging.getLogger().error(f"Failed to register {os_path} with Notebooks Hub", exc_info=e)
+
+              def script_post_rename(self, os_old_path, os_new_path):
+                  
+                  os_old_path = str(Path().resolve()) + '/' + os_old_path
+                  os_new_path = str(Path().resolve()) + '/' + os_new_path
+
+                  #If the new path is not in the tracked paths, delete the old path.
+                  if not (self.is_inside_tracked_paths(os_new_path)):
+                      try:
+                          r = requests.post(self.delete_uri, json={"user": os.getenv("JUPYTERHUB_USER"), "filePath": os_old_path}, timeout=1)
+                          return
+                      except Exception as e:
+                          logging.getLogger().error(f"Failed to delete {os_path} from Notebooks Hub", exc_info=e)
+
+                  #If the new path is inside the tracked paths, create the new path and disregard the old path since it does not exist in our db.
+                  try:
+                      r = requests.post(self.rename_uri, json={"user": os.getenv("JUPYTERHUB_USER"), "oldPath": os_old_path, "newPath": os_new_path}, timeout=1)
+                  except Exception as e:
+                      logging.getLogger().error(f"Failed to change path from {os_old_path} to {os_new_path} with Notebooks Hub", exc_info=e)
+
+              def delete(self, os_path):
+                  returned = super(HookFileContentsManager, self).delete_file(os_path)
+                  self.script_post_delete(os_path)
+                  return returned
+
+              def save(self, model, os_path):
+                  returned = super(HookFileContentsManager, self).save(model, path=os_path)
+                  self.script_post_save(os_path)
+                  return returned
+
+              def rename(self, os_old_path, os_new_path):
+                  returned = super(HookFileContentsManager, self).rename_file(os_old_path, os_new_path)
+                  self.script_post_rename(os_old_path, os_new_path)
+                  return returned
+
+              #### Set contents manager class ####   
+              if os.environ["POLUS_NOTEBOOKS_HUB_FILE_LOGGING_ENABLED"] == "True":
+                  c.NotebookApp.contents_manager_class = HookFileContentsManager  
