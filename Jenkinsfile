@@ -160,22 +160,19 @@ pipeline {
                             // Image without additional stacks
                             sh 'railyard assemble -t Dockerfile.template -b base.yaml -p manifests'
 
-                            // // Images with a single additional stack
-                            // stacks.each {
-                            //     sh "railyard assemble -t Dockerfile.template -b base.yaml " + it.collect{"-a " + it}.join(" ") + " -p manifests"
-                            // }
+                            // Images with a single additional stack
+                            stacks.each {
+                                sh "railyard assemble -t Dockerfile.template -b base.yaml " + it.collect{"-a " + it}.join(" ") + " -p manifests"
+                            }
 
-                            // // Images with combinations of 2 additional stacks
-                            // combinations = [stacks, stacks].combinations()
-                            // println combinations
-                            // foundall = combinations.findAll{item -> item[0].join(" ") < item[1].join(" ")}
-                            // println foundall
-                            // collected = foundall.collect{it.flatten()}
-                            // println collected
-                            // collected.each {
-                            //     println it
-                            //     sh "railyard assemble -t Dockerfile.template -b base.yaml " + it.collect{"-a " + it}.join(" ") + " -p manifests"
-                            // }
+                            // Images with combinations of 2 additional stacks
+                            combinations = [stacks, stacks].combinations()
+                            foundall = combinations.findAll{item -> item[0].join(" ") < item[1].join(" ")}
+                            collected = foundall.collect{it.flatten()}
+                            collected.each {
+                                println it
+                                sh "railyard assemble -t Dockerfile.template -b base.yaml " + it.collect{"-a " + it}.join(" ") + " -p manifests"
+                            }
 
                             // Image with all stacks included
                             sh "railyard assemble -t Dockerfile.template -b base.yaml " + stacks.flatten().collect{"-a " + it}.join(" ") + " -p manifests"
