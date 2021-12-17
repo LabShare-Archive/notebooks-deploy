@@ -76,7 +76,8 @@ data:
         },
         {
             'mountPath': '/opt/modules',
-            'name': 'modules-volume'
+            'name': 'modules-volume',
+            'readOnly': True
         },
         {
             'mountPath': '/opt/shared/wipp',
