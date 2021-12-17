@@ -1,4 +1,4 @@
-FROM frolvlad/alpine-miniconda3:python3.7@sha256:ca48cb5d359d6de5311d909754f39bbe34227f583158b7a4eec9089d4686aa01
+FROM frolvlad/alpine-miniconda3:python3.7@sha256:bf5c88b66776e27b6745a7489104263d4ec05748eb447e7a292a0c4b5ed6c074
 LABEL maintainer="Labshare <konstantin.taletskiy@labshare.org>"
 
 # Track semantic versioning
@@ -19,13 +19,14 @@ RUN conda install --yes -c conda-forge \
       requests \
       pycurl \
       nodejs=12 \
-      configurable-http-proxy && \
+      configurable-http-proxy \
+      escapism=1.0.1 \
+      jupyterhub=2.0.0 \
+      python-kubernetes=20.13.0 \
+      jupyterhub-kubespawner=2.0.0 && \
     pip install \
-      escapism==1.0.1 \
       psycopg2-binary==2.9.1 \
-      jupyterhub==2.0.0rc3 \
       oauthenticator==14.2.0 \
-      jupyterhub-kubespawner==1.1.1 \
       /modularspawner && \
     npm install -g polus-railyard && \
     rm -rf ~/.cache ~/.npm /modularspawner
