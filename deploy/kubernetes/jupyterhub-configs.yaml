@@ -51,6 +51,12 @@ data:
             }
         },
         {
+            'name': 'modules-volume',
+            'persistentVolumeClaim': {
+                'claimName': 'modules-pv-claim'
+            }
+        },
+        {
             'name': 'wipp-volume',
             'persistentVolumeClaim': {
                 'claimName': 'WIPP_STORAGE_PVC_VALUE'
@@ -67,6 +73,11 @@ data:
         {
             'mountPath': '/opt/shared/notebooks',
             'name': 'shared-volume'
+        },
+        {
+            'mountPath': '/opt/modules',
+            'name': 'modules-volume',
+            'readOnly': 'true'
         },
         {
             'mountPath': '/opt/shared/wipp',
