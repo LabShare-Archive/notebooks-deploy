@@ -10,6 +10,7 @@ rm deploy/kubernetes/postgres.yaml.bak
 
 sed -i.bak \
     -e "s/SHARED_STORAGE_VALUE/${SHARED_STORAGE}/g" \
+    -e "s/MODULES_STORAGE_VALUE/${MODULES_STORAGE}/g" \
     -e "s/STORAGE_CLASS_VALUE/${STORAGE_CLASS}/g" \
     deploy/kubernetes/storage.yaml
 rm deploy/kubernetes/storage.yaml.bak
