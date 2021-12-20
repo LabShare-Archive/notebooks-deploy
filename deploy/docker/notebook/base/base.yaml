@@ -6,6 +6,16 @@ env:
   - MINICONDA_INSTALLER_HASHSUM: 8c69f65a4ae27fb41df0fe552b4a8a3b
   - CONDA_VERSION: 4.10.3
   - XDG_CACHE_HOME: /home/$NB_USER/.cache/
+  - LMOD_VERSION: 8.5.19
+  - MODULESHOME: /opt/apps/lmod/lmod
+  - MODULEPATH: /opt/apps/modulefiles/Linux:/opt/apps/modulefiles/Core:/opt/apps/lmod/lmod/modulefiles/Core
+  - MODULEPATH_ROOT: /opt/apps/modulefiles
+  - MANPATH: "/opt/apps/lmod/lmod/share/man:"
+  - LMOD_DIR: /opt/apps/lmod/lmod/libexec
+  - LMOD_SETTARG_FULL_SUPPORT: no
+  - LMOD_ROOT: /opt/apps/lmod
+  - LMOD_sys: Linux
+  - LMOD_CMD: /opt/apps/lmod/lmod/libexec/lmod
 path:
   - $CONDA_DIR/bin
 apt:
@@ -38,15 +48,30 @@ apt:
   - libssl-dev
   - curl
   - procps
+  - libicu-dev
+  - lua5.3
+  - lua-bit32:amd64
+  - lua-posix:amd64
+  - lua-posix-dev
+  - liblua5.3-0:amd64
+  - liblua5.3-dev:amd64
+  - tcl
+  - tcl-dev
+  - tcl8.6
+  - tcl8.6-dev:amd64
+  - libtcl8.6:amd64
+  - lua-filesystem
+  - tcsh
+  - less
 conda_channels:
   - bioconda
   - conda-forge
 conda:
   - tini: 0.18.0
-  - notebook: 6.4.5
-  - jupyterlab: 3.2.2
-  - jupyter-archive: 3.1.0
-  - numexpr: 2.7.3
+  - notebook: 6.4.6
+  - jupyterlab: 3.2.5
+  - jupyter-archive: 3.2.1
+  - numexpr: 2.8.0
   - matplotlib-base: 3.4.3
   - scipy: 1.7.1
   - feather-format: 0.4.1
@@ -56,20 +81,20 @@ conda:
   - jupyterlab-sos: 0.8.1
   - sos-papermill: 0.2.1
   - sos-python: 0.18.4
-  - nbdime: 3.1.0
+  - nbdime: 3.1.1
   - jupyterlab-wipp: 1.2.0
-  - jupyterlab-git: 0.33.0
+  - jupyterlab-git: 0.34.0
   - jupyterlab-topbar: 0.6.1
   - jupyterlab-python-file: 0.5.5
   - ipywidgets: 7.6.5
-  - jupyterlab-lsp: 3.9.1
-  - python-lsp-server: 1.2.2
+  - jupyterlab-lsp: 3.9.2
+  - python-lsp-server: 1.3.3
   - jupyterlab-system-monitor: 0.8.0
-  - python-kubernetes: 18.20.0
+  - python-kubernetes: 20.13.0
   - yarn
-  - typing-extensions: 3.10.0.0
+  - typing-extensions: 4.0.1
+  - jupyterhub: 2.0.0
 pip:
-  - jupyterhub: 2.0.0rc3
   - facets-overview: 1.0.0
   - jupyterlab-wipp-plugin-creator: 0.2.5
   - bfio: 2.1.9
@@ -79,11 +104,14 @@ pip:
   - jupyterlab-link-share: 0.2.0
   - jupyterlab-rtc-hub-settings: 0.1.1
   - beakerx-tabledisplay: 2.3.0
+  - jupyterlmod: 2.0.3
 scripts:
   - beakerx-tabledisplay: |
       beakerx_tabledisplay install
   - jupyterlab-wipp-plugin-creator: |
       jupyter server extension enable jupyterlab_wipp_plugin_creator
+  - jupyterlab-lmod: |
+      jupyter labextension install jupyterlab-lmod
 addfiles:
   - fix-permissions:
       destination: /usr/local/bin/fix-permissions
@@ -429,14 +457,16 @@ addfiles:
           class HookFileContentsManager(FileContentsManager):
               """ Jupyter Server Hook Class for database synchronization with Notebooks Hub
               Note: os_path, os_old_path, and os_new_path only track relative file paths instead of absolute 
-              So we have to pre-pend the full path resolution with Path().resolve()
+              So we have to prepend the full path resolution with Path().resolve()
               """
-
-              polus_notebooks_hub_api = os.environ["POLUS_NOTEBOOKS_HUB_API"]
-              delete_uri = urljoin(polus_notebooks_hub_api, '/file-data/delete-file')
-              rename_uri = urljoin(polus_notebooks_hub_api, '/file-data/rename-file')
-              save_uri = urljoin(polus_notebooks_hub_api, '/file-data/new-file')
-              tracked_paths = ['/home/jovyan/work/', '/home/jovyan/shared/notebooks']
+              def __init__(self, name):  
+                  assert "POLUS_NOTEBOOKS_HUB_API" in os.environ
+                  
+                  self.polus_notebooks_hub_api = os.environ["POLUS_NOTEBOOKS_HUB_API"]
+                  self.delete_uri = urljoin(polus_notebooks_hub_api, '/file-data/delete-file')
+                  self.rename_uri = urljoin(polus_notebooks_hub_api, '/file-data/rename-file')
+                  self.save_uri = urljoin(polus_notebooks_hub_api, '/file-data/new-file')
+                  self.tracked_paths = ['/home/jovyan/work/', '/home/jovyan/shared/notebooks']
               
               def is_inside_tracked_paths(self, path_to_test):
 
@@ -505,5 +535,5 @@ addfiles:
                   return returned
 
           #### Set contents manager class ####   
-          if os.environ["POLUS_NOTEBOOKS_HUB_FILE_LOGGING_ENABLED"] == "True":
+          if os.getenv("POLUS_NOTEBOOKS_HUB_FILE_LOGGING_ENABLED") == "True":
               c.NotebookApp.contents_manager_class = HookFileContentsManager
