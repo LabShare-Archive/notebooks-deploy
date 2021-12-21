@@ -5,8 +5,6 @@ conda:
   - jupyter_bokeh: 3.0.2
   - holoviews: 1.14*
   - hvplot: 0.7*
-  - panel: 0.12*
-  - voila: 0.2.15
   - plotly: 5.3*
   - seaborn: 0.11*
   - vincent: 0.4*

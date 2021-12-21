@@ -11,33 +11,26 @@ data:
     from oauthenticator.generic import GenericOAuthenticator
 
     c = get_config()
-    c.JupyterHub.spawner_class = 'modularspawner.ModularSpawner'
-    c.ModularSpawner.start_timeout=1000
+    c.JupyterHub.spawner_class = 'kubespawner.KubeSpawner'
+    c.KubeSpawner.start_timeout=1000
 
-    # Choose which stacks to use in modular spawner
-    stacks_path = '/stacks/deploy/docker/notebook/stacks'
-    c.ModularSpawner.stacks_path = stacks_path
-    c.ModularSpawner.base = 'BASE_STACK_VALUE'
-    c.ModularSpawner.stacks = STACKS_VALUE
-    c.ModularSpawner.stacks_names = STACKS_NAMES_VALUE
-
-    c.ModularSpawner.default_url = '/lab'
-    c.ModularSpawner.uid = 1000 #uid 1000 corresponds to jovyan, uid 0 to root
-    c.ModularSpawner.cmd = ['jupyter-labhub']
-    c.ModularSpawner.args = ['--collaborative']
-    c.ModularSpawner.working_dir = '/home/jovyan'
-    c.ModularSpawner.service_account='jupyteruser-sa'
-    c.ModularSpawner.singleuser_image_pull_policy= 'Always'
+    c.KubeSpawner.default_url = '/lab'
+    c.KubeSpawner.uid = 1000 #uid 1000 corresponds to jovyan, uid 0 to root
+    c.KubeSpawner.cmd = ['jupyter-labhub']
+    c.KubeSpawner.args = ['--collaborative']
+    c.KubeSpawner.working_dir = '/home/jovyan'
+    c.KubeSpawner.service_account='jupyteruser-sa'
+    c.KubeSpawner.singleuser_image_pull_policy= 'Always'
 
     # Per-user storage configuration
-    c.ModularSpawner.pvc_name_template = 'claim-{username}'
-    c.ModularSpawner.storage_class = 'STORAGE_CLASS_VALUE'
-    c.ModularSpawner.storage_capacity = 'STORAGE_PER_USER_VALUE'
-    c.ModularSpawner.storage_access_modes = ['ReadWriteOnce']
-    c.ModularSpawner.storage_pvc_ensure = True
+    c.KubeSpawner.pvc_name_template = 'claim-{username}'
+    c.KubeSpawner.storage_class = 'STORAGE_CLASS_VALUE'
+    c.KubeSpawner.storage_capacity = 'STORAGE_PER_USER_VALUE'
+    c.KubeSpawner.storage_access_modes = ['ReadWriteOnce']
+    c.KubeSpawner.storage_pvc_ensure = True
 
     # Volumes to attach to Pod
-    c.ModularSpawner.volumes = [
+    c.KubeSpawner.volumes = [
         {
             'name': 'volume-{username}',
             'persistentVolumeClaim': {
@@ -65,7 +58,7 @@ data:
     ]
 
     # Where to mount volumes
-    c.ModularSpawner.volume_mounts = [
+    c.KubeSpawner.volume_mounts = [
         {
             'mountPath': '/home/jovyan/work',
             'name': 'volume-{username}'
@@ -85,17 +78,14 @@ data:
         }
     ]
 
-    # Calculate minimal image using railyard
-    import subprocess
-    tag = subprocess.run(('railyard hash -b ' + os.path.join(stacks_path, 'BASE_STACK_VALUE')).split(' '), capture_output=True).stdout.decode("utf-8").rstrip()
+    c.KubeSpawner.image = 'labshare/polyglot-notebook:' + 'NOTEBOOKS_DEPLOY_TAG_VALUE'
 
-
-    c.ModularSpawner.profile_list = [
+    c.KubeSpawner.profile_list = [
         {
-            'display_name': 'Minimal Notebook',
-            'slug': 'minimal-notebook',
+            'display_name': 'JupyterLab',
+            'slug': 'jupyterlab',
             'kubespawner_override': {
-                'image': 'labshare/polyglot-notebook:' + tag
+                'image': 'labshare/polyglot-notebook:' + 'NOTEBOOKS_DEPLOY_TAG_VALUE'
             }
         }, {
             'display_name': 'Streamlit Dashboard Variable App',
@@ -108,12 +98,6 @@ data:
             'slug': 'jhsingle-voila-variable',  
             'kubespawner_override': {
                 'image': 'polusai/hub-voila'
-            }
-        }, {
-        'display_name': 'JupyterLab WIPP Plugin Creator testing',
-            'slug': 'jupyterlab-plugin-creator',  
-            'kubespawner_override': {
-                'image': 'ktaletsk/jupyterlab-plugin-creator:0.1.12'
             }
         }
     ]
@@ -213,7 +197,7 @@ data:
     c.JupyterHub.load_roles = roles
 
     # Set up WIPP UI urls for integration with WIPP
-    c.ModularSpawner.environment = {
+    c.KubeSpawner`.environment = {
         'WIPP_UI_URL': 'WIPP_UI_VALUE',
         'WIPP_API_INTERNAL_URL': 'WIPP_API_INTERNAL_VALUE',
         'WIPP_NOTEBOOKS_PATH': 'WIPP_NOTEBOOKS_PATH_VALUE',

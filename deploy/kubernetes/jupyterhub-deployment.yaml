@@ -16,40 +16,6 @@ spec:
       annotations:
         configHash: CONFIG_HASH_VALUE
     spec:
-      initContainers:
-      # This container clones the git repo with stacks
-      - name: git-clone
-        image: alpine/git
-        args:
-          - clone
-          - --branch
-          - STACKS_BRANCH_VALUE
-          - --single-branch
-          - --
-          - STACKS_REPO_VALUE
-          - /stacks
-        securityContext:
-          runAsUser: 1
-          allowPrivilegeEscalation: false
-          readOnlyRootFilesystem: true
-        volumeMounts:
-          - name: stacks
-            mountPath: /stacks
-      - name: set-version
-        image: busybox
-        command:
-          - sed 
-          - -i.bak 
-          - -e
-          - "s/NOTEBOOK_VERSION_VALUE/NOTEBOOK_VERSION_VALUE_VALUE/g"
-          - /stacks/deploy/docker/notebook/stacks/base.yaml
-        securityContext:
-          runAsUser: 1
-          allowPrivilegeEscalation: false
-          readOnlyRootFilesystem: true
-        volumeMounts:
-          - name: stacks
-            mountPath: /stacks
       serviceAccountName: jupyterhub-sa
       containers:
         - name: jupyterhub

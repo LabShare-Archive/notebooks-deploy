@@ -1,10 +1,7 @@
 SHARED_STORAGE=<pvc storage size>
 STORAGE_PER_USER=<pvc storage size>
 STORAGE_CLASS=<storage class>
-BASE_STACK=base.yaml
-STACKS="[['Python-datascience.yaml', 'Python-dataviz.yaml'],['R.yaml'],['octave.yaml'],['java.yaml', 'scala.yaml'],['julia.yaml'],['cpp.yaml'],['bash.yaml'],['tensorflow.yaml', 'pytorch.yaml', 'fastai.yaml'],['latex.yaml']]"
-STACKS_NAMES="['Python Data Science', 'R', 'Octave', 'Java+Scala', 'Julia', 'C++', 'Bash', 'Deep Learning', 'LaTeX']"
-NOTEBOOKS_DEPLOY_TAG=notebook-<x.x.x>
+NOTEBOOKS_DEPLOY_TAG=x.x.x
 WIPP_STORAGE_PVC=<shared pvc name>
 WIPP_UI=<WIPP UI url>
 WIPP_API_INTERNAL=<WIPP API service name>

@@ -68,7 +68,7 @@ pipeline {
                 }
             }
         }
-        stage('Assemble Jupyter Notebook base Docker image') {
+        stage('Assemble Jupyter Notebook Dockerfiles') {
             when {
                 environment name: 'SKIP_BUILD', value: 'false'
                 environment name: 'BUILD_NOTEBOOK', value: '0'
@@ -84,16 +84,33 @@ pipeline {
             }
             steps {
                 script {
-                    dir('deploy/docker/notebook/base') {
+                    dir('deploy/docker/notebook') {
                         withEnv(["HOME=${env.WORKSPACE}"]) {
                             sh 'mkdir -p manifests'
-                            sh 'railyard assemble -t Dockerfile.template -b base.yaml -p manifests'
+
+                            stacks = [
+                                'octave.yaml',
+                                'java.yaml', 
+                                'scala.yaml',
+                                'julia.yaml'
+                                'cpp.yaml',
+                                'bash.yaml',
+                                'tensorflow.yaml',
+                                'pytorch.yaml',
+                                'fastai.yaml',
+                                'latex.yaml'
+                            ]
+
+                            // CPU-based image
+                            sh "railyard assemble -t Dockerfile.template -b base.yaml " + stacks.collect{"-a " + it}.join(" ") + " -p manifests"
+                            // GPU-based image
+                            // sh "railyard assemble -t Dockerfile.template -b base-gpu.yaml " + stacks.collect{"-a " + it}.join(" ") + " -p manifests"
                         }
                     }
                 }
             }
         }
-        stage('Build Jupyter Notebook base Docker image') {
+        stage('Build Jupyter Notebook Docker images') {
             when {
                 environment name: 'SKIP_BUILD', value: 'false'
                 environment name: 'BUILD_NOTEBOOK', value: '0'
@@ -101,15 +118,15 @@ pipeline {
             steps {
                 script {
                     sh """echo '{"experimental": "enabled"}' > ~/config.json"""
-                    dir('deploy/docker/notebook/base/manifests') {
+                    dir('deploy/docker/notebook/manifests') {
                         def files = findFiles(glob: '**/Dockerfile')
                         files.each {
                             def hash = it.path.minus(it.name).minus('/')
-                            def tag = 'base-' + NOTEBOOK_VERSION
+                            def tag = NOTEBOOK_VERSION
 
                             dir("""${hash}""") {
                                 docker.withRegistry('https://registry-1.docker.io/v2/', 'f16c74f9-0a60-4882-b6fd-bec3b0136b84') {
-                                    println """Building container image: ${tag}..."""
+                                    println """Building container image: labshare/polyglot-notebook:${tag}..."""
                                     def image = docker.build("""labshare/polyglot-notebook:${tag}""", '--no-cache ./')
                                     println """Pushing container image: ${tag}..."""
                                     image.push()
@@ -117,115 +134,6 @@ pipeline {
                             }
                             println """Clean Docker cache to save disk"""
                             sh """docker system prune -a -f"""
-                        }
-                    }
-                }
-            }
-        }
-        stage('Assemble Jupyter Notebook Docker files') {
-            when {
-                environment name: 'SKIP_BUILD', value: 'false'
-            }
-            agent {
-                docker {
-                    image 'labshare/polus-railyard:0.3.2'
-                    registryUrl 'https://registry-1.docker.io/v2/'
-                    registryCredentialsId 'f16c74f9-0a60-4882-b6fd-bec3b0136b84'
-                    args '--network=host'
-                    reuseNode true
-                }
-            }
-            steps {
-                script {
-                    dir('deploy/docker/notebook/stacks') {
-                        withEnv(["HOME=${env.WORKSPACE}"]) {
-                            // Insert notebook version
-                            sh 'sed -i.bak -e "s/NOTEBOOK_VERSION_VALUE/' + NOTEBOOK_VERSION + '/g" base.yaml'
-                            
-                            sh 'mkdir -p manifests'
-
-                            stacks = [
-                                ['Python-datascience.yaml', 'Python-dataviz.yaml'],
-                                ['R.yaml'],
-                                ['octave.yaml'],
-                                ['java.yaml', 'scala.yaml'],
-                                ['julia.yaml'],
-                                ['cpp.yaml'],
-                                ['bash.yaml'],
-                                ['tensorflow.yaml', 'pytorch.yaml', 'fastai.yaml'],
-                                ['latex.yaml']
-                            ]
-
-                            // CPU-based images
-                            // Image without additional stacks
-                            sh 'railyard assemble -t Dockerfile.template -b base.yaml -p manifests'
-
-                            // Images with a single additional stack
-                            stacks.each {
-                                sh "railyard assemble -t Dockerfile.template -b base.yaml " + it.collect{"-a " + it}.join(" ") + " -p manifests"
-                            }
-
-                            // Images with combinations of 2 additional stacks
-                            combinations = [stacks, stacks].combinations()
-                            foundall = combinations.findAll{item -> item[0].join(" ") < item[1].join(" ")}
-                            collected = foundall.collect{it.flatten()}
-                            collected.each {
-                                println it
-                                sh "railyard assemble -t Dockerfile.template -b base.yaml " + it.collect{"-a " + it}.join(" ") + " -p manifests"
-                            }
-
-                            // Image with all stacks included
-                            sh "railyard assemble -t Dockerfile.template -b base.yaml " + stacks.flatten().collect{"-a " + it}.join(" ") + " -p manifests"
-
-                            // // GPU-based images
-                            // // Image without additional stacks
-                            // sh 'railyard assemble -t Dockerfile.template -b base_gpu.yaml -p manifests'
-
-                            // // Images with a single additional stack
-                            // stacks.each {
-                            //     sh "railyard assemble -t Dockerfile.template -b base_gpu.yaml " + it.collect{"-a " + it}.join(" ") + " -p manifests"
-                            // }
-
-                            // // Images with combinations of 2 additional stacks
-                            // [stacks, stacks].combinations().findAll{item -> item[0].join(" ") < item[1].join(" ")}.collect{it.flatten()}.each {
-                            //     sh "railyard assemble -t Dockerfile.template -b base_gpu.yaml " + it.collect{"-a " + it}.join(" ") + " -p manifests"
-                            // }
-                        }
-                    }
-                }
-            }
-        }
-        stage('Build Jupyter Notebook Docker') {
-            when {
-                environment name: 'SKIP_BUILD', value: 'false'
-            }
-            steps {
-                script {
-                    sh """echo '{"experimental": "enabled"}' > ~/config.json"""
-                    dir('deploy/docker/notebook/stacks/manifests') {
-                        def files = findFiles(glob: '**/Dockerfile')
-                        files.each {
-                            def tag = it.path.minus(it.name).minus('/')
-                            TAG_EXISTS = sh (
-                                script: """docker --config ~/ manifest inspect labshare/polyglot-notebook:${tag} > /dev/null""",
-                                returnStatus: true
-                            ) == 0
-
-                            if (TAG_EXISTS) {
-                                println """Container image ${tag} already exists in registry. Skipping building and pushing"""
-                            }
-                            else {
-                                dir("""${tag}""") {
-                                    docker.withRegistry('https://registry-1.docker.io/v2/', 'f16c74f9-0a60-4882-b6fd-bec3b0136b84') {
-                                        println """Building container image: ${tag}..."""
-                                        def image = docker.build("""labshare/polyglot-notebook:${tag}""", '--no-cache ./')
-                                        println """Pushing container image: ${tag}..."""
-                                        image.push()
-                                    }
-                                }
-                                println """Clean Docker cache to save disk"""
-                                sh """docker system prune -a -f"""
-                            }
                         }
                     }
                 }

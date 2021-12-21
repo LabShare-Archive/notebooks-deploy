@@ -1,2 +1,0 @@
-name: base
-base: "labshare/polyglot-notebook:base-gpu-NOTEBOOK_VERSION_VALUE"
