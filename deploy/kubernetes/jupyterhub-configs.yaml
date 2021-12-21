@@ -197,7 +197,7 @@ data:
     c.JupyterHub.load_roles = roles
 
     # Set up WIPP UI urls for integration with WIPP
-    c.KubeSpawner`.environment = {
+    c.KubeSpawner.environment = {
         'WIPP_UI_URL': 'WIPP_UI_VALUE',
         'WIPP_API_INTERNAL_URL': 'WIPP_API_INTERNAL_VALUE',
         'WIPP_NOTEBOOKS_PATH': 'WIPP_NOTEBOOKS_PATH_VALUE',
