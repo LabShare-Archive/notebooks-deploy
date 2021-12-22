@@ -205,6 +205,7 @@ data:
         'POLUS_NOTEBOOKS_HUB_API': 'POLUS_NOTEBOOKS_HUB_API_VALUE',
         'POLUS_NOTEBOOKS_HUB_FILE_LOGGING_ENABLED': 'POLUS_NOTEBOOKS_HUB_FILE_LOGGING_ENABLED_VALUE', #True/False
         'USER_OPTIONS': lambda spawner: str(spawner.user_options)
+        'CONDA_ENVS_PATH': '/opt/modules/conda-envs/'
     }
 
     c.JupyterHub.services = [
