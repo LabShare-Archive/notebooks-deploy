@@ -8,7 +8,7 @@ env:
   - XDG_CACHE_HOME: /home/$NB_USER/.cache/
   - LMOD_VERSION: 8.5.19
   - MODULESHOME: /opt/apps/lmod/lmod
-  - MODULEPATH: /opt/apps/modulefiles/Linux:/opt/apps/modulefiles/Core:/opt/apps/lmod/lmod/modulefiles/Core
+  - MODULEPATH: /opt/modules/modulefiles
   - MODULEPATH_ROOT: /opt/apps/modulefiles
   - MANPATH: "/opt/apps/lmod/lmod/share/man:"
   - LMOD_DIR: /opt/apps/lmod/lmod/libexec
@@ -94,7 +94,8 @@ conda:
   - python-kubernetes: 20.13.0
   - yarn
   - typing-extensions: 4.0.1
-  - jupyterhub: 2.0.0
+  - jupyterhub: 2.0.1
+  - voila: 0.3.0
   - panel: 0.12*
 pip:
   - facets-overview: 1.0.0
@@ -106,7 +107,6 @@ pip:
   - jupyterlab-rtc-hub-settings: 0.1.1
   - beakerx-tabledisplay: 2.3.0
   - jupyterlmod: 2.0.3
-  - voila: 0.3.0
 scripts:
   - beakerx-tabledisplay: |
       beakerx_tabledisplay install
