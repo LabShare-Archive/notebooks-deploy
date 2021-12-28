@@ -102,6 +102,14 @@ data:
         }
     ]
 
+    c.KubeSpawner.lifecycle_hooks = {
+        "postStart": {
+            "exec": {
+                "command": ["module", "load", "python-data-science"]
+            }
+        }
+    }
+
     c.JupyterHub.allow_named_servers=True
     c.JupyterHub.ip='0.0.0.0'
     c.JupyterHub.hub_ip='0.0.0.0'
