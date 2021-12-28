@@ -92,7 +92,6 @@ pipeline {
                                 'java.yaml', 
                                 'scala.yaml',
                                 'julia.yaml',
-                                'cpp.yaml',
                                 'bash.yaml',
                                 'latex.yaml'
                             ]
