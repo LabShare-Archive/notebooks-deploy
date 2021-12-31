@@ -91,7 +91,6 @@ pipeline {
                                 'octave.yaml',
                                 'java.yaml', 
                                 'scala.yaml',
-                                'julia.yaml',
                                 'bash.yaml',
                                 'latex.yaml'
                             ]
