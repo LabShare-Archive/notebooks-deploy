@@ -116,6 +116,7 @@ USER $NB_UID
 
 # Activate Lmod
 RUN echo "source /etc/profile.d/z00_lmod.sh" >> .bashrc
+RUN echo "source /etc/profile.d/z01_StdEnv.sh" >> .bashrc
 
 # Configure container startup
 EXPOSE 8888
