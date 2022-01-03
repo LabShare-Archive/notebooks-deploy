@@ -16,7 +16,7 @@ pipeline {
             returnStatus: true
         )}"""
         BUILD_NOTEBOOK = """${sh (
-            script: "git diff --name-only ${GIT_PREVIOUS_SUCCESSFUL_COMMIT} ${GIT_COMMIT} | grep 'jupyterhub/VERSION'",
+            script: "git diff --name-only ${GIT_PREVIOUS_SUCCESSFUL_COMMIT} ${GIT_COMMIT} | grep 'notebook/VERSION'",
             returnStatus: true
         )}"""
         BUILD_DOCS = """${sh (
