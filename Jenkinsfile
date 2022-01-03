@@ -163,18 +163,18 @@ pipeline {
                 }
             }
         }
-        stage('Deploy JupyterHub to NCATS') {
-            agent {
-                node { label 'ls-api-ci.ncats' }
-            }
-            steps {
-                configFileProvider([configFile(fileId: 'env-single-node', targetLocation: '.env')]) {
-                    withKubeConfig([credentialsId: 'ncats_polus2']) {
-                        sh "bash ./deploy.sh"
-                    }
-                }
-            }
-        }
+        // stage('Deploy JupyterHub to NCATS') {
+        //     agent {
+        //         node { label 'ls-api-ci.ncats' }
+        //     }
+        //     steps {
+        //         configFileProvider([configFile(fileId: 'env-single-node', targetLocation: '.env')]) {
+        //             withKubeConfig([credentialsId: 'ncats_polus2']) {
+        //                 sh "bash ./deploy.sh"
+        //             }
+        //         }
+        //     }
+        // }
     }
     post {
         always {
