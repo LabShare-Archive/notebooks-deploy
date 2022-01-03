@@ -102,14 +102,6 @@ data:
         }
     ]
 
-    c.KubeSpawner.lifecycle_hooks = {
-        "postStart": {
-            "exec": {
-                "command": ["/bin/bash", "-c", "source /etc/profile.d/z00_lmod.sh; module reset"]
-            }
-        }
-    }
-
     c.JupyterHub.allow_named_servers=True
     c.JupyterHub.ip='0.0.0.0'
     c.JupyterHub.hub_ip='0.0.0.0'

@@ -540,3 +540,14 @@ addfiles:
           #### Set contents manager class ####   
           if os.getenv("POLUS_NOTEBOOKS_HUB_FILE_LOGGING_ENABLED") == "True":
               c.NotebookApp.contents_manager_class = HookFileContentsManager
+  - z01_StdEnv.sh: 
+      destination: /etc/profile.d
+      permissions: 775
+      source: |
+          if [ -z "$__Init_Default_Modules" ]; then
+             export __Init_Default_Modules=1;
+             
+             module --initial_load restore
+          else
+             module refresh
+          fi
