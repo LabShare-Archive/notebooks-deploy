@@ -106,13 +106,13 @@ pip:
   - jupyterlab-quickopen: 1.1.0
   - jupyterlab-rtc-hub-settings: 0.1.1
   - beakerx-tabledisplay: 2.3.0
-  - jupyterlmod: 2.0.3
 scripts:
   - beakerx-tabledisplay: |
       beakerx_tabledisplay install
   - jupyterlab-wipp-plugin-creator: |
       jupyter server extension enable jupyterlab_wipp_plugin_creator
   - jupyterlab-lmod: |
+      pip install git+https://github.com/ktaletsk/jupyter-lmod.git
       jupyter labextension install jupyterlab-lmod
 addfiles:
   - fix-permissions:
