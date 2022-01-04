@@ -112,7 +112,7 @@ scripts:
   - jupyterlab-wipp-plugin-creator: |
       jupyter server extension enable jupyterlab_wipp_plugin_creator
   - jupyterlab-lmod: |
-      pip install git+https://github.com/ktaletsk/jupyter-lmod.git
+      pip install git+https://github.com/ktaletsk/jupyter-lmod.git && \
       jupyter labextension install jupyterlab-lmod
 addfiles:
   - fix-permissions:
