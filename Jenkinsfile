@@ -88,10 +88,8 @@ pipeline {
                             sh 'mkdir -p manifests'
 
                             stacks = [
-                                'octave.yaml',
                                 'java.yaml', 
                                 'scala.yaml',
-                                'bash.yaml',
                                 'latex.yaml'
                             ]
 
