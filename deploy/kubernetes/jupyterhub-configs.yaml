@@ -204,9 +204,10 @@ data:
         'PLUGIN_TEMP_PATH': 'WIPP_PLUGIN_TEMP_PATH_VALUE',
         'POLUS_NOTEBOOKS_HUB_API': 'POLUS_NOTEBOOKS_HUB_API_VALUE',
         'POLUS_NOTEBOOKS_HUB_FILE_LOGGING_ENABLED': 'POLUS_NOTEBOOKS_HUB_FILE_LOGGING_ENABLED_VALUE', #True/False
-        'USER_OPTIONS': lambda spawner: str(spawner.user_options),
         'CONDA_ENVS_PATH': '/opt/modules/conda-envs/',
-        'LMOD_SYSTEM_DEFAULT_MODULES': 'StdEnv'
+        'LMOD_SYSTEM_DEFAULT_MODULES': lambda spawner: str(spawner.user_options['modules']),
+        'MODULEPATH': '/opt/modules/modules'
+        'USER_OPTIONS': lambda spawner: str(spawner.user_options),
     }
 
     c.JupyterHub.services = [
