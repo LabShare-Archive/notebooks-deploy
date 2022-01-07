@@ -206,7 +206,7 @@ data:
         'POLUS_NOTEBOOKS_HUB_FILE_LOGGING_ENABLED': 'POLUS_NOTEBOOKS_HUB_FILE_LOGGING_ENABLED_VALUE', #True/False
         'CONDA_ENVS_PATH': '/opt/modules/conda-envs/',
         'LMOD_SYSTEM_DEFAULT_MODULES': lambda spawner: str(spawner.user_options['modules']),
-        'MODULEPATH': '/opt/modules/modules',
+        'MODULEPATH': '/opt/modules/modulefiles',
         'USER_OPTIONS': lambda spawner: str(spawner.user_options),
     }
 
