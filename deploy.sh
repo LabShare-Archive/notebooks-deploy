@@ -41,6 +41,16 @@ sed -i.bak \
 rm deploy/kubernetes/jupyterhub-deployment.yaml.bak
 
 sed -i.bak \
+    -e "s/NOTEBOOKS_DEPLOY_TAG_VALUE/${NOTEBOOKS_DEPLOY_TAG}/g" \
+    deploy/docker/env-installer/Dockerfile
+rm deploy/docker/env-installer/Dockerfile.bak
+
+sed -i.bak \
+    -e "s|JUPYTERHUB_URL_VALUE|${JUPYTERHUB_URL}|g" \
+    deploy/kubernetes/jupyterhub-ingress.yaml
+rm deploy/kubernetes/jupyterhub-ingress.yaml.bak
+
+sed -i.bak \
     -e "s|JUPYTERHUB_URL_VALUE|${JUPYTERHUB_URL}|g" \
     deploy/kubernetes/jupyterhub-ingress.yaml
 rm deploy/kubernetes/jupyterhub-ingress.yaml.bak
@@ -53,3 +63,4 @@ kubectl apply --kubeconfig=${KUBECONFIG} -f deploy/kubernetes/jupyterhub-configs
 kubectl apply --kubeconfig=${KUBECONFIG} -f deploy/kubernetes/jupyterhub-services.yaml
 kubectl apply --kubeconfig=${KUBECONFIG} -f deploy/kubernetes/jupyterhub-deployment.yaml
 kubectl apply --kubeconfig=${KUBECONFIG} -f deploy/kubernetes/jupyterhub-ingress.yaml
+kubectl apply --kubeconfig=${KUBECONFIG} -f deploy/kubernetes/env-installer.yaml

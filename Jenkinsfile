@@ -129,6 +129,26 @@ pipeline {
                 }
             }
         }
+        stage('Build Environment Installer Docker images') {
+            when {
+                environment name: 'SKIP_BUILD', value: 'false'
+                environment name: 'BUILD_NOTEBOOK', value: '0'
+            }
+            steps {
+                script {
+                    sh """echo '{"experimental": "enabled"}' > ~/config.json"""
+                    dir('deploy/docker/env-installer') {
+                        docker.withRegistry('https://registry-1.docker.io/v2/', 'f16c74f9-0a60-4882-b6fd-bec3b0136b84') {
+                            def tag = NOTEBOOK_VERSION
+                            println """Building container image: labshare/polyglot-notebook:env-installer-${tag}..."""
+                            def image = docker.build("""labshare/polyglot-notebook:env-installer-${tag}""", '--no-cache ./')
+                            println """Pushing container image: labshare/polyglot-notebook:env-installer-${tag}..."""
+                            image.push()
+                        }
+                    }
+                }
+            }
+        }
         stage('Build Notebooks documentation') {
             when {
                 environment name: 'SKIP_BUILD', value: 'false'
