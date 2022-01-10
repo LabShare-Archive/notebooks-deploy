@@ -88,8 +88,6 @@ pipeline {
                             sh 'mkdir -p manifests'
 
                             stacks = [
-                                'java.yaml', 
-                                'scala.yaml',
                                 'latex.yaml'
                             ]
 
