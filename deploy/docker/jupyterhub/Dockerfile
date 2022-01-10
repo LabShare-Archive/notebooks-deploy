@@ -7,9 +7,6 @@ COPY VERSION /
 # Copy cull-idle script
 COPY cull-idle-servers.py /srv/jupyterhub/config/cull-idle-servers.py
 
-# Copy ModularSpawner
-COPY modularspawner /modularspawner
-
 RUN conda install --yes -c conda-forge \
       git \
       sqlalchemy \
