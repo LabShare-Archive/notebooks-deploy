@@ -21,15 +21,12 @@ RUN conda install --yes -c conda-forge \
       nodejs=12 \
       configurable-http-proxy \
       escapism=1.0.1 \
-      jupyterhub=2.0.0 \
+      jupyterhub=2.0.2 \
       python-kubernetes=20.13.0 \
       jupyterhub-kubespawner=2.0.0 && \
     pip install \
       psycopg2-binary==2.9.1 \
-      oauthenticator==14.2.0 \
-      /modularspawner && \
-    npm install -g polus-railyard && \
-    rm -rf ~/.cache ~/.npm /modularspawner
+      oauthenticator==14.2.0
 
 RUN mkdir -p /srv/jupyterhub/
 COPY config-wrapper.py /srv/jupyterhub/config-wrapper.py
