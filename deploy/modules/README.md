@@ -66,3 +66,50 @@ export OCTAVE_ENV_VERSION=<x.y.z>
 mkdir -p $EXT_MOD_PATH/conda-envs/octave-$OCTAVE_ENV_VERSION
 mamba env create --prefix $EXT_MOD_PATH/conda-envs/octave-$OCTAVE_ENV_VERSION --file octave-env-$OCTAVE_ENV_VERSION.yaml
 ```
+f. Java 8
+```
+mkdir -p $EXT_MOD_PATH/java-8
+wget https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u312-b07/OpenJDK8U-jdk_x64_linux_hotspot_8u312b07.tar.gz
+tar xvf OpenJDK8U-jdk_x64_linux_hotspot_8u312b07.tar.gz -C $EXT_MOD_PATH/java-8/
+```
+g. Java 11
+```
+mkdir -p $EXT_MOD_PATH/java-11
+wget https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.13%2B8/OpenJDK11U-jdk_x64_linux_hotspot_11.0.13_8.tar.gz
+tar xvf OpenJDK11U-jdk_x64_linux_hotspot_11.0.13_8.tar.gz -C $EXT_MOD_PATH/java-11/
+```
+h. Java 17
+```
+mkdir -p $EXT_MOD_PATH/java-17
+wget https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.1%2B12/OpenJDK17U-jdk_x64_linux_hotspot_17.0.1_12.tar.gz
+tar xvf OpenJDK17U-jdk_x64_linux_hotspot_17.0.1_12.tar.gz -C $EXT_MOD_PATH/java-17/
+```
+i. IJava kernel
+Install into each of the supported JDK installations (JDK>=9)
+```
+curl -L https://github.com/SpencerPark/IJava/releases/download/v1.3.0/ijava-1.3.0.zip > ijava-kernel.zip
+unzip ijava-kernel.zip -d ijava-kernel 
+cd ijava-kernel
+python install.py --prefix=/opt/modules/java-11/
+curl -L https://www.pngall.com/wp-content/uploads/2016/05/Java-PNG-Image.png > /opt/modules/java-11/share/jupyter/kernels/java/logo-64x64.png
+```
+k. Maven
+```
+mkdir -p $EXT_MOD_PATH/maven-3.6.3
+wget https://archive.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
+tar xvf apache-maven-3.6.3-bin.tar.gz -C $EXT_MOD_PATH/opt/modules/maven-3.6.3
+```
+
+l. Javascript
+Docs: http://n-riesco.github.io/ijavascript/
+```
+export JS_ENV_VERSION=<x.y.z>
+mkdir -p $EXT_MOD_PATH/conda-envs/js-$JS_ENV_VERSION
+mamba env create --prefix $EXT_MOD_PATH/conda-envs/js-$JS_ENV_VERSION --file js-env-$JS_ENV_VERSION.yaml
+/opt/modules/conda-envs/js-$JS_ENV_VERSION/bin/npm install -g ijavascript
+/opt/modules/conda-envs/js-$JS_ENV_VERSION/bin/ijsinstall --spec-path=full
+mkdir -p /opt/modules/conda-envs/js-$JS_ENV_VERSION/share/jupyter/kernels/javascript
+mv /home/jovyan/.local/share/jupyter/kernels/javascript /opt/modules/conda-envs/js-$JS_ENV_VERSION/share/jupyter/kernels/javascript
+```
+
+Modify kernel.js to swap `` with `/opt/modules/conda-envs/js-0.1.0/bin/ijskernel`
