@@ -18,7 +18,7 @@ RUN conda install --yes -c conda-forge \
       nodejs=12 \
       configurable-http-proxy \
       escapism=1.0.1 \
-      jupyterhub=2.0.2 \
+      jupyterhub=2.0.0 \
       python-kubernetes=20.13.0 \
       jupyterhub-kubespawner=2.0.0 && \
     pip install \
