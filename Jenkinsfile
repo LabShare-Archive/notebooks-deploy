@@ -87,12 +87,8 @@ pipeline {
                         withEnv(["HOME=${env.WORKSPACE}"]) {
                             sh 'mkdir -p manifests'
 
-                            stacks = [
-                                'latex.yaml'
-                            ]
-
                             // CPU-based image
-                            sh "railyard assemble -t Dockerfile.template -b base.yaml " + stacks.collect{"-a " + it}.join(" ") + " -p manifests"
+                            sh "railyard assemble -t Dockerfile.template -b base.yaml -p manifests"
                             // GPU-based image
                             // sh "railyard assemble -t Dockerfile.template -b base-gpu.yaml " + stacks.collect{"-a " + it}.join(" ") + " -p manifests"
                         }
