@@ -1,8 +1,0 @@
-name: latex
-apt:
-  - texlive-xetex
-  - texlive-fonts-recommended
-conda:
-  - texlab
-  - chktex
-  - jupyterlab-latex: 3.1.0

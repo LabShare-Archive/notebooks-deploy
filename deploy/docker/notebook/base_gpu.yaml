@@ -8,7 +8,6 @@ env:
   - XDG_CACHE_HOME: /home/$NB_USER/.cache/
   - LMOD_VERSION: 8.5.19
   - MODULESHOME: /opt/apps/lmod/lmod
-  - MODULEPATH: /opt/apps/modulefiles/Linux:/opt/apps/modulefiles/Core:/opt/apps/lmod/lmod/modulefiles/Core
   - MODULEPATH_ROOT: /opt/apps/modulefiles
   - MANPATH: "/opt/apps/lmod/lmod/share/man:"
   - LMOD_DIR: /opt/apps/lmod/lmod/libexec
@@ -63,56 +62,62 @@ apt:
   - lua-filesystem
   - tcsh
   - less
+  - texlive-xetex
+  - texlive-fonts-recommended
 conda_channels:
   - bioconda
   - conda-forge
 conda:
   - tini: 0.18.0
   - notebook: 6.4.6
-  - jupyterlab: 3.2.5
+  - jupyterlab: 3.2.7
+  - papermill: 2.3.3
   - jupyter-archive: 3.2.1
   - numexpr: 2.8.0
-  - matplotlib-base: 3.4.3
-  - scipy: 1.7.1
+  - matplotlib-base: 3.5.1
+  - scipy: 1.7.3
   - feather-format: 0.4.1
   - nbformat: 5.1.3
   - jupyter_contrib_nbextensions: 0.5.1
-  - sos-notebook: 0.22.8
+  - sos-notebook: 0.22.9
   - jupyterlab-sos: 0.8.1
   - sos-papermill: 0.2.1
   - sos-python: 0.18.4
   - nbdime: 3.1.1
   - jupyterlab-wipp: 1.2.0
-  - jupyterlab-git: 0.34.0
+  - jupyterlab-git: 0.34.1
   - jupyterlab-topbar: 0.6.1
   - jupyterlab-python-file: 0.5.5
   - ipywidgets: 7.6.5
-  - jupyterlab-lsp: 3.9.2
+  - jupyterlab-lsp: 3.10.1
   - python-lsp-server: 1.3.3
   - jupyterlab-system-monitor: 0.8.0
   - jupyterlab-link-share: 0.2.4
   - python-kubernetes: 20.13.0
   - yarn
   - typing-extensions: 4.0.1
-  - jupyterhub: 2.0.0
+  - jupyterhub: 2.0.1
+  - voila: 0.3.0
   - panel: 0.12*
+  - texlab: 2.2.2
+  - chktex: 1.7.6
+  - jupyterlab-latex: 3.1.0
 pip:
   - facets-overview: 1.0.0
   - jupyterlab-wipp-plugin-creator: 0.2.5
   - bfio: 2.1.9
   - filepattern: 1.4.6
-  - jupyterlab-spreadsheet-editor: 0.6.0
-  - jupyterlab-quickopen: 1.1.0
+  - jupyterlab-spreadsheet-editor: 0.6.1
+  - jupyterlab-quickopen: 1.2.0
   - jupyterlab-rtc-hub-settings: 0.1.1
-  - beakerx-tabledisplay: 2.3.0
-  - jupyterlmod: 2.0.3
-  - voila: 0.3.0
+  - beakerx-tabledisplay: 2.3.11
 scripts:
   - beakerx-tabledisplay: |
       beakerx_tabledisplay install
   - jupyterlab-wipp-plugin-creator: |
       jupyter server extension enable jupyterlab_wipp_plugin_creator
   - jupyterlab-lmod: |
+      pip install git+https://github.com/ktaletsk/jupyter-lmod.git && \
       jupyter labextension install jupyterlab-lmod
 addfiles:
   - fix-permissions:
@@ -540,3 +545,14 @@ addfiles:
           #### Set contents manager class ####   
           if os.getenv("POLUS_NOTEBOOKS_HUB_FILE_LOGGING_ENABLED") == "True":
               c.NotebookApp.contents_manager_class = HookFileContentsManager
+  - z01_StdEnv.sh: 
+      destination: /etc/profile.d
+      permissions: 775
+      source: |
+          if [ -z "$__Init_Default_Modules" ]; then
+             export __Init_Default_Modules=1;
+             
+             module --initial_load restore
+          else
+             module refresh
+          fi
