@@ -89,7 +89,7 @@ conda:
   - jupyterlab-topbar: 0.6.1
   - jupyterlab-python-file: 0.5.5
   - ipywidgets: 7.6.5
-  - jupyterlab-lsp: 3.10.1
+  - jupyterlab-lsp: 3.10.0
   - python-lsp-server: 1.3.3
   - jupyterlab-system-monitor: 0.8.0
   - jupyterlab-link-share: 0.2.4
