@@ -1,4 +1,4 @@
-FROM labshare/polyglot-notebook:NOTEBOOK_VERSION_DEPLOY_VALUE
+FROM labshare/polyglot-notebook:NOTEBOOK_VERSION_LATEST_VALUE
 
 # Install easybuild
 ENV EASYBUILD_PREFIX=/opt/modules \
