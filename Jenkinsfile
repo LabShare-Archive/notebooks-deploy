@@ -24,7 +24,7 @@ pipeline {
             returnStatus: true
         )}"""
         HUB_VERSION = readFile(file: 'deploy/docker/jupyterhub/VERSION')
-        NOTEBOOK_VERSION = readFile(file: 'deploy/docker/notebook/VERSION')
+        NOTEBOOK_VERSION_LATEST = readFile(file: 'deploy/docker/notebook/VERSION')
         DOCS_VERSION = readFile(file: 'deploy/docker/docs/VERSION')
         WIPP_STORAGE_PVC = "wipp-pv-claim"
     }
@@ -112,7 +112,7 @@ pipeline {
                         def files = findFiles(glob: '**/Dockerfile')
                         files.each {
                             def hash = it.path.minus(it.name).minus('/')
-                            def tag = NOTEBOOK_VERSION
+                            def tag = NOTEBOOK_VERSION_LATEST
 
                             dir("""${hash}""") {
                                 docker.withRegistry('https://registry-1.docker.io/v2/', 'f16c74f9-0a60-4882-b6fd-bec3b0136b84') {
@@ -139,7 +139,7 @@ pipeline {
                     sh """echo '{"experimental": "enabled"}' > ~/config.json"""
                     dir('deploy/docker/env-installer') {
                         docker.withRegistry('https://registry-1.docker.io/v2/', 'f16c74f9-0a60-4882-b6fd-bec3b0136b84') {
-                            def tag = NOTEBOOK_VERSION
+                            def tag = NOTEBOOK_VERSION_LATEST
                             println """Building container image: labshare/polyglot-notebook:env-installer-${tag}..."""
                             def image = docker.build("""labshare/polyglot-notebook:env-installer-${tag}""", '--no-cache ./')
                             println """Pushing container image: labshare/polyglot-notebook:env-installer-${tag}..."""

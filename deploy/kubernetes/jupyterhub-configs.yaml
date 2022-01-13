@@ -78,14 +78,14 @@ data:
         }
     ]
 
-    c.KubeSpawner.image = 'labshare/polyglot-notebook:' + 'NOTEBOOKS_DEPLOY_TAG_VALUE'
+    c.KubeSpawner.image = 'labshare/polyglot-notebook:' + 'NOTEBOOK_VERSION_DEPLOY_VALUE'
 
     c.KubeSpawner.profile_list = [
         {
             'display_name': 'JupyterLab',
             'slug': 'jupyterlab',
             'kubespawner_override': {
-                'image': 'labshare/polyglot-notebook:' + 'NOTEBOOKS_DEPLOY_TAG_VALUE'
+                'image': 'labshare/polyglot-notebook:' + 'NOTEBOOK_VERSION_DEPLOY_VALUE'
             }
         }, {
             'display_name': 'Streamlit Dashboard Variable App',

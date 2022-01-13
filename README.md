@@ -34,4 +34,4 @@ Modular notebook images are built in two steps: base image for a given VERSION: 
 Both base and modular images are going to get built by CI when `deploy/docker/notebook/VERSION` is changed. VERSION is updated for any changes in either base or any of the stacks. Build will take a long time since there is a large number of stack combinations involved.
 
 ### Rolling out new version
-The notebook version deployed is controlled separately through release tag and config variable `NOTEBOOKS_DEPLOY_TAG`. To deploy new version, you need to tag the commit where VERSION was changed with tag `notebook-x.y.z`, then update config variable `NOTEBOOKS_DEPLOY_TAG=notebook-x.y.z` and rerun the CI pipeline. Stacks from that tagged commit will now be mounted to the JupyterHub container.
+The notebook version deployed is controlled separately through release tag and config variable `NOTEBOOK_VERSION_DEPLOY`. To deploy new version, you need to tag the commit where VERSION was changed with tag `notebook-x.y.z`, then update config variable `NOTEBOOK_VERSION_DEPLOY=notebook-x.y.z` and rerun the CI pipeline. Stacks from that tagged commit will now be mounted to the JupyterHub container.

@@ -16,7 +16,7 @@ sed -i.bak \
 rm deploy/kubernetes/storage.yaml.bak
 
 sed -i.bak \
-    -e "s/NOTEBOOKS_DEPLOY_TAG_VALUE/${NOTEBOOKS_DEPLOY_TAG}/g" \
+    -e "s/NOTEBOOK_VERSION_DEPLOY_VALUE/${NOTEBOOK_VERSION_DEPLOY}/g" \
     -e "s/STORAGE_CLASS_VALUE/${STORAGE_CLASS}/g" \
     -e "s/STORAGE_PER_USER_VALUE/${STORAGE_PER_USER}/g" \
     -e "s/WIPP_STORAGE_PVC_VALUE/${WIPP_STORAGE_PVC}/g" \
@@ -34,12 +34,11 @@ CONFIG_HASH=$(shasum deploy/kubernetes/jupyterhub-configs.yaml | cut -d ' ' -f 1
 sed -i.bak \
     -e "s/HUB_VERSION_VALUE/${HUB_VERSION}/g" \
     -e "s/CONFIG_HASH_VALUE/${CONFIG_HASH}/g" \
-    -e "s/NOTEBOOK_VERSION_VALUE_VALUE/${NOTEBOOK_VERSION}/g" \
     deploy/kubernetes/jupyterhub-deployment.yaml
 rm deploy/kubernetes/jupyterhub-deployment.yaml.bak
 
 sed -i.bak \
-    -e "s/NOTEBOOKS_DEPLOY_TAG_VALUE/${NOTEBOOKS_DEPLOY_TAG}/g" \
+    -e "s/NOTEBOOK_VERSION_DEPLOY_VALUE/${NOTEBOOK_VERSION_DEPLOY}/g" \
     deploy/docker/env-installer/Dockerfile
 rm deploy/docker/env-installer/Dockerfile.bak
 
