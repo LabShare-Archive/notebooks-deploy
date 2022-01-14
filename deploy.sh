@@ -47,6 +47,11 @@ sed -i.bak \
     deploy/kubernetes/jupyterhub-ingress.yaml
 rm deploy/kubernetes/jupyterhub-ingress.yaml.bak
 
+sed -i.bak \
+    -e "s/NOTEBOOK_VERSION_DEPLOY_VALUE/${NOTEBOOK_VERSION_DEPLOY}/g" \
+    deploy/kubernetes/env-installer.yaml
+rm deploy/kubernetes/env-installer.yaml.bak
+
 
 kubectl apply --kubeconfig=${KUBECONFIG} -f deploy/kubernetes/postgres.yaml
 kubectl apply --kubeconfig=${KUBECONFIG} -f deploy/kubernetes/jupyterhub-predefined.yaml
