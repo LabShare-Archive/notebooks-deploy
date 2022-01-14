@@ -38,11 +38,6 @@ sed -i.bak \
 rm deploy/kubernetes/jupyterhub-deployment.yaml.bak
 
 sed -i.bak \
-    -e "s/NOTEBOOK_VERSION_LATEST_VALUE/${NOTEBOOK_VERSION_LATEST}/g" \
-    deploy/docker/env-installer/Dockerfile
-rm deploy/docker/env-installer/Dockerfile.bak
-
-sed -i.bak \
     -e "s|JUPYTERHUB_URL_VALUE|${JUPYTERHUB_URL}|g" \
     deploy/kubernetes/jupyterhub-ingress.yaml
 rm deploy/kubernetes/jupyterhub-ingress.yaml.bak
