@@ -1,0 +1,113 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "jupyterhub.hub.fullname" . }}
+  labels:
+    {{- include "jupyterhub.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "jupyterhub.matchLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- /* Changes here will cause the Deployment to restart the pods. */}}
+        {{- include "jupyterhub.matchLabels" . | nindent 8 }}
+      annotations:
+        {{- /* This lets us autorestart when the secret changes! */}}
+        checksum/config-map: {{ include (print .Template.BasePath "/hub/configmap.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print .Template.BasePath "/hub/secret.yaml") . | sha256sum }}
+    spec:
+      serviceAccountName: jupyterhub-sa
+      containers:
+        - name: jupyterhub
+          image: {{ .Values.hub.image.name }}:{{ .Values.hub.image.tag }}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+              # This name will be used in the Service.
+              name: jupyter-http
+            - containerPort: 8081
+              # This name will be used in the Service.
+              name: jupyter-in
+          env:
+            # - name: OAUTH_CLIENT_ID
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: jupyterhub-auth-config
+            #       key: client_id
+            # - name: OAUTH_CLIENT_SECRET
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: jupyterhub-auth-config
+            #       key: client_secret
+            # - name: TENANT
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: jupyterhub-auth-config
+            #       key: tenant
+            # - name: AUTH_URL
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: jupyterhub-auth-config
+            #       key: auth_url
+            # - name: OAUTH_CALLBACK_URL
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: jupyterhub-auth-config
+            #       key: oauth_callback_url
+            # - name: ADMIN_USERS
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: jupyterhub-auth-config
+            #       key: admin_users
+            - name: ADMIN_SERVICE_ACC
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "jupyterhub.hub.fullname" . }}-admin-token
+                  key: adminToken
+            # - name: POSTGRES_DB
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: jupyterhub-postgres-config
+            #       key: db
+            # - name: POSTGRES_USER
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: jupyterhub-postgres-config
+            #       key: user
+            # - name: POSTGRES_PASSWORD
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: jupyterhub-postgres-config
+            #       key: password
+            # - name: OAUTH2_AUTHORIZE_URL
+            #   value: "$(AUTH_URL)/auth/$(TENANT)/authorize"
+            # - name: OAUTH2_TOKEN_URL
+            #   value: "$(AUTH_URL)/auth/$(TENANT)/oidc/token"
+            # - name: OAUTH2_USERDATA_URL
+            #   value: "$(AUTH_URL)/auth/me"
+          volumeMounts:
+            - mountPath: /srv/jupyterhub/config/jupyterhub-config.py
+              subPath: jupyterhub-config.py
+              name: config
+            - mountPath: /srv/jupyterhub/config/z2jh.py
+              subPath: z2jh.py
+              name: config
+            - mountPath: /usr/local/etc/jupyterhub/config/
+              name: config
+            - mountPath: /usr/local/etc/jupyterhub/secret/
+              name: secret
+            - mountPath: /usr/local/etc/jupyterhub/admin-token-secret/
+              name: admin-token-secret
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "jupyterhub.hub.fullname" . }}
+        - name: secret
+          secret:
+            secretName: {{ include "jupyterhub.hub.fullname" . }}
+        - name: admin-token-secret
+          secret:
+            secretName: {{ include "jupyterhub.hub.fullname" . }}-admin-token

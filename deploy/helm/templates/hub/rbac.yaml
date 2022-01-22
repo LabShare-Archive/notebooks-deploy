@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: jupyterhub-sa
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: jupyterhub-role
+rules:
+  - apiGroups: [""]
+    resources: ["*"]
+    verbs: ["get", "list", "watch", "create", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: jupyterhub-rb
+subjects:
+  - kind: ServiceAccount
+    name: jupyterhub-sa
+roleRef:
+  kind: Role
+  name: jupyterhub-role
+  apiGroup: rbac.authorization.k8s.io

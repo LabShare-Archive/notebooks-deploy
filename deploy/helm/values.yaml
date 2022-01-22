@@ -1,0 +1,28 @@
+hub:
+  image:
+    name: labshare/jupyterhub
+    tag: "0.8.1.18"
+
+  notebookVersion: 0.9.0
+  storageClass: aws-efs
+  storagePerUser: 1Gi
+  sharedNotebookStoragePVC: notebooks-pv-claim
+  modulesStoragePVC: modules-pv-claim
+  
+  db:
+    type: postgres
+    user:
+    password:
+
+  wipp:
+    enabled: true
+    storagePVC: wipp-pv-claim
+    mountPath: /opt/shared/wipp
+    apiURL: http://wipp-backend:8080/api
+    UIValue: https://wipp-ui.ci.aws.labshare.org
+    tempNotebooksRelPath: temp/notebooks
+    tempPluginsRelPath: temp/plugins
+  
+  polusNotebooksHub:
+    enabled: true
+    apiURL: https://polus-notebooks-hub-backend.ci.aws.labshare.org
