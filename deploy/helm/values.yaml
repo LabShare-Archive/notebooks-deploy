@@ -4,10 +4,14 @@ hub:
     tag: "0.8.1.18"
 
   notebookVersion: 0.9.0
-  storageClass: aws-efs
-  storagePerUser: 1Gi
-  sharedNotebookStoragePVC: notebooks-pv-claim
-  modulesStoragePVC: modules-pv-claim
+
+  storage:
+    storageClass: aws-efs
+    storagePerUser: 1Gi
+    sharedNotebooksStorage: 5Gi
+    modulesStorage: 100Gi
+    sharedNotebooksClaimName: shared-notebooks-pv-claim
+    modulesClaimName: modules-pv-claim
   
   db:
     type: postgres
@@ -15,8 +19,8 @@ hub:
     password:
 
   wipp:
-    enabled: true
-    storagePVC: wipp-pv-claim
+    enabled: false
+    storageClaimName: wipp-pv-claim
     mountPath: /opt/shared/wipp
     apiURL: http://wipp-backend:8080/api
     UIValue: https://wipp-ui.ci.aws.labshare.org
@@ -24,5 +28,5 @@ hub:
     tempPluginsRelPath: temp/plugins
   
   polusNotebooksHub:
-    enabled: true
+    enabled: false
     apiURL: https://polus-notebooks-hub-backend.ci.aws.labshare.org

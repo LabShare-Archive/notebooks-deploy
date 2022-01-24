@@ -11,3 +11,17 @@ spec:
     targetPort: jupyter-in
   selector:
     {{- include "jupyterhub.matchLabels" . | nindent 4 }}
+---
+# External JupyterHub UI Service definition
+apiVersion: v1
+kind: Service
+metadata:
+  name: jupyterhub
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    name: http
+    targetPort: jupyter-http
+  selector:
+    {{- include "jupyterhub.matchLabels" . | nindent 4 }}

@@ -1,0 +1,29 @@
+#################################################################################################################
+# Create PVC for shared notebook storage
+#################################################################################################################
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "jupyterhub.hub-shared-notebooks-pvc.fullname" . }}
+spec:
+  storageClassName: {{ .Values.hub.storage.storageClass }}
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.hub.storage.sharedNotebooksStorage }}
+---
+#################################################################################################################
+# Create PVC for shared modules storage
+#################################################################################################################
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "jupyterhub.hub-modules-pvc.fullname" . }}
+spec:
+  storageClassName: {{ .Values.hub.storage.storageClass }}
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.hub.storage.modulesStorage }}

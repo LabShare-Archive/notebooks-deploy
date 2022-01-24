@@ -14,6 +14,8 @@ from z2jh import (
     get_secret_value
 )
 
+release_name = get_config("Release.Name")
+chart_name = get_config("Chart.Name")
 wipp_enabled = get_config("hub.wipp.enabled")
 polus_notebooks_hub_enabled = get_config("hub.polusNotebooks.enabled")
 
@@ -27,11 +29,12 @@ c.KubeSpawner.args = ['--collaborative']
 c.KubeSpawner.working_dir = '/home/jovyan'
 c.KubeSpawner.service_account='jupyteruser-sa'
 c.KubeSpawner.singleuser_image_pull_policy= 'Always'
+c.KubeSpawner.pod_name_template = f'{release_name}-{chart_name}-lab-{{username}}--{{servername}}'
 
 # Per-user storage configuration
 c.KubeSpawner.pvc_name_template = 'claim-{username}'
-c.KubeSpawner.storage_class = get_config("hub.storageClass")
-c.KubeSpawner.storage_capacity = get_config("hub.storagePerUser")
+c.KubeSpawner.storage_class = get_config("hub.storage.storageClass")
+c.KubeSpawner.storage_capacity = get_config("hub.storage.storagePerUser")
 c.KubeSpawner.storage_access_modes = ['ReadWriteOnce']
 c.KubeSpawner.storage_pvc_ensure = True
 
@@ -46,22 +49,23 @@ c.KubeSpawner.volumes = [
     {
         'name': 'shared-volume',
         'persistentVolumeClaim': {
-            'claimName': get_config("hub.sharedNotebookStoragePVC")
+            'claimName': f'{release_name}-{chart_name}-hub-{get_config("hub.storage.sharedNotebooksClaimName")}'
         }
     },
     {
         'name': 'modules-volume',
         'persistentVolumeClaim': {
-            'claimName': get_config("hub.modulesStoragePVC")
-        }
-    },
-    {
-        'name': 'wipp-volume',
-        'persistentVolumeClaim': {
-            'claimName': get_config("hub.wipp.storagePVC")
+            'claimName': f'{release_name}-{chart_name}-hub-{get_config("hub.storage.modulesClaimName")}'
         }
     }
 ]
+if wipp_enabled:
+    c.KubeSpawner.volumes.append({
+        'name': 'wipp-volume',
+        'persistentVolumeClaim': {
+            'claimName': get_config("hub.wipp.storageClaimName")
+        }
+    })
 
 # Where to mount volumes
 c.KubeSpawner.volume_mounts = [
@@ -77,12 +81,15 @@ c.KubeSpawner.volume_mounts = [
         'mountPath': '/opt/modules',
         'name': 'modules-volume',
         'readOnly': True
-    },
-    {
-        'mountPath': get_config("hub.wipp.mountPath"),
-        'name': 'wipp-volume'
     }
 ]
+if wipp_enabled:
+    c.KubeSpawner.volume_mounts.append(
+        {
+            'mountPath': get_config("hub.wipp.mountPath"),
+            'name': 'wipp-volume'
+        }
+    )
 
 c.KubeSpawner.image =  'labshare/polyglot-notebook:' + get_config("hub.notebookVersion")
 

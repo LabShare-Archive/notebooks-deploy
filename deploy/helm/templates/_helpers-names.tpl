@@ -93,9 +93,14 @@
     {{- include "jupyterhub.hub-existing-secret.fullname" . | default (include "jupyterhub.hub.fullname" .) }}
 {{- end }}
 
-{{- /* hub PVC */}}
-{{- define "jupyterhub.hub-pvc.fullname" -}}
-    {{- include "jupyterhub.hub.fullname" . }}-db-dir
+{{- /* Shared Notebooks PVC */}}
+{{- define "jupyterhub.hub-shared-notebooks-pvc.fullname" -}}
+    {{- include "jupyterhub.hub.fullname" . }}-{{ .Values.hub.storage.sharedNotebooksClaimName }}
+{{- end }}
+
+{{- /* Modules PVC */}}
+{{- define "jupyterhub.hub-modules-pvc.fullname" -}}
+    {{- include "jupyterhub.hub.fullname" . }}-{{ .Values.hub.storage.modulesClaimName }}
 {{- end }}
 
 {{- /* proxy Deployment */}}
@@ -233,7 +238,8 @@ fullname-dash: {{ include "jupyterhub.fullname.dash" . | quote }}
 hub: {{ include "jupyterhub.hub.fullname" . | quote }}
 hub-existing-secret: {{ include "jupyterhub.hub-existing-secret.fullname" . | quote }}
 hub-existing-secret-or-default: {{ include "jupyterhub.hub-existing-secret-or-default.fullname" . | quote }}
-hub-pvc: {{ include "jupyterhub.hub-pvc.fullname" . | quote }}
+hub-shared-notebooks-pvc: {{ include "jupyterhub.hub-shared-notebooks-pvc.fullname" . | quote }}
+hub-modules-pvc: {{ include "jupyterhub.hub-modules-pvc.fullname" . | quote }}
 proxy: {{ include "jupyterhub.proxy.fullname" . | quote }}
 proxy-api: {{ include "jupyterhub.proxy-api.fullname" . | quote }}
 proxy-http: {{ include "jupyterhub.proxy-http.fullname" . | quote }}
