@@ -2,6 +2,8 @@
 
 ## User documentation:
 
+[The JupyterLab Interface](./user/interface.rst)
+
 [Choosing modular notebook image](./user/modular-notebook.rst)
 
 [File management](./user/file-management.rst)
