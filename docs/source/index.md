@@ -4,6 +4,8 @@
 
 [The JupyterLab Interface](./user/interface.rst)
 
+[JupyterLab on JupyterHub](./user/jupyterhub.rst)
+
 [JupyterLab URLs](./user/urls.rst)
 
 [Working with Files](./user/files.rst)
@@ -14,6 +16,12 @@
 
 [Code Consoles](./user/code_console.rst)
 
+[Exporting Notebooks](./user/export.rst)
+
+[Managing Kernels and Terminals](./user/running.rst)
+
+[Real Time Collaboration](./user/rtc.rst)
+
 [Terminals](./user/terminal.rst)
 
 [Command Palette](./user/commands.rst)
@@ -23,6 +31,8 @@
 [File and Output Formats](./user/file_formats.rst)
 
 [Debugger](./user/debugger.rst)
+
+[Table Of Contents](./user/toc.rst)
 
 [Choosing modular notebook image](./user/modular-notebook.rst)
 
