@@ -22,7 +22,7 @@
 
 [File and Output Formats](./user/file_formats.rst)
 
-[Debugger](./user/debugger.rst.rst)
+[Debugger](./user/debugger.rst)
 
 [Choosing modular notebook image](./user/modular-notebook.rst)
 
