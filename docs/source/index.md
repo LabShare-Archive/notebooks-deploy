@@ -8,7 +8,7 @@
 
 [Working with Files](./user/files.rst)
 
-[Text Editor](./user/file_editor.rst.rst)
+[Text Editor](./user/file_editor.rst)
 
 [Notebooks](./user/notebook.rst)
 
