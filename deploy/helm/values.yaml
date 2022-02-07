@@ -17,6 +17,19 @@ hub:
     modulesStorage: 100Gi
     sharedNotebooksClaimName: shared-notebooks-pv-claim
     modulesClaimName: modules-pv-claim
+  
+  # JupyterHub external Service configuration
+  service:
+    # Kubernetes Service type (NodePort, ClusterIP, LoadBalancer, ExternalName)
+    type: LoadBalancer
+
+  # JupyterHub Ingress configuration for external access, uses Nginx Ingress by default
+  # TODO: Enable configuration for alternative Ingress solutions  
+  ingress:
+    # Using Ingress is optional and requires preconfiguration within the cluster
+    enabled: true
+    # Host name for external access
+    hostName: null
 
   wipp:
     enabled: false
