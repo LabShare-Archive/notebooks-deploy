@@ -1,3 +1,8 @@
+# Global configurations for PostgreSQL dependency
+global:
+  # Preconfigured Kubernetes Storage Class
+  storageClass: aws-efs
+
 hub:
   image:
     name: labshare/jupyterhub
@@ -12,11 +17,6 @@ hub:
     modulesStorage: 100Gi
     sharedNotebooksClaimName: shared-notebooks-pv-claim
     modulesClaimName: modules-pv-claim
-  
-  db:
-    type: postgres
-    user:
-    password:
 
   wipp:
     enabled: false
@@ -30,3 +30,12 @@ hub:
   polusNotebooksHub:
     enabled: false
     apiURL: https://polus-notebooks-hub-backend.ci.aws.labshare.org
+
+# Configurations for PostgreSQL dependency
+postgresql:
+  enabled: true
+  postgresqlDatabase: postgresd
+  postgresqlUsername: blablabla
+  postgresqlPassword: hahahaha
+  persistence:
+    size: 1Gi

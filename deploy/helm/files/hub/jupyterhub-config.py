@@ -125,13 +125,14 @@ c.JupyterHub.hub_ip='0.0.0.0'
 # Required for AWS
 c.JupyterHub.hub_connect_ip='jupyterhub-internal'
 
-# configure the hub db connection
-
-# Configure Postgres database
-# postgres_db = os.getenv('POSTGRES_DB')
-# postgres_user = os.getenv('POSTGRES_USER')
-# postgres_password = os.getenv('POSTGRES_PASSWORD')
-# c.JupyterHub.db_url = 'postgresql://' + postgres_user + ':' + postgres_password + '@' + 'jupyterhub-postgres-service' + '/' + postgres_db
+# configure the JupyterHub database
+if get_config("postgresql.enabled"):
+    postgres_db = get_config("postgresql.postgresqlDatabase")
+    postgres_user = get_config("postgresql.postgresqlUsername")
+    postgres_password = get_config("postgresql.postgresqlPassword")
+    c.JupyterHub.db_url = 'postgresql://' + postgres_user + ':' + postgres_password + '@' + release_name + '-postgresql-headless' + '/' + postgres_db
+else:
+    c.JupyterHub.db_url = "sqlite:///jupyterhub.sqlite"
 
 c.JupyterHub.cleanup_servers=False
 c.JupyterHub.cookie_secret_file = '/srv/jupyterhub/jupyterhub_cookie_secret'

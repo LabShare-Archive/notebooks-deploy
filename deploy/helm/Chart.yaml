@@ -3,4 +3,9 @@ name: polus-jupyterhub
 description: Polus JupyterHub
 type: application
 version: 0.1.0
+dependencies:
+  - name: postgresql
+    version: ~10.16.2
+    repository: https://charts.bitnami.com/bitnami
+    condition: postgresql.enabled
 appVersion: "0.8.1.18"
