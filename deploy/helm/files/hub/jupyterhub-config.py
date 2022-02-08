@@ -137,23 +137,26 @@ else:
 c.JupyterHub.cleanup_servers=False
 c.JupyterHub.cookie_secret_file = '/srv/jupyterhub/jupyterhub_cookie_secret'
 
+if get_config("hub.auth.enabled"):
+    # Default authenticator in production is OAuth with LabShare
+    c.JupyterHub.authenticator_class = GenericOAuthenticator
+    OAUTH_CLIENT_ID = os.getenv('OAUTH_CLIENT_ID')
+    OAUTH_CLIENT_SECRET = os.getenv('OAUTH_CLIENT_SECRET')
+    ADMIN_USERS = os.getenv('ADMIN_USERS')
+    ADMIN_SERVICE_ACC = os.getenv('ADMIN_SERVICE_ACC')
 
-c.JupyterHub.authenticator_class = DummyAuthenticator
-# c.JupyterHub.authenticator_class = GenericOAuthenticator
-# OAUTH_CLIENT_ID = os.getenv('OAUTH_CLIENT_ID')
-# OAUTH_CLIENT_SECRET = os.getenv('OAUTH_CLIENT_SECRET')
-# ADMIN_USERS = os.getenv('ADMIN_USERS')
-# ADMIN_SERVICE_ACC = os.getenv('ADMIN_SERVICE_ACC')
+    c.Authenticator.admin_users = set(ADMIN_USERS.split(';'))
 
-# c.Authenticator.admin_users = set(ADMIN_USERS.split(';'))
-
-# c.GenericOAuthenticator.client_id = OAUTH_CLIENT_ID
-# c.GenericOAuthenticator.client_secret = OAUTH_CLIENT_SECRET
-# c.GenericOAuthenticator.username_key = "email"
-# c.GenericOAuthenticator.userdata_method = "GET"
-# c.GenericOAuthenticator.extra_params = dict(client_id=OAUTH_CLIENT_ID, client_secret=OAUTH_CLIENT_SECRET)
-# c.GenericOAuthenticator.basic_auth = False
-# c.GenericOAuthenticator.auto_login = True
+    c.GenericOAuthenticator.client_id = OAUTH_CLIENT_ID
+    c.GenericOAuthenticator.client_secret = OAUTH_CLIENT_SECRET
+    c.GenericOAuthenticator.username_key = "email"
+    c.GenericOAuthenticator.userdata_method = "GET"
+    c.GenericOAuthenticator.extra_params = dict(client_id=OAUTH_CLIENT_ID, client_secret=OAUTH_CLIENT_SECRET)
+    c.GenericOAuthenticator.basic_auth = False
+    c.GenericOAuthenticator.auto_login = True
+else:
+    # Fallback to DummyAuthenticator if no auth is configured
+    c.JupyterHub.authenticator_class = DummyAuthenticator
 
 # Read the users and groups backed up by config-wrapper
 try:

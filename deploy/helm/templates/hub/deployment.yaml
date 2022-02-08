@@ -32,62 +32,31 @@ spec:
               # This name will be used in the Service.
               name: jupyter-in
           env:
-            # - name: OAUTH_CLIENT_ID
-            #   valueFrom:
-            #     secretKeyRef:
-            #       name: jupyterhub-auth-config
-            #       key: client_id
-            # - name: OAUTH_CLIENT_SECRET
-            #   valueFrom:
-            #     secretKeyRef:
-            #       name: jupyterhub-auth-config
-            #       key: client_secret
-            # - name: TENANT
-            #   valueFrom:
-            #     secretKeyRef:
-            #       name: jupyterhub-auth-config
-            #       key: tenant
-            # - name: AUTH_URL
-            #   valueFrom:
-            #     secretKeyRef:
-            #       name: jupyterhub-auth-config
-            #       key: auth_url
-            # - name: OAUTH_CALLBACK_URL
-            #   valueFrom:
-            #     secretKeyRef:
-            #       name: jupyterhub-auth-config
-            #       key: oauth_callback_url
-            # - name: ADMIN_USERS
-            #   valueFrom:
-            #     secretKeyRef:
-            #       name: jupyterhub-auth-config
-            #       key: admin_users
+{{- if .Values.hub.auth.enabled }}
+            - name: OAUTH_CLIENT_ID
+              value: {{ .Values.hub.auth.clientID }}
+            - name: OAUTH_CLIENT_SECRET
+              value: {{ .Values.hub.auth.clientSecret }}
+            - name: TENANT
+              value: {{ .Values.hub.auth.tenant }}
+            - name: AUTH_URL
+              value: {{ .Values.hub.auth.url }}
+            - name: OAUTH_CALLBACK_URL
+              value: {{ .Values.hub.auth.callbackURL }}
+            - name: ADMIN_USERS
+              value: {{ .Values.hub.auth.adminUsers }}
+            - name: OAUTH2_AUTHORIZE_URL
+              value: "$(AUTH_URL)/auth/$(TENANT)/authorize"
+            - name: OAUTH2_TOKEN_URL
+              value: "$(AUTH_URL)/auth/$(TENANT)/oidc/token"
+            - name: OAUTH2_USERDATA_URL
+              value: "$(AUTH_URL)/auth/me"
+{{- end }}
             - name: ADMIN_SERVICE_ACC
               valueFrom:
                 secretKeyRef:
                   name: {{ include "jupyterhub.hub.fullname" . }}-admin-token
                   key: adminToken
-            # - name: POSTGRES_DB
-            #   valueFrom:
-            #     secretKeyRef:
-            #       name: jupyterhub-postgres-config
-            #       key: db
-            # - name: POSTGRES_USER
-            #   valueFrom:
-            #     secretKeyRef:
-            #       name: jupyterhub-postgres-config
-            #       key: user
-            # - name: POSTGRES_PASSWORD
-            #   valueFrom:
-            #     secretKeyRef:
-            #       name: jupyterhub-postgres-config
-            #       key: password
-            # - name: OAUTH2_AUTHORIZE_URL
-            #   value: "$(AUTH_URL)/auth/$(TENANT)/authorize"
-            # - name: OAUTH2_TOKEN_URL
-            #   value: "$(AUTH_URL)/auth/$(TENANT)/oidc/token"
-            # - name: OAUTH2_USERDATA_URL
-            #   value: "$(AUTH_URL)/auth/me"
           volumeMounts:
             - mountPath: /srv/jupyterhub/config/jupyterhub-config.py
               subPath: jupyterhub-config.py

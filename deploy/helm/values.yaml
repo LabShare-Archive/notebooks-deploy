@@ -26,28 +26,42 @@ hub:
   # TODO: Enable configuration for alternative Ingress solutions  
   ingress:
     # Using Ingress is optional and requires preconfiguration within the cluster
-    enabled: true
+    enabled: false
     # Host name for external access
     hostName: null
+  
+  # LabShare Auth configurations
+  auth:
+    enabled: false
+    # Auth service url
+    url: null
+    # Unique tenant configured in LS-Auth
+    tenant: null
+    # Unique client ID configured in the above tenant
+    clientID: null
+    clientSecret: null
+    callbackURL: null
+    adminUsers: null
+    
 
   wipp:
     enabled: false
     storageClaimName: wipp-pv-claim
     mountPath: /opt/shared/wipp
     apiURL: http://wipp-backend:8080/api
-    UIValue: https://wipp-ui.ci.aws.labshare.org
+    UIValue: null
     tempNotebooksRelPath: temp/notebooks
     tempPluginsRelPath: temp/plugins
   
   polusNotebooksHub:
     enabled: false
-    apiURL: https://polus-notebooks-hub-backend.ci.aws.labshare.org
+    apiURL: null
 
 # Configurations for PostgreSQL dependency
 postgresql:
   enabled: true
-  postgresqlDatabase: postgresd
-  postgresqlUsername: blablabla
-  postgresqlPassword: hahahaha
+  postgresqlDatabase: postgresdb
+  postgresqlUsername: postgres
+  postgresqlPassword: postgres
   persistence:
     size: 1Gi
