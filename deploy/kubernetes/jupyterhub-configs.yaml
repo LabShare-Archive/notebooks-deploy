@@ -5,34 +5,32 @@ metadata:
 data:
   jupyterhub-config.py: |
     import os,sys
+    import string
+    import pickle
+    import escapism
     from oauthenticator.generic import GenericOAuthenticator
 
     c = get_config()
-    c.JupyterHub.spawner_class = 'modularspawner.ModularSpawner'
-    c.ModularSpawner.start_timeout=1000
+    c.JupyterHub.spawner_class = 'kubespawner.KubeSpawner'
+    c.KubeSpawner.start_timeout=1000
 
-    # Choose which stacks to use in modular spawner
-    c.ModularSpawner.stacks_path = '/stacks'
-    c.ModularSpawner.base = 'BASE_STACK_VALUE'
-    c.ModularSpawner.stacks = STACKS_VALUE
-    c.ModularSpawner.stacks_names = STACKS_NAMES_VALUE
-
-    # Which container to spawn
-    c.ModularSpawner.default_url = '/lab'
-    c.ModularSpawner.uid = 1000 #uid 1000 corresponds to jovyan, uid 0 to root
-    c.ModularSpawner.cmd = ['jupyter-labhub']
-    c.ModularSpawner.working_dir = '/home/jovyan'
-    c.ModularSpawner.service_account='jupyteruser-sa'
+    c.KubeSpawner.default_url = '/lab'
+    c.KubeSpawner.uid = 1000 #uid 1000 corresponds to jovyan, uid 0 to root
+    c.KubeSpawner.cmd = ['jupyter-labhub']
+    c.KubeSpawner.args = ['--collaborative']
+    c.KubeSpawner.working_dir = '/home/jovyan'
+    c.KubeSpawner.service_account='jupyteruser-sa'
+    c.KubeSpawner.singleuser_image_pull_policy= 'Always'
 
     # Per-user storage configuration
-    c.ModularSpawner.pvc_name_template = 'claim-{username}'
-    c.ModularSpawner.storage_class = 'STORAGE_CLASS_VALUE'
-    c.ModularSpawner.storage_capacity = 'STORAGE_PER_USER_VALUE'
-    c.ModularSpawner.storage_access_modes = ['ReadWriteOnce']
-    c.ModularSpawner.storage_pvc_ensure = True
+    c.KubeSpawner.pvc_name_template = 'claim-{username}'
+    c.KubeSpawner.storage_class = 'STORAGE_CLASS_VALUE'
+    c.KubeSpawner.storage_capacity = 'STORAGE_PER_USER_VALUE'
+    c.KubeSpawner.storage_access_modes = ['ReadWriteOnce']
+    c.KubeSpawner.storage_pvc_ensure = True
 
     # Volumes to attach to Pod
-    c.ModularSpawner.volumes = [
+    c.KubeSpawner.volumes = [
         {
             'name': 'volume-{username}',
             'persistentVolumeClaim': {
@@ -46,6 +44,12 @@ data:
             }
         },
         {
+            'name': 'modules-volume',
+            'persistentVolumeClaim': {
+                'claimName': 'modules-pv-claim'
+            }
+        },
+        {
             'name': 'wipp-volume',
             'persistentVolumeClaim': {
                 'claimName': 'WIPP_STORAGE_PVC_VALUE'
@@ -54,7 +58,7 @@ data:
     ]
 
     # Where to mount volumes
-    c.ModularSpawner.volume_mounts = [
+    c.KubeSpawner.volume_mounts = [
         {
             'mountPath': '/home/jovyan/work',
             'name': 'volume-{username}'
@@ -64,8 +68,37 @@ data:
             'name': 'shared-volume'
         },
         {
+            'mountPath': '/opt/modules',
+            'name': 'modules-volume',
+            'readOnly': True
+        },
+        {
             'mountPath': '/opt/shared/wipp',
             'name': 'wipp-volume'
+        }
+    ]
+
+    c.KubeSpawner.image = 'labshare/polyglot-notebook:' + 'NOTEBOOK_VERSION_DEPLOY_VALUE'
+
+    c.KubeSpawner.profile_list = [
+        {
+            'display_name': 'JupyterLab',
+            'slug': 'jupyterlab',
+            'kubespawner_override': {
+                'image': 'labshare/polyglot-notebook:' + 'NOTEBOOK_VERSION_DEPLOY_VALUE'
+            }
+        }, {
+            'display_name': 'Streamlit Dashboard Variable App',
+            'slug': 'jhsingle-streamlit-variable',  
+            'kubespawner_override': {
+                'image': 'polusai/hub-streamlit'
+            }
+        }, {
+            'display_name': 'Voila Dashboard Variable App',
+            'slug': 'jhsingle-voila-variable',  
+            'kubespawner_override': {
+                'image': 'polusai/hub-voila'
+            }
         }
     ]
 
@@ -76,13 +109,19 @@ data:
     # Required for AWS
     c.JupyterHub.hub_connect_ip='jupyterhub-internal'
 
+    # Configure Postgres database
+    postgres_db = os.getenv('POSTGRES_DB')
+    postgres_user = os.getenv('POSTGRES_USER')
+    postgres_password = os.getenv('POSTGRES_PASSWORD')
+    c.JupyterHub.db_url = 'postgresql://' + postgres_user + ':' + postgres_password + '@' + 'jupyterhub-postgres-service' + '/' + postgres_db
+
     c.JupyterHub.cleanup_servers=False
-    # c.ConfigurableHTTPProxy.should_start=False
     c.JupyterHub.cookie_secret_file = '/srv/jupyterhub/jupyterhub_cookie_secret'
 
     OAUTH_CLIENT_ID = os.getenv('OAUTH_CLIENT_ID')
     OAUTH_CLIENT_SECRET = os.getenv('OAUTH_CLIENT_SECRET')
     ADMIN_USERS = os.getenv('ADMIN_USERS')
+    ADMIN_SERVICE_ACC = os.getenv('ADMIN_SERVICE_ACC')
 
     c.JupyterHub.authenticator_class = GenericOAuthenticator
 
@@ -96,19 +135,93 @@ data:
     c.GenericOAuthenticator.basic_auth = False
     c.GenericOAuthenticator.auto_login = True
 
-    # Set up WIPP UI url for integration with WIPP
-    c.ModularSpawner.environment = {
+    # Read the users and groups backed up by config-wrapper
+    try:
+        infile = open('users.pkl','rb')
+        users = pickle.load(infile)
+        infile.close()
+    except:
+        users = []
+    
+    try:
+        infile = open('groups.pkl','rb')
+        groups_backup = pickle.load(infile)
+        infile.close()
+    except:
+        groups_backup = {}
+
+    # Create RBAC groups and roles
+    groups = {}
+    roles = []
+
+    safe_chars = set(string.ascii_lowercase + string.digits)
+    for user in users:
+        # Escape symbols not allowed in role and group names
+        safe_username = escapism.escape(user, safe=safe_chars).lower()
+
+        group = {f'server_sharing_{safe_username}': groups_backup.get(f'server_sharing_{safe_username}', [])}
+        groups.update(group)
+
+        sharing_role = {
+            'name': f'server_sharing_{safe_username}_role',
+            'description': f'Server sharing of {user}',
+            'scopes': [f'access:servers!user={user}'],
+            'groups': [f'server_sharing_{safe_username}']
+        }
+
+        sharing_group_editing_role = {
+            'name': f'server_sharing_{safe_username}_group_editing_role',
+            'description': f'Edit server_sharing_{safe_username} group',
+            'scopes': [f'groups!group=server_sharing_{safe_username}'],
+            'users': [user]
+        }
+
+        usernames_reading_role = {
+            'name': f'usernames_reading_{safe_username}_role',
+            'description': 'Usernames reading group',
+            'scopes': ['list:users'],
+            'users': [user]
+        }
+
+        roles.append(sharing_role)
+        roles.append(sharing_group_editing_role)
+        roles.append(usernames_reading_role)
+
+    # Required for getting user reading scope in the JUPYTERHUB_API_TOKEN on user server
+    roles.append({
+        'name': 'server',
+        'scopes': ['inherit'],
+    })
+
+    c.JupyterHub.load_groups = groups
+    c.JupyterHub.load_roles = roles
+
+    # Set up WIPP UI urls for integration with WIPP
+    c.KubeSpawner.environment = {
         'WIPP_UI_URL': 'WIPP_UI_VALUE',
         'WIPP_API_INTERNAL_URL': 'WIPP_API_INTERNAL_VALUE',
-        'WIPP_NOTEBOOKS_PATH': 'WIPP_NOTEBOOKS_PATH_VALUE'
+        'WIPP_NOTEBOOKS_PATH': 'WIPP_NOTEBOOKS_PATH_VALUE',
+        'PLUGIN_TEMP_PATH': 'WIPP_PLUGIN_TEMP_PATH_VALUE',
+        'POLUS_NOTEBOOKS_HUB_API': 'POLUS_NOTEBOOKS_HUB_API_VALUE',
+        'POLUS_NOTEBOOKS_HUB_FILE_LOGGING_ENABLED': 'POLUS_NOTEBOOKS_HUB_FILE_LOGGING_ENABLED_VALUE', #True/False
+        'CONDA_ENVS_PATH': '/opt/modules/conda-envs/',
+        'LMOD_SYSTEM_DEFAULT_MODULES': lambda spawner: str(spawner.user_options.get('modules', 'StdEnv')), #Get the list of modules from user options or fall back to the StdEnv
+        'MODULEPATH': '/opt/modules/modulefiles',
+        'USER_OPTIONS': lambda spawner: str(spawner.user_options),
     }
 
-    # Service to shutdown inactive Notebook servers after --timeout seconds
     c.JupyterHub.services = [
         {
-            'name': 'cull-idle',
+            # Service to shutdown inactive Notebook servers after --timeout seconds
+            'name': 'cull-idle', 
             'admin': True,
             'command': [sys.executable, '/srv/jupyterhub/config/cull-idle-servers.py', '--timeout=3600'],
-        }
+        },
+        {
+            # Service admin token (used in Notebooks Hub and config-wrapper)
+            "name": "service-token",
+            "admin": True,
+            "api_token": ADMIN_SERVICE_ACC,
+        },
     ]
 ---

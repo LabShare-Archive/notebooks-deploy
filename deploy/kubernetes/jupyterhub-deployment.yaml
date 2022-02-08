@@ -28,12 +28,6 @@ spec:
             - containerPort: 8081
               # This name will be used in the Service.
               name: jupyter-in
-          command: [
-            "jupyterhub",
-            "-f",
-            "/srv/jupyterhub/config/jupyterhub-config.py",
-            "--debug"
-          ]
           env:
             - name: OAUTH_CLIENT_ID
               valueFrom:
@@ -65,6 +59,26 @@ spec:
                 secretKeyRef:
                   name: jupyterhub-auth-config
                   key: admin_users
+            - name: ADMIN_SERVICE_ACC
+              valueFrom:
+                secretKeyRef:
+                  name: notebooks-hub-auth-config
+                  key: notebooks_hub_api_key
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: jupyterhub-postgres-config
+                  key: db
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: jupyterhub-postgres-config
+                  key: user
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: jupyterhub-postgres-config
+                  key: password
             - name: OAUTH2_AUTHORIZE_URL
               value: "$(AUTH_URL)/auth/$(TENANT)/authorize"
             - name: OAUTH2_TOKEN_URL
@@ -75,6 +89,8 @@ spec:
             - mountPath: /srv/jupyterhub/config/jupyterhub-config.py
               name: jupyterhub-config
               subPath: jupyterhub-config.py
+            - name: stacks
+              mountPath: /stacks
       volumes:
         - name: jupyterhub-config
           configMap:
@@ -82,3 +98,5 @@ spec:
               items:
               - key: jupyterhub-config.py
                 path: jupyterhub-config.py
+        - name: stacks
+          emptyDir: {}

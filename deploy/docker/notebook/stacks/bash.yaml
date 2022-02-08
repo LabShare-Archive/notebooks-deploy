@@ -1,8 +1,0 @@
-name: 
-conda:
-  - bash_kernel: 0.7*
-pip:
-  - sos-bash: 0.20.0
-scripts:
-  - bash_kernel_install: |
-      python -m bash_kernel.install --user

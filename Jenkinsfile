@@ -2,6 +2,7 @@ pipeline {
     agent {
         node { label 'aws && ci && linux && polus' }
     }
+    options { timestamps () }
     parameters {
         booleanParam(name: 'SKIP_BUILD', defaultValue: false, description: 'Skips Docker builds')
 	string(name: 'AWS_REGION', defaultValue: 'us-east-1', description: 'AWS Region to deploy')
@@ -14,12 +15,16 @@ pipeline {
             script: "git diff --name-only ${GIT_PREVIOUS_SUCCESSFUL_COMMIT} ${GIT_COMMIT} | grep 'jupyterhub/VERSION'",
             returnStatus: true
         )}"""
+        BUILD_NOTEBOOK = """${sh (
+            script: "git diff --name-only ${GIT_PREVIOUS_SUCCESSFUL_COMMIT} ${GIT_COMMIT} | grep 'notebook/VERSION'",
+            returnStatus: true
+        )}"""
         BUILD_DOCS = """${sh (
             script: "git diff --name-only ${GIT_PREVIOUS_SUCCESSFUL_COMMIT} ${GIT_COMMIT} | grep 'docs/VERSION'",
             returnStatus: true
         )}"""
         HUB_VERSION = readFile(file: 'deploy/docker/jupyterhub/VERSION')
-        NOTEBOOK_VERSION = readFile(file: 'deploy/docker/notebook/VERSION')
+        NOTEBOOK_VERSION_LATEST = readFile(file: 'deploy/docker/notebook/VERSION')
         DOCS_VERSION = readFile(file: 'deploy/docker/docs/VERSION')
         WIPP_STORAGE_PVC = "wipp-pv-claim"
     }
@@ -52,7 +57,6 @@ pipeline {
             }
             steps {
                 script {
-                    sh 'cp -r deploy/docker/notebook/stacks deploy/docker/jupyterhub'
                     dir('deploy/docker/jupyterhub') {
                         docker.withRegistry('https://registry-1.docker.io/v2/', 'f16c74f9-0a60-4882-b6fd-bec3b0136b84') {
                             def image = docker.build('labshare/jupyterhub:latest', '--no-cache ./')
@@ -63,13 +67,14 @@ pipeline {
                 }
             }
         }
-        stage('Assemble Jupyter Notebook Docker files') {
+        stage('Assemble Jupyter Notebook Dockerfiles') {
             when {
                 environment name: 'SKIP_BUILD', value: 'false'
+                environment name: 'BUILD_NOTEBOOK', value: '0'
             }
             agent {
                 docker {
-                    image 'labshare/polus-railyard:0.3.1'
+                    image 'labshare/polus-railyard:0.3.2'
                     registryUrl 'https://registry-1.docker.io/v2/'
                     registryCredentialsId 'f16c74f9-0a60-4882-b6fd-bec3b0136b84'
                     args '--network=host'
@@ -78,84 +83,64 @@ pipeline {
             }
             steps {
                 script {
-                    dir('deploy/docker/notebook/stacks') {
+                    dir('deploy/docker/notebook') {
                         withEnv(["HOME=${env.WORKSPACE}"]) {
                             sh 'mkdir -p manifests'
 
-                            stacks = [
-                                ['Python-datascience.yaml', 'Python-dataviz.yaml'],
-                                ['R.yaml'],
-                                ['octave.yaml'],
-                                ['java.yaml', 'scala.yaml'],
-                                ['cpp.yaml'],
-                                ['bash.yaml'],
-                                ['tensorflow.yaml', 'pytorch.yaml', 'fastai.yaml'],
-                                ['latex.yaml']
-                            ]
-
-                            // CPU-based images
-                            // Image without additional stacks
-                            sh 'railyard assemble -t Dockerfile.template -b base.yaml -p manifests'
-
-                            // Images with a single additional stack
-                            stacks.each {
-                                sh "railyard assemble -t Dockerfile.template -b base.yaml " + it.collect{"-a " + it}.join(" ") + " -p manifests"
-                            }
-
-                            // Images with combinations of 2 additional stacks
-                            [stacks, stacks].combinations().findAll{item -> item[0].join(" ") < item[1].join(" ")}.collect{it.flatten()}.each {
-                                sh "railyard assemble -t Dockerfile.template -b base.yaml " + it.collect{"-a " + it}.join(" ") + " -p manifests"
-                            }
-
-                            // GPU-based images
-                            // Image without additional stacks
-                            sh 'railyard assemble -t Dockerfile.template -b base_gpu.yaml -p manifests'
-
-                            // Images with a single additional stack
-                            stacks.each {
-                                sh "railyard assemble -t Dockerfile.template -b base_gpu.yaml " + it.collect{"-a " + it}.join(" ") + " -p manifests"
-                            }
-
-                            // Images with combinations of 2 additional stacks
-                            [stacks, stacks].combinations().findAll{item -> item[0].join(" ") < item[1].join(" ")}.collect{it.flatten()}.each {
-                                sh "railyard assemble -t Dockerfile.template -b base_gpu.yaml " + it.collect{"-a " + it}.join(" ") + " -p manifests"
-                            }
+                            // CPU-based image
+                            sh "railyard assemble -t Dockerfile.template -b base.yaml -a values.yaml -p manifests"
+                            // GPU-based image
+                            // sh "railyard assemble -t Dockerfile.template -b base_gpu.yaml -a values.yaml -p manifests"
                         }
                     }
                 }
             }
         }
-        stage('Build Jupyter Notebook Docker') {
+        stage('Build Jupyter Notebook Docker images') {
             when {
                 environment name: 'SKIP_BUILD', value: 'false'
+                environment name: 'BUILD_NOTEBOOK', value: '0'
             }
             steps {
                 script {
                     sh """echo '{"experimental": "enabled"}' > ~/config.json"""
-                    dir('deploy/docker/notebook/stacks/manifests') {
+                    dir('deploy/docker/notebook/manifests') {
                         def files = findFiles(glob: '**/Dockerfile')
                         files.each {
-                            def tag = it.path.minus(it.name).minus('/')
-                            TAG_EXISTS = sh (
-                                script: """docker --config ~/ manifest inspect labshare/polyglot-notebook:${tag} > /dev/null""",
-                                returnStatus: true
-                            ) == 0
+                            def hash = it.path.minus(it.name).minus('/')
+                            def tag = NOTEBOOK_VERSION_LATEST
 
-                            if (TAG_EXISTS) {
-                                println """Container image ${tag} already exists in registry. Skipping building and pushing"""
-                            }
-                            else {
-                                dir("""${tag}""") {
-                                    docker.withRegistry('https://registry-1.docker.io/v2/', 'f16c74f9-0a60-4882-b6fd-bec3b0136b84') {
-                                        println """Building container image: ${tag}..."""
-                                        def image = docker.build("""labshare/polyglot-notebook:${tag}""", '--no-cache ./')
-                                        println """Pushing container image: ${tag}..."""
-                                        image.push()
-                                    }
+                            dir("""${hash}""") {
+                                docker.withRegistry('https://registry-1.docker.io/v2/', 'f16c74f9-0a60-4882-b6fd-bec3b0136b84') {
+                                    println """Building container image: labshare/polyglot-notebook:${tag}..."""
+                                    def image = docker.build("""labshare/polyglot-notebook:${tag}""", '--no-cache ./')
+                                    println """Pushing container image: ${tag}..."""
+                                    image.push()
                                 }
-                                println """Removing container image: ${tag}"""
-                                sh """docker rmi labshare/polyglot-notebook:${tag} -f"""
                             }
+                            println """Clean Docker cache to save disk"""
+                            sh """docker system prune -a -f"""
+                        }
+                    }
+                }
+            }
+        }
+        stage('Build Environment Installer Docker images') {
+            when {
+                environment name: 'SKIP_BUILD', value: 'false'
+                environment name: 'BUILD_NOTEBOOK', value: '0'
+            }
+            steps {
+                script {
+                    sh """echo '{"experimental": "enabled"}' > ~/config.json"""
+                    sh """sed -i.bak -e "s/NOTEBOOK_VERSION_LATEST_VALUE/${NOTEBOOK_VERSION_LATEST}/g" deploy/docker/env-installer/Dockerfile"""
+                    dir('deploy/docker/env-installer') {
+                        docker.withRegistry('https://registry-1.docker.io/v2/', 'f16c74f9-0a60-4882-b6fd-bec3b0136b84') {
+                            def tag = NOTEBOOK_VERSION_LATEST
+                            println """Building container image: labshare/polyglot-notebook:env-installer-${tag}..."""
+                            def image = docker.build("""labshare/polyglot-notebook:env-installer-${tag}""", '--no-cache ./')
+                            println """Pushing container image: labshare/polyglot-notebook:env-installer-${tag}..."""
+                            image.push()
                         }
                     }
                 }
@@ -186,18 +171,6 @@ pipeline {
                     withAWS(credentials:'aws-jenkins-eks') {
                         sh "aws --region ${AWS_REGION} eks update-kubeconfig --name ${KUBERNETES_CLUSTER_NAME}"
 
-                        sh "bash ./deploy.sh"
-                    }
-                }
-            }
-        }
-        stage('Deploy JupyterHub to NCATS') {
-            agent {
-                node { label 'ls-api-ci.ncats' }
-            }
-            steps {
-                configFileProvider([configFile(fileId: 'env-single-node', targetLocation: '.env')]) {
-                    withKubeConfig([credentialsId: 'ncats_polus2']) {
                         sh "bash ./deploy.sh"
                     }
                 }

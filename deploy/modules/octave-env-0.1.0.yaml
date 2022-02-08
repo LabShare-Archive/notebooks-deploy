@@ -1,0 +1,10 @@
+name: octave-env
+
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+
+dependencies:
+  - octave=6.3.0
+  - octave_kernel=0.34.0

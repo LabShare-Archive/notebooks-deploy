@@ -1,0 +1,81 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: jupyterhub-postgres-claim
+spec:
+  storageClassName: STORAGE_CLASS_VALUE
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    application: jupyterhub-postgres
+  name: jupyterhub-postgres-service
+spec:
+  ports:
+  - port: 5432
+    targetPort: 5432
+    name: jupyterhub-postgres-internal
+    protocol: TCP
+  selector:
+    application: jupyterhub-postgres
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    application: jupyterhub-postgres
+  name: jupyterhub-postgres
+spec:
+  selector:
+    matchLabels:
+      application: jupyterhub-postgres
+  template:
+    metadata:
+      labels:
+        application: jupyterhub-postgres
+      name: jupyterhub-postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:13
+        env:
+          - name: POSTGRES_DB
+            valueFrom:
+              secretKeyRef:
+                name: jupyterhub-postgres-config
+                key: db
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: jupyterhub-postgres-config
+                key: user
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: jupyterhub-postgres-config
+                key: password
+        ports:
+        - containerPort: 5432
+          name: postgresql-port
+          protocol: TCP
+        volumeMounts:
+          - mountPath: /var/lib/postgresql/data
+            name: jupyterhub-postgres-volume
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - 'psql -U $POSTGRES_USER $POSTGRES_DB -c "SELECT 1"'
+          initialDelaySeconds: 15
+          timeoutSeconds: 2
+      volumes:
+        - name: jupyterhub-postgres-volume
+          persistentVolumeClaim:
+            claimName: jupyterhub-postgres-claim

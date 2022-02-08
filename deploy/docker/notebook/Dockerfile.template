@@ -49,6 +49,21 @@ RUN echo "auth requisite pam_deny.so" >> /etc/pam.d/su && \
     fix-permissions $HOME && \
     fix-permissions "$(dirname $CONDA_DIR)"
 
+# Install Lmod
+RUN mkdir -p /build
+WORKDIR /build
+RUN curl -LJO https://github.com/TACC/Lmod/archive/${LMOD_VERSION}.tar.gz && \
+    tar xfz Lmod-${LMOD_VERSION}.tar.gz
+WORKDIR /build/Lmod-${LMOD_VERSION}
+RUN ./configure --prefix=/opt/apps --with-fastTCLInterp=no && \
+    make && \
+    make install && \
+    ln -s /opt/apps/lmod/lmod/init/profile /etc/profile.d/z00_lmod.sh
+WORKDIR /home/jovyan
+RUN rm -rf /build
+RUN mkdir -p /opt/apps/modulefiles/Linux && \
+    chown -R 1000:1000 /opt/apps
+
 USER $NB_UID
 WORKDIR $HOME
 
@@ -83,7 +98,8 @@ RUN cd /tmp && \
     find /opt/conda/ -follow -type f -name '*.pyc' -delete && \
     find /opt/conda/ -follow -type f -name '*.js.map' -delete && \
     fix-permissions $CONDA_DIR && \
-    fix-permissions /home/$NB_USER
+    fix-permissions /home/$NB_USER && \
+    conda init bash
 
 # Installation scripts
 {% for s in scripts %}{{ s | dockerfileBlock('RUN') | safe }}{% endfor %}
@@ -97,6 +113,10 @@ RUN fix-permissions /etc/jupyter/
 
 # Switch back to jovyan to avoid accidental container runs as root
 USER $NB_UID
+
+# Activate Lmod
+RUN echo "source /etc/profile.d/z00_lmod.sh" >> .bashrc
+RUN echo "source /etc/profile.d/z01_StdEnv.sh" >> .bashrc
 
 # Configure container startup
 EXPOSE 8888

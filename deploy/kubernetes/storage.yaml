@@ -12,3 +12,17 @@ spec:
   resources:
     requests:
       storage: SHARED_STORAGE_VALUE
+#################################################################################################################
+# Create PVC for shared modules storage
+#################################################################################################################
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: modules-pv-claim
+spec:
+  storageClassName: STORAGE_CLASS_VALUE
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: MODULES_STORAGE_VALUE

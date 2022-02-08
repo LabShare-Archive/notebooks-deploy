@@ -25,3 +25,13 @@ User documentation is available [here](docs/source/index.md).
 1. Create a `.env` file in the root of the repository, using `sample-env` as an example.
 1. Configure `kubectl` with a `kubeconfig` pointing to the correct Kubernetes cluster. Optionally, pass the location of the `kubeconfig` file in the `.env`. This value defaults to the standard `kubeconfig` location. 
 1. Run the script using: `./deploy.sh`.
+
+## CI and versioning
+
+### Notebook image versioning
+JupyterLab server Docker images are built for a given semantic VERSION=major.minor.patch: `labshare/polyglot-notebook:VERSION`. Notebook image contains package managers (conda, pip, etc), Jupyter and some essential packages. Starting with VERSION=0.9.0 all software dependencies and various Jupyter kernels for running notebook cells are provided by environment modules (Lmod), which are built and installed separately on a mounted volume.
+
+Notebook image is built by CI every time `deploy/docker/notebook/VERSION` is changed.
+
+### Rolling out new version
+The notebook version deployed to the cluster is controlled separately via config variable `NOTEBOOK_VERSION_DEPLOY`. To deploy new version, you need to update config variable `NOTEBOOK_VERSION_DEPLOY=x.y.z` and rerun the CI pipeline.
