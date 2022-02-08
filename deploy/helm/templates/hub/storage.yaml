@@ -4,14 +4,14 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ include "jupyterhub.hub-shared-notebooks-pvc.fullname" . }}
+  name: {{include "jupyterhub.hub-shared-notebooks-pvc.fullname" .}}
 spec:
-  storageClassName: {{ .Values.global.storageClass }}
+  storageClassName: {{.Values.global.storageClass}}
   accessModes:
     - ReadWriteMany
   resources:
     requests:
-      storage: {{ .Values.hub.storage.sharedNotebooksStorage }}
+      storage: {{.Values.hub.storage.sharedNotebooksStorage}}
 ---
 #################################################################################################################
 # Create PVC for shared modules storage
@@ -19,11 +19,11 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ include "jupyterhub.hub-modules-pvc.fullname" . }}
+  name: {{include "jupyterhub.hub-modules-pvc.fullname" .}}
 spec:
-  storageClassName: {{ .Values.global.storageClass }}
+  storageClassName: {{.Values.global.storageClass}}
   accessModes:
     - ReadWriteMany
   resources:
     requests:
-      storage: { { .Values.hub.storage.modulesStorage } }
+      storage: {{.Values.hub.storage.modulesStorage}}
