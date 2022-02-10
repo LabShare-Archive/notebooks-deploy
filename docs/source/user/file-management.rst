@@ -1,6 +1,46 @@
 File Management
 ===============
 
+
+Opening Files
+-----------------
+The file browser and File menu enable you to work with files and directories on your system. This includes opening, creating, deleting, renaming, downloading, copying, and sharing files and directories.
+
+The file browser is in the left sidebar Files tab:
+
+Arrow pointing to the file browser in the upper left sidebar.
+
+Many actions on files can also be carried out in the File menu:
+
+A screenshot showing the File menu open including options like "New", "Save All."
+
+To open any file, double-click on its name in the file browser:
+
+You can also drag a file into the main work area to create a new tab:
+
+Many files types have :ref:`multiple viewers/editors <file-and-output-formats>`. For example, you can open a Markdown file in a :ref:`text editor <file-editor>` or as rendered HTML. A JupyterLab extension can also add new viewers/editors for files. To open a file in a non-default viewer/editor, right-click on its name in the file browser and use the "Open With..." submenu to select the viewer/editor:
+
+A single file can be open simultaneously in multiple viewer/editors and they will remain in sync:
+
+The file system can be navigated by double-clicking on folders in the listing or clicking on the folders at the top of the directory listing:
+
+Right-click on a file or directory and select "Copy Shareable Link" to copy a URL that can be used to open JupyterLab with that file or directory open.
+
+A screenshot showing the Copy Shareable Link option in the context menu opened over a file, which is the last entry on the list.
+
+Right-click on a file or directory and select "Copy Path" to copy the filesystem relative path. This can be used for passing arguments to open files in functions called in various kernels.
+Creating Files and Activities
+
+Create new files or activities by clicking the + button at the top of the file browser. This will open a new Launcher tab in the main work area, which enables you to pick an activity and kernel:
+
+You can also create new documents or activities using the File menu:
+
+A screenshot showing the context menu entry for creating a new file.
+
+The current working directory of a new activity or document will be the directory listed in the file browser (except for a terminal, which always starts in the root directory of the file browser):
+
+A new file is created with a default name. Rename a file by right-clicking on its name in the file browser and selecting “Rename” from the context menu:
+
 Important folders
 -----------------
 
@@ -30,9 +70,12 @@ All the files and folders created in the home folder outside of
 ``shared`` and ``work`` will be deleted on notebook restart, which
 happen after a period of inactivity (15-60 minutes).
 
-File uploads
+Uploading and Downloading
 ------------
 
+Files can be uploaded to the current directory of the file browser by dragging and dropping files onto the file browser, or by clicking the "Upload Files" button at the top of the file browser:
+
+Any file in JupyterLab can be downloaded by right-clicking its name in the file browser and selecting “Download” from the context menu:
 To upload a file, click on the upload button in file panel on the left:
 
 .. figure:: ../../img/files_1.png
@@ -68,3 +111,13 @@ until the issue is fixed, you would have to delete everything from
 inside the folder manually *or* use the Termianl to delete the folder.
 In Terminal you can run the command: ``rm -rf <folder_path>`` to delete
 the folder.
+
+Displaying Hidden files
+-----------------------
+
+Displaying Hidden files
+
+Hidden files and folders can be displayed in JupyterLab by combining two parameters:
+
+    First the server should be allowed to serve hidden files by setting ContentsManager.allow_hidden = True; see server documentation.
+    Then you will be able to display or hide the hidden files through the menu View -> Show Hidden Files.
