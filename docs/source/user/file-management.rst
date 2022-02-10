@@ -97,35 +97,6 @@ Right-click on a file or directory and select "Copy Path" to copy the
 filesystem relative path. This can be used for passing arguments to open
 files in functions called in various kernels.
 
-Important folders
------------------
-
-While working in Notebooks, it is important to keep in mind the folder
-structure. When logging into Notebooks, users see two folders in the
-file browser on the left: ``shared`` and ``work``.
-
--  ``shared`` folder is the symbolic link to ``/opt/shared``, which is
-   reserved for shared storage across all apps. Currently, there are two
-   folders inside of ``shared``: ``notebooks`` and ``wipp``.
-
-   -  ``notebooks`` is the shared folder for all users of notebooks
-      across the deployemnt. That allows to store some common notebooks,
-      code and datasets and collaborate on them with other users of
-      Notebooks
-   -  ``wipp`` contains file storage for WIPP, including Image
-      Collections, CSV collections, registered notebooks, Stitching
-      vectors and Pyramids. Keep in mind that this folder is in the
-      read-only mode; if you need to add new image collection, please
-      use WIPP UI.
-
--  ``work`` is the users’ persistent storage. All files in that folder
-   will persist the notebook restarts and is the place to keep your
-   work.
-
-All the files and folders created in the home folder outside of
-``shared`` and ``work`` will be deleted on notebook restart, which
-happen after a period of inactivity (15-60 minutes).
-
 Creating Files and Activities
 -----------------------------
 
@@ -188,10 +159,6 @@ dragging and dropping files onto the file browser, or by clicking the
   <div class="jp-youtube-video">
      <iframe src="https://www.youtube-nocookie.com/embed/1bd2QHqQSH4?rel=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
   </div>
- 
-You can upload multiple files, but you cannot upload folders. Workaround
-for uploading folders is to use Git integration or creating archive and
-uploading it and later unarchiving.
 
 .. _file-download:
 
@@ -204,16 +171,66 @@ the file browser and selecting “Download” from the context menu:
      <iframe src="https://www.youtube-nocookie.com/embed/Wl7Ozl6rMcc?rel=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
   </div>
 
-You can download multiple files at once. 
-You can aslo download folders.
-
 Displaying Hidden files
 -----------------------
 
-Hidden files and folders can be displayed in JupyterLab by combining two parameters:
+If the hidden files are allowed by the Administrator, then you will be able to display or hide the hidden files through the menu View -> Show Hidden Files.
 
-1. First the server should be allowed to serve hidden files by setting ``ContentsManager.allow_hidden = True``; see `server documentation <https://jupyter-server.readthedocs.io/en/latest/users/configuration.html>`_.
-2. Then you will be able to display or hide the hidden files through the menu ``View`` -> ``Show Hidden Files``.
+
+Important folders
+-----------------
+
+While working in Notebooks, it is important to keep in mind the folder
+structure. When logging into Notebooks, users see two folders in the
+file browser on the left: ``shared`` and ``work``.
+
+-  ``shared`` folder is the symbolic link to ``/opt/shared``, which is
+   reserved for shared storage across all apps. Currently, there are two
+   folders inside of ``shared``: ``notebooks`` and ``wipp``.
+
+   -  ``notebooks`` is the shared folder for all users of notebooks
+      across the deployemnt. That allows to store some common notebooks,
+      code and datasets and collaborate on them with other users of
+      Notebooks
+   -  ``wipp`` contains file storage for WIPP, including Image
+      Collections, CSV collections, registered notebooks, Stitching
+      vectors and Pyramids. Keep in mind that this folder is in the
+      read-only mode; if you need to add new image collection, please
+      use WIPP UI.
+
+-  ``work`` is the users’ persistent storage. All files in that folder
+   will persist the notebook restarts and is the place to keep your
+   work.
+
+All the files and folders created in the home folder outside of
+``shared`` and ``work`` will be deleted on notebook restart, which
+happen after a period of inactivity (15-60 minutes).
+
+Uploading and Downloading
+-------------------------
+
+.. _file-upload:
+
+Files can be uploaded to the current directory of the file browser by
+dragging and dropping files onto the file browser, or by clicking the
+"Upload Files" button at the top of the file browser:
+
+.. raw:: html
+
+  <div class="jp-youtube-video">
+     <iframe src="https://www.youtube-nocookie.com/embed/1bd2QHqQSH4?rel=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+  </div>
+
+.. _file-download:
+
+Any file in JupyterLab can be downloaded by right-clicking its name in
+the file browser and selecting “Download” from the context menu:
+
+.. raw:: html
+
+  <div class="jp-youtube-video">
+     <iframe src="https://www.youtube-nocookie.com/embed/Wl7Ozl6rMcc?rel=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+  </div>
 
 Deleting folders
 ----------------
@@ -225,8 +242,3 @@ until the issue is fixed, you would have to delete everything from
 inside the folder manually *or* use the Termianl to delete the folder.
 In Terminal you can run the command: ``rm -rf <folder_path>`` to delete
 the folder.
-
-Displaying Hidden files
------------------------
-
-If the hidden files are allowed by the Administrator, then you will be able to display or hide the hidden files through the menu View -> Show Hidden Files.

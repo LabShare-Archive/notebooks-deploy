@@ -6,7 +6,7 @@
 
 [JupyterLab URLs](./user/urls.rst)
 
-[Working with Files](./user/files.rst)
+[Working with Files](./user/file-management.rst)
 
 [Text Editor](./user/file_editor.rst)
 
@@ -35,8 +35,6 @@
 [Real Time Collaboration](./user/rtc.rst)
 
 [Choosing modular notebook image](./user/modular-notebook.rst)
-
-[File management](./user/file-management.rst)
 
 [Installing new packages](./user/installing_packages.rst)
 
