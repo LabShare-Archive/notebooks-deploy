@@ -1,0 +1,89 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rdkit-0-1-0-conda-env
+data:
+  conda-environment-definition.yaml: |
+    name: rdkit-env
+
+    channels:
+      - conda-forge
+      - bioconda
+      - defaults
+
+    dependencies:
+      - python=3.9
+      - pip=21.3
+      - ipykernel=6.9.0
+      - rdkit=2021.09.3
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rdkit-0-1-0-modulefile
+data:
+  modulefile.lua: |
+    help([[
+    Cheminformatics toolkit `rdkit` and related Python packages
+    ]])
+
+    whatis("Version: 0.1.0")
+    whatis("Keywords: Scientific/Engineering, Chemoinformatics, Python")
+
+    prepend_path("JUPYTER_PATH", "/opt/modules/conda-envs/rdkit-0.1.0/share/jupyter")
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: rdkit-0-1-0-installer-job
+spec:
+  template:
+    spec:
+      containers:
+        - name: env-installer-rdkit-0-1-0
+          image: labshare/polyglot-notebook:env-installer-0.9.1
+          command: ["sh", "-c"]
+          args:
+            - mkdir -p $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION;
+              mamba env create --prefix $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION --file /home/jovyan/conda-environment-definition.yaml;
+              mkdir -p $EXT_MOD_PATH/modulefiles/$ENV_MODULE_NAME;
+              cp /home/jovyan/modulefile.lua $EXT_MOD_PATH/modulefiles/$ENV_MODULE_NAME/$ENV_MODULE_VERSION.lua;
+              mv $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/share/jupyter/kernels/python3 $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/share/jupyter/kernels/$ENV_MODULE_NAME;
+              jq --arg variable "$KERNEL_DISPLAY_NAME" '.display_name = $variable' $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/share/jupyter/kernels/$ENV_MODULE_NAME/kernel.json > tmp.$$.json && mv tmp.$$.json $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/share/jupyter/kernels/$ENV_MODULE_NAME/kernel.json
+          env:
+            - name: EXT_MOD_PATH
+              value: /opt/modules
+            - name: ENV_MODULE_NAME
+              value: rdkit
+            - name: ENV_MODULE_VERSION
+              value: 0.1.0
+            - name: KERNEL_DISPLAY_NAME
+              value: "Chemoinformatics"
+          volumeMounts:
+            - mountPath: /opt/modules
+              name: modules-volume
+            - mountPath: /home/jovyan/conda-environment-definition.yaml
+              name: conda-environment-definition
+              subPath: conda-environment-definition.yaml
+            - mountPath: /home/jovyan/modulefile.lua
+              name: modulefile
+              subPath: modulefile.lua
+      restartPolicy: Never
+      volumes:
+        - name: modules-volume
+          persistentVolumeClaim:
+            claimName: modules-pv-claim
+        - name: conda-environment-definition
+          configMap:
+            name: rdkit-0-1-0-conda-env
+            items:
+              - key: conda-environment-definition.yaml
+                path: conda-environment-definition.yaml
+        - name: modulefile
+          configMap:
+            name: rdkit-0-1-0-modulefile
+            items:
+              - key: modulefile.lua
+                path: modulefile.lua
+  backoffLimit: 4
