@@ -1,0 +1,63 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: java-1-8-0-312-modulefile
+data:
+  modulefile.lua: |
+    help([[
+    Java
+    ]])
+
+    whatis("Version: 1.8.0_312")
+    whatis("Keywords: Scientific/Engineering, Java")
+
+    prepend_path("PATH", "/opt/modules/java-1.8.0_312/jdk8u312-b07/bin")
+    prepend_path("PATH", "/opt/modules/maven-3.6.3/apache-maven-3.6.3/bin")
+    setenv("JAVA_HOME", "/opt/modules/java-8/jdk8u312-b07")
+    setenv("MAVEN_HOME", "/opt/modules/maven-3.6.3/apache-maven-3.6.3")
+    setenv("MAVEN_CONFIG", "$HOME/.m2")
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: java-1-8-0-312-installer-job
+spec:
+  template:
+    spec:
+      containers:
+        - name: env-installer-test
+          image: labshare/polyglot-notebook:env-installer-0.9.1
+          command: ["sh", "-c"]
+          args:
+            - mkdir -p $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION;
+              wget https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u312-b07/OpenJDK8U-jdk_x64_linux_hotspot_8u312b07.tar.gz;
+              tar xvf OpenJDK8U-jdk_x64_linux_hotspot_8u312b07.tar.gz -C $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION;
+              mkdir -p $EXT_MOD_PATH/modulefiles/$ENV_MODULE_NAME;
+              cp /home/jovyan/modulefile.lua $EXT_MOD_PATH/modulefiles/$ENV_MODULE_NAME/$ENV_MODULE_VERSION.lua
+          env:
+            - name: EXT_MOD_PATH
+              value: /opt/modules
+            - name: ENV_MODULE_NAME
+              value: java
+            - name: ENV_MODULE_VERSION
+              value: 1.8.0_312
+            - name: KERNEL_DISPLAY_NAME
+              value: "Java 8"
+          volumeMounts:
+            - mountPath: /opt/modules
+              name: modules-volume
+            - mountPath: /home/jovyan/modulefile.lua
+              name: modulefile
+              subPath: modulefile.lua
+      restartPolicy: Never
+      volumes:
+        - name: modules-volume
+          persistentVolumeClaim:
+            claimName: modules-pv-claim
+        - name: modulefile
+          configMap:
+            name: java-1-8-0-312-modulefile
+            items:
+              - key: modulefile.lua
+                path: modulefile.lua
+  backoffLimit: 4
