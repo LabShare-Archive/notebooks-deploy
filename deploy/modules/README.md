@@ -62,49 +62,6 @@ prepend_path("JUPYTER_PATH", "/opt/modules/conda-envs/python-data-science-<x.y.z
 Make sure to replace <x.y.z> with the module version
 This module file makes Jupyter kernel from our custom environment visible to Jupyter executable. Kernel will show up instantly in the launcher when module is loaded.
 
-f. Java 8
-
-```
-
-mkdir -p $EXT_MOD_PATH/java-8
-wget https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u312-b07/OpenJDK8U-jdk_x64_linux_hotspot_8u312b07.tar.gz
-tar xvf OpenJDK8U-jdk_x64_linux_hotspot_8u312b07.tar.gz -C $EXT_MOD_PATH/java-8/
-
-```
-
-g. Java 11
-
-```
-
-mkdir -p $EXT_MOD_PATH/java-11
-wget https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.13%2B8/OpenJDK11U-jdk_x64_linux_hotspot_11.0.13_8.tar.gz
-tar xvf OpenJDK11U-jdk_x64_linux_hotspot_11.0.13_8.tar.gz -C $EXT_MOD_PATH/java-11/
-
-```
-
-h. Java 17
-
-```
-
-mkdir -p $EXT_MOD_PATH/java-17
-wget https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.1%2B12/OpenJDK17U-jdk_x64_linux_hotspot_17.0.1_12.tar.gz
-tar xvf OpenJDK17U-jdk_x64_linux_hotspot_17.0.1_12.tar.gz -C $EXT_MOD_PATH/java-17/
-
-```
-
-i. IJava kernel
-Install into each of the supported JDK installations (JDK>=9)
-
-```
-
-curl -L https://github.com/SpencerPark/IJava/releases/download/v1.3.0/ijava-1.3.0.zip > ijava-kernel.zip
-unzip ijava-kernel.zip -d ijava-kernel
-cd ijava-kernel
-python install.py --prefix=/opt/modules/java-11/
-curl -L https://www.pngall.com/wp-content/uploads/2016/05/Java-PNG-Image.png > /opt/modules/java-11/share/jupyter/kernels/java/logo-64x64.png
-
-```
-
 k. Maven
 
 ```
