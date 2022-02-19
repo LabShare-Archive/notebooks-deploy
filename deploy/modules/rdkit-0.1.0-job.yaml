@@ -38,6 +38,7 @@ kind: Job
 metadata:
   name: rdkit-0-1-0-installer-job
 spec:
+  ttlSecondsAfterFinished: 86400
   template:
     spec:
       containers:
