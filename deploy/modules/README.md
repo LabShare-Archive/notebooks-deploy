@@ -22,73 +22,26 @@ and check the installation logs with
 kubectl logs job/<environment-module-name>-<x-y-z>-installer-job
 ```
 
-| Kernel              | Version   | Installer            |
-| ------------------- | --------- | -------------------- |
-| Python Data Science | 0.1.0     |                      |
-| R                   | 0.1.0     | r-0.1.0-job.yaml     |
-| Chemoinformatics    | 0.1.0     | rdkit-0.1.0-job.yaml |
-| C++                 | 0.1.0     |                      |
-| Julia               |           |                      |
-| Octave              |           |                      |
-| Java                | 1.8.0_312 |                      |
-| Java                | 11.0.3    |                      |
-| Java                | 17.0.1    |                      |
-| Maven               |           |                      |
-| JavaScript          |           |                      |
+| Kernel              | Version   | Installer                          |
+| ------------------- | --------- | ---------------------------------- |
+| Python Data Science | 0.1.0     | python-data-science-0.1.1-job.yaml |
+| R                   | 0.1.0     | r-0.1.0-job.yaml                   |
+| Chemoinformatics    | 0.1.0     | rdkit-0.1.0-job.yaml               |
+| C++                 | 0.1.0     |                                    |
+| Julia               |           |                                    |
+| Octave              |           | octave-0.1.0-job.yaml              |
+| Java                | 1.8.0_312 | java-1.8.0_312-job.yaml            |
+| Java                | 11.0.3    | java-11.0.13-job.yaml              |
+| Java                | 17.0.1_12 | java-17.0.1_12-job.yaml            |
+| Maven               |           |                                    |
+| JavaScript          |           | js-0.1.0-job.yaml                  |
 
-a. Python Data Science
-
-- Create environment module folder
-
-```
-
-mkdir -p $EXT_MOD_PATH/modulefiles/python-data-science
-
-```
-
-- Create the environment module file at `` with the following content:
-
-```
-
-help([[Conda environment with Python Data Science packages]])
-
-whatis("Version: 0.1.0")
-whatis("Keywords: Data Science")
-
-prepend_path("JUPYTER_PATH", "/opt/modules/conda-envs/python-data-science-<x.y.z>/share/jupyter")
-
-```
-
-Make sure to replace <x.y.z> with the module version
-This module file makes Jupyter kernel from our custom environment visible to Jupyter executable. Kernel will show up instantly in the launcher when module is loaded.
-
-k. Maven
+- Maven
 
 ```
 
 mkdir -p $EXT_MOD_PATH/maven-3.6.3
 wget https://archive.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
 tar xvf apache-maven-3.6.3-bin.tar.gz -C $EXT_MOD_PATH/opt/modules/maven-3.6.3
-
-```
-
-l. Javascript
-Docs: http://n-riesco.github.io/ijavascript/
-
-```
-
-export JS_ENV_VERSION=<x.y.z>
-mkdir -p $EXT_MOD_PATH/conda-envs/js-$JS_ENV_VERSION
-mamba env create --prefix $EXT_MOD_PATH/conda-envs/js-$JS_ENV_VERSION --file js-env-$JS_ENV_VERSION.yaml
-/opt/modules/conda-envs/js-$JS_ENV_VERSION/bin/npm install -g ijavascript
-/opt/modules/conda-envs/js-$JS_ENV_VERSION/bin/ijsinstall --spec-path=full
-mkdir -p /opt/modules/conda-envs/js-$JS_ENV_VERSION/share/jupyter/kernels/javascript
-mv /home/jovyan/.local/share/jupyter/kernels/javascript /opt/modules/conda-envs/js-$JS_ENV_VERSION/share/jupyter/kernels/javascript
-
-```
-
-Modify kernel.js to swap ``with`/opt/modules/conda-envs/js-0.1.0/bin/ijskernel`
-
-```
 
 ```
