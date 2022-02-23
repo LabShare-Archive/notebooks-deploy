@@ -22,19 +22,20 @@ and check the installation logs with
 kubectl logs job/<environment-module-name>-<x-y-z>-installer-job
 ```
 
-| Kernel              | Version   | Installer                          |
-| ------------------- | --------- | ---------------------------------- |
-| Python Data Science | 0.1.0     | python-data-science-0.1.1-job.yaml |
-| R                   | 0.1.0     | r-0.1.0-job.yaml                   |
-| Chemoinformatics    | 0.1.0     | rdkit-0.1.0-job.yaml               |
-| C++                 | 0.1.0     |                                    |
-| Julia               |           |                                    |
-| Octave              |           | octave-0.1.0-job.yaml              |
-| Java                | 1.8.0_312 | java-1.8.0_312-job.yaml            |
-| Java                | 11.0.3    | java-11.0.13-job.yaml              |
-| Java                | 17.0.1_12 | java-17.0.1_12-job.yaml            |
-| Maven               |           |                                    |
-| JavaScript          |           | js-0.1.0-job.yaml                  |
+| Kernel                  | Version   | Installer                          |
+| ----------------------- | --------- | ---------------------------------- |
+| Python Data Science     | 0.1.0     | python-data-science-0.1.1-job.yaml |
+| R                       | 0.1.0     | r-0.1.0-job.yaml                   |
+| Chemoinformatics        | 0.1.0     | rdkit-0.1.0-job.yaml               |
+| ImageJ Plugin Converter | 0.1.0     | imagej-converter-0.1.0-job.yaml    |
+| C++                     | 0.1.0     | cpp-0.1.0-job.yaml                 |
+| Julia                   | 0.1.0     | julia-0.1.0-job.yaml               |
+| Octave                  | 0.1.0     | octave-0.1.0-job.yaml              |
+| Java                    | 1.8.0_312 | java-1.8.0_312-job.yaml            |
+| Java                    | 11.0.3    | java-11.0.13-job.yaml              |
+| Java                    | 17.0.1_12 | java-17.0.1_12-job.yaml            |
+| Maven                   |           |                                    |
+| JavaScript              | 0.1.0     | js-0.1.0-job.yaml                  |
 
 - Maven
 
