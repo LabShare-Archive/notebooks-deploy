@@ -31,7 +31,7 @@ data:
     whatis("Version: 0.1.0")
     whatis("Keywords: C++")
 
-    prepend_path("JUPYTER_PATH", "/opt/modules/conda-envs/cpp-xeus-cling-env-0.1.0/share/jupyter")
+    prepend_path("JUPYTER_PATH", "/opt/modules/conda-envs/cpp-0.1.0/share/jupyter")
 ---
 apiVersion: batch/v1
 kind: Job
