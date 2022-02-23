@@ -11,11 +11,9 @@ data:
     whatis("Version: 11.0.3")
     whatis("Keywords: Scientific/Engineering, Java")
 
+    depends_on("maven")
     prepend_path("PATH", "/opt/modules/java-11.0.13/jdk-11.0.13+8/bin")
-    prepend_path("PATH", "/opt/modules/maven-3.6.3/apache-maven-3.6.3/bin")
     setenv("JAVA_HOME", "/opt/modules/java-11.0.13/jdk-11.0.13+8")
-    setenv("MAVEN_HOME", "/opt/modules/maven-3.6.3/apache-maven-3.6.3")
-    setenv("MAVEN_CONFIG", "$HOME/.m2")
     prepend_path("JUPYTER_PATH", "/opt/modules/java-11.0.13/share/jupyter")
 ---
 apiVersion: batch/v1

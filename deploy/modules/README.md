@@ -34,15 +34,5 @@ kubectl logs job/<environment-module-name>-<x-y-z>-installer-job
 | Java                    | 1.8.0_312 | java-1.8.0_312-job.yaml            |
 | Java                    | 11.0.3    | java-11.0.13-job.yaml              |
 | Java                    | 17.0.1_12 | java-17.0.1_12-job.yaml            |
-| Maven                   |           |                                    |
+| Maven                   | 3.6.3     | maven-3.6.3-job.yaml               |
 | JavaScript              | 0.1.0     | js-0.1.0-job.yaml                  |
-
-- Maven
-
-```
-
-mkdir -p $EXT_MOD_PATH/maven-3.6.3
-wget https://archive.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
-tar xvf apache-maven-3.6.3-bin.tar.gz -C $EXT_MOD_PATH/opt/modules/maven-3.6.3
-
-```
