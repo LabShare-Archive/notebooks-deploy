@@ -22,7 +22,7 @@ RUN conda install --yes -c conda-forge \
       python-kubernetes=22.6.0 \
       jupyterhub-kubespawner=2.0.1 && \
     pip install \
-      psycopg2-binary==3.0.9 \
+      psycopg==3.0.9 \
       oauthenticator==14.2.0
 
 RUN mkdir -p /srv/jupyterhub/
