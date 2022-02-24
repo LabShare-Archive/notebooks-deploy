@@ -95,7 +95,7 @@ conda:
   - python-kubernetes: 22.6.0
   - yarn
   - typing-extensions: 4.1.1
-  - jupyterhub: 2.0.1
+  - jupyterhub: 2.1.1
   - voila: 0.3.2
   - panel: 0.12*
   - texlab: 2.2.2
