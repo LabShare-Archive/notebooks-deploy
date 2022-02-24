@@ -12,15 +12,15 @@ pipeline {
         PROJECT_NAME = "labshare/notebooks-deploy"
         DOCKER_CLI_EXPERIMENTAL = "enabled"
         BUILD_HUB = """${sh (
-            script: "git diff --name-only ${GIT_PREVIOUS_SUCCESSFUL_COMMIT} ${GIT_COMMIT} | grep 'jupyterhub/VERSION'",
+            script: "git diff --name-only ${GIT_PREVIOUS_COMMIT} ${GIT_COMMIT} | grep 'jupyterhub/VERSION'",
             returnStatus: true
         )}"""
         BUILD_NOTEBOOK = """${sh (
-            script: "git diff --name-only ${GIT_PREVIOUS_SUCCESSFUL_COMMIT} ${GIT_COMMIT} | grep 'notebook/VERSION'",
+            script: "git diff --name-only ${GIT_PREVIOUS_COMMIT} ${GIT_COMMIT} | grep 'notebook/VERSION'",
             returnStatus: true
         )}"""
         BUILD_DOCS = """${sh (
-            script: "git diff --name-only ${GIT_PREVIOUS_SUCCESSFUL_COMMIT} ${GIT_COMMIT} | grep 'docs/VERSION'",
+            script: "git diff --name-only ${GIT_PREVIOUS_COMMIT} ${GIT_COMMIT} | grep 'docs/VERSION'",
             returnStatus: true
         )}"""
         HUB_VERSION = readFile(file: 'deploy/docker/jupyterhub/VERSION')
