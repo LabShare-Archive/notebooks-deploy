@@ -1,560 +1,560 @@
 name: values
 env:
-    - HOME: /home/$NB_USER
-    - MINICONDA_VERSION: py39_4.10.3
-    - MINICONDA_INSTALLER_HASHSUM: 8c69f65a4ae27fb41df0fe552b4a8a3b
-    - CONDA_VERSION: 4.10.3
-    - XDG_CACHE_HOME: /home/$NB_USER/.cache/
-    - LMOD_VERSION: 8.5.19
-    - MODULESHOME: /opt/apps/lmod/lmod
-    - MODULEPATH_ROOT: /opt/apps/modulefiles
-    - MANPATH: "/opt/apps/lmod/lmod/share/man:"
-    - LMOD_DIR: /opt/apps/lmod/lmod/libexec
-    - LMOD_SETTARG_FULL_SUPPORT: no
-    - LMOD_ROOT: /opt/apps/lmod
-    - LMOD_sys: Linux
-    - LMOD_CMD: /opt/apps/lmod/lmod/libexec/lmod
+  - HOME: /home/$NB_USER
+  - MINICONDA_VERSION: py39_4.10.3
+  - MINICONDA_INSTALLER_HASHSUM: 8c69f65a4ae27fb41df0fe552b4a8a3b
+  - CONDA_VERSION: 4.10.3
+  - XDG_CACHE_HOME: /home/$NB_USER/.cache/
+  - LMOD_VERSION: 8.5.19
+  - MODULESHOME: /opt/apps/lmod/lmod
+  - MODULEPATH_ROOT: /opt/apps/modulefiles
+  - MANPATH: "/opt/apps/lmod/lmod/share/man:"
+  - LMOD_DIR: /opt/apps/lmod/lmod/libexec
+  - LMOD_SETTARG_FULL_SUPPORT: no
+  - LMOD_ROOT: /opt/apps/lmod
+  - LMOD_sys: Linux
+  - LMOD_CMD: /opt/apps/lmod/lmod/libexec/lmod
 path:
-    - $CONDA_DIR/bin
+  - $CONDA_DIR/bin
 apt:
-    - wget
-    - bzip2
-    - ca-certificates
-    - sudo
-    - locales
-    - fonts-liberation
-    - run-one
-    - build-essential
-    - emacs
-    - git
-    - inkscape
-    - jed
-    - libsm6
-    - libxext-dev
-    - libxrender1
-    - lmodern
-    - netcat
-    - pandoc
-    - python-dev
-    - tzdata
-    - unzip
-    - nano
-    - ffmpeg
-    - ssh
-    - tzdata
-    - libssl1.1
-    - libssl-dev
-    - curl
-    - procps
-    - libicu-dev
-    - lua5.3
-    - lua-bit32:amd64
-    - lua-posix:amd64
-    - lua-posix-dev
-    - liblua5.3-0:amd64
-    - liblua5.3-dev:amd64
-    - tcl
-    - tcl-dev
-    - tcl8.6
-    - tcl8.6-dev:amd64
-    - libtcl8.6:amd64
-    - lua-filesystem
-    - tcsh
-    - less
-    - texlive-xetex
-    - texlive-fonts-recommended
+  - wget
+  - bzip2
+  - ca-certificates
+  - sudo
+  - locales
+  - fonts-liberation
+  - run-one
+  - build-essential
+  - emacs
+  - git
+  - inkscape
+  - jed
+  - libsm6
+  - libxext-dev
+  - libxrender1
+  - lmodern
+  - netcat
+  - pandoc
+  - python-dev
+  - tzdata
+  - unzip
+  - nano
+  - ffmpeg
+  - ssh
+  - tzdata
+  - libssl1.1
+  - libssl-dev
+  - curl
+  - procps
+  - libicu-dev
+  - lua5.3
+  - lua-bit32:amd64
+  - lua-posix:amd64
+  - lua-posix-dev
+  - liblua5.3-0:amd64
+  - liblua5.3-dev:amd64
+  - tcl
+  - tcl-dev
+  - tcl8.6
+  - tcl8.6-dev:amd64
+  - libtcl8.6:amd64
+  - lua-filesystem
+  - tcsh
+  - less
+  - texlive-xetex
+  - texlive-fonts-recommended
 conda_channels:
-    - bioconda
-    - conda-forge
+  - bioconda
+  - conda-forge
 conda:
-    - tini: 0.19.0
-    - notebook: 6.4.8
-    - jupyterlab: 3.2.9
-    - papermill: 2.3.4
-    - jupyter-archive: 3.2.1
-    - numexpr: 2.8.0
-    - matplotlib-base: 3.5.1
-    - scipy: 1.8.0
-    - feather-format: 0.4.1
-    - nbformat: 5.1.3
-    - jupyter_contrib_nbextensions: 0.5.1
-    - sos-notebook: 0.20.1
-    - jupyterlab-sos: 0.8.1
-    - sos-papermill: 0.2.1
-    - sos-python: 0.18.4
-    - nbdime: 3.1.1
-    - jupyterlab-wipp: 1.2.0
-    - jupyterlab-git: 0.34.2
-    - jupyterlab-topbar: 0.6.1
-    - jupyterlab-python-file: 0.5.5
-    - ipywidgets: 7.6.5
-    - jupyterlab-lsp: 3.10.0
-    - python-lsp-server: 1.3.3
-    - jupyterlab-system-monitor: 0.8.0
-    - jupyterlab-link-share: 0.2.4
-    - python-kubernetes: 22.6.0
-    - yarn
-    - typing-extensions: 4.1.1
-    - jupyterhub: 2.0.1
-    - voila: 0.3.2
-    - panel: 0.12*
-    - texlab: 2.2.2
-    - chktex: 1.7.6
-    - jupyterlab-latex: 3.1.0
-    - jupyterlab-tour: 3.1.4
-    - wxyz_json_schema_form: 0.5.1
+  - tini: 0.19.0
+  - notebook: 6.4.8
+  - jupyterlab: 3.2.9
+  - papermill: 2.3.4
+  - jupyter-archive: 3.2.1
+  - numexpr: 2.8.0
+  - matplotlib-base: 3.5.1
+  - scipy: 1.8.0
+  - feather-format: 0.4.1
+  - nbformat: 5.1.3
+  - jupyter_contrib_nbextensions: 0.5.1
+  - sos-notebook: 0.20.1
+  - jupyterlab-sos: 0.8.1
+  - sos-papermill: 0.2.1
+  - sos-python: 0.18.4
+  - nbdime: 3.1.1
+  - jupyterlab-wipp: 1.2.0
+  - jupyterlab-git: 0.34.2
+  - jupyterlab-topbar: 0.6.1
+  - jupyterlab-python-file: 0.5.5
+  - ipywidgets: 7.6.5
+  - jupyterlab-lsp: 3.10.0
+  - python-lsp-server: 1.3.3
+  - jupyterlab-system-monitor: 0.8.0
+  - jupyterlab-link-share: 0.2.4
+  - python-kubernetes: 22.6.0
+  - yarn
+  - typing-extensions: 4.1.1
+  - jupyterhub: 2.0.1
+  - voila: 0.3.2
+  - panel: 0.12*
+  - texlab: 2.2.2
+  - chktex: 1.7.6
+  - jupyterlab-latex: 3.1.0
+  - jupyterlab-tour: 3.1.4
+  - wxyz_json_schema_form: 0.5.1
 pip:
-    - facets-overview: 1.0.0
-    - jupyterlab-wipp-plugin-creator: 0.2.5
-    - bfio: 2.1.9
-    - filepattern: 1.4.7
-    - jupyterlab-spreadsheet-editor: 0.6.1
-    - jupyterlab-quickopen: 1.2.0
-    - jupyterlab-rtc-hub-settings: 0.1.1
-    - beakerx-tabledisplay: 2.3.11
-    - scalene: 1.5.4
+  - facets-overview: 1.0.0
+  - jupyterlab-wipp-plugin-creator: 0.2.5
+  - bfio: 2.1.9
+  - filepattern: 1.4.7
+  - jupyterlab-spreadsheet-editor: 0.6.1
+  - jupyterlab-quickopen: 1.2.0
+  - jupyterlab-rtc-hub-settings: 0.1.1
+  - beakerx-tabledisplay: 2.3.11
+  - scalene: 1.5.4
 scripts:
-    - beakerx-tabledisplay: |
-          beakerx_tabledisplay install
-    - jupyterlab-wipp-plugin-creator: |
-          jupyter server extension enable jupyterlab_wipp_plugin_creator
-    - jupyterlab-lmod: |
-          pip install git+https://github.com/ktaletsk/jupyter-lmod.git && \
-          jupyter labextension install jupyterlab-lmod
+  - beakerx-tabledisplay: |
+      beakerx_tabledisplay install
+  - jupyterlab-wipp-plugin-creator: |
+      jupyter server extension enable jupyterlab_wipp_plugin_creator
+  - jupyterlab-lmod: |
+      pip install git+https://github.com/ktaletsk/jupyter-lmod.git && \
+      jupyter labextension install jupyterlab-lmod
 addfiles:
-    - fix-permissions:
-          destination: /usr/local/bin/fix-permissions
-          permissions: 775
-          source: |
-              #!/bin/bash
-              # set permissions on a directory
-              # after any installation, if a directory needs to be (human) user-writable,
-              # run this script on it.
-              # It will make everything in the directory owned by the group ${NB_GID}
-              # and writable by that group.
-              # Deployments that want to set a specific user id can preserve permissions
-              # by adding the `--group-add users` line to `docker run`.
+  - fix-permissions:
+      destination: /usr/local/bin/fix-permissions
+      permissions: 775
+      source: |
+          #!/bin/bash
+          # set permissions on a directory
+          # after any installation, if a directory needs to be (human) user-writable,
+          # run this script on it.
+          # It will make everything in the directory owned by the group ${NB_GID}
+          # and writable by that group.
+          # Deployments that want to set a specific user id can preserve permissions
+          # by adding the `--group-add users` line to `docker run`.
 
-              # uses find to avoid touching files that already have the right permissions,
-              # which would cause massive image explosion
+          # uses find to avoid touching files that already have the right permissions,
+          # which would cause massive image explosion
 
-              # right permissions are:
-              # group=${NB_GID}
-              # AND permissions include group rwX (directory-execute)
-              # AND directories have setuid,setgid bits set
+          # right permissions are:
+          # group=${NB_GID}
+          # AND permissions include group rwX (directory-execute)
+          # AND directories have setuid,setgid bits set
 
-              set -e
+          set -e
 
-              for d in "$@"; do
-                  find "${d}" \
-                      ! \( \
-                          -group "${NB_GID}" \
-                          -a -perm -g+rwX \
-                      \) \
-                      -exec chgrp "${NB_GID}" {} \; \
-                      -exec chmod g+rwX {} \;
-                  # setuid, setgid *on directories only*
-                  find "${d}" \
-                      \( \
-                          -type d \
-                          -a ! -perm -6000 \
-                      \) \
-                      -exec chmod +6000 {} \;
-              done
-    - start-notebook.sh:
-          destination: /usr/local/bin/
-          permissions: 775
-          source: |
-              #!/bin/bash
-              # Copyright (c) Jupyter Development Team.
-              # Distributed under the terms of the Modified BSD License.
+          for d in "$@"; do
+              find "${d}" \
+                  ! \( \
+                      -group "${NB_GID}" \
+                      -a -perm -g+rwX \
+                  \) \
+                  -exec chgrp "${NB_GID}" {} \; \
+                  -exec chmod g+rwX {} \;
+              # setuid, setgid *on directories only*
+              find "${d}" \
+                  \( \
+                      -type d \
+                      -a ! -perm -6000 \
+                  \) \
+                  -exec chmod +6000 {} \;
+          done
+  - start-notebook.sh: 
+      destination: /usr/local/bin/
+      permissions: 775
+      source: |
+          #!/bin/bash
+          # Copyright (c) Jupyter Development Team.
+          # Distributed under the terms of the Modified BSD License.
 
-              set -e
+          set -e
 
-              wrapper=""
-              if [[ "${RESTARTABLE}" == "yes" ]]; then
-                  wrapper="run-one-constantly"
+          wrapper=""
+          if [[ "${RESTARTABLE}" == "yes" ]]; then
+              wrapper="run-one-constantly"
+          fi
+
+          if [[ -n "${JUPYTERHUB_API_TOKEN}" ]]; then
+              # launched by JupyterHub, use single-user entrypoint
+              exec /usr/local/bin/start-singleuser.sh "$@"
+          elif [[ -n "${JUPYTER_ENABLE_LAB}" ]]; then
+              # shellcheck disable=SC1091
+              . /usr/local/bin/start.sh ${wrapper} jupyter lab "$@"
+          else
+              echo "WARN: Jupyter Notebook deprecation notice https://github.com/jupyter/docker-stacks#jupyter-notebook-deprecation-notice."
+              # shellcheck disable=SC1091
+              . /usr/local/bin/start.sh ${wrapper} jupyter notebook "$@"
+          fi
+  - start-singleuser.sh: 
+      destination: /usr/local/bin/
+      permissions: 775
+      source: |
+          #!/bin/bash
+          # Copyright (c) Jupyter Development Team.
+          # Distributed under the terms of the Modified BSD License.
+
+          set -e
+
+          # set default ip to 0.0.0.0
+          if [[ "${NOTEBOOK_ARGS} $*" != *"--ip="* ]]; then
+              NOTEBOOK_ARGS="--ip=0.0.0.0 ${NOTEBOOK_ARGS}"
+          fi
+
+          # handle some deprecated environment variables
+          # from DockerSpawner < 0.8.
+          # These won't be passed from DockerSpawner 0.9,
+          # so avoid specifying --arg=empty-string
+          if [ -n "${NOTEBOOK_DIR}" ]; then
+              # shellcheck disable=SC2089
+              NOTEBOOK_ARGS="--notebook-dir='${NOTEBOOK_DIR}' ${NOTEBOOK_ARGS}"
+          fi
+          if [ -n "${JPY_PORT}" ]; then
+              NOTEBOOK_ARGS="--port=${JPY_PORT} ${NOTEBOOK_ARGS}"
+          fi
+          if [ -n "${JPY_USER}" ]; then
+              NOTEBOOK_ARGS="--user=${JPY_USER} ${NOTEBOOK_ARGS}"
+          fi
+          if [ -n "${JPY_COOKIE_NAME}" ]; then
+              NOTEBOOK_ARGS="--cookie-name=${JPY_COOKIE_NAME} ${NOTEBOOK_ARGS}"
+          fi
+          if [ -n "${JPY_BASE_URL}" ]; then
+              NOTEBOOK_ARGS="--base-url=${JPY_BASE_URL} ${NOTEBOOK_ARGS}"
+          fi
+          if [ -n "${JPY_HUB_PREFIX}" ]; then
+              NOTEBOOK_ARGS="--hub-prefix=${JPY_HUB_PREFIX} ${NOTEBOOK_ARGS}"
+          fi
+          if [ -n "${JPY_HUB_API_URL}" ]; then
+              NOTEBOOK_ARGS="--hub-api-url=${JPY_HUB_API_URL} ${NOTEBOOK_ARGS}"
+          fi
+          NOTEBOOK_BIN="jupyterhub-singleuser"
+
+          # shellcheck disable=SC1091,SC2086,SC2090
+          . /usr/local/bin/start.sh "${NOTEBOOK_BIN}" ${NOTEBOOK_ARGS} "$@"
+  - start.sh: 
+      destination: /usr/local/bin/
+      permissions: 775
+      source: |
+          #!/bin/bash
+          # Copyright (c) Jupyter Development Team.
+          # Distributed under the terms of the Modified BSD License.
+
+          set -e
+
+          # Exec the specified command or fall back on bash
+          if [ $# -eq 0 ]; then
+              cmd=( "bash" )
+          else
+              cmd=( "$@" )
+          fi
+
+          run-hooks () {
+              # Source scripts or run executable files in a directory
+              if [[ ! -d "$1" ]] ; then
+                  return
               fi
-
-              if [[ -n "${JUPYTERHUB_API_TOKEN}" ]]; then
-                  # launched by JupyterHub, use single-user entrypoint
-                  exec /usr/local/bin/start-singleuser.sh "$@"
-              elif [[ -n "${JUPYTER_ENABLE_LAB}" ]]; then
-                  # shellcheck disable=SC1091
-                  . /usr/local/bin/start.sh ${wrapper} jupyter lab "$@"
-              else
-                  echo "WARN: Jupyter Notebook deprecation notice https://github.com/jupyter/docker-stacks#jupyter-notebook-deprecation-notice."
-                  # shellcheck disable=SC1091
-                  . /usr/local/bin/start.sh ${wrapper} jupyter notebook "$@"
-              fi
-    - start-singleuser.sh:
-          destination: /usr/local/bin/
-          permissions: 775
-          source: |
-              #!/bin/bash
-              # Copyright (c) Jupyter Development Team.
-              # Distributed under the terms of the Modified BSD License.
-
-              set -e
-
-              # set default ip to 0.0.0.0
-              if [[ "${NOTEBOOK_ARGS} $*" != *"--ip="* ]]; then
-                  NOTEBOOK_ARGS="--ip=0.0.0.0 ${NOTEBOOK_ARGS}"
-              fi
-
-              # handle some deprecated environment variables
-              # from DockerSpawner < 0.8.
-              # These won't be passed from DockerSpawner 0.9,
-              # so avoid specifying --arg=empty-string
-              if [ -n "${NOTEBOOK_DIR}" ]; then
-                  # shellcheck disable=SC2089
-                  NOTEBOOK_ARGS="--notebook-dir='${NOTEBOOK_DIR}' ${NOTEBOOK_ARGS}"
-              fi
-              if [ -n "${JPY_PORT}" ]; then
-                  NOTEBOOK_ARGS="--port=${JPY_PORT} ${NOTEBOOK_ARGS}"
-              fi
-              if [ -n "${JPY_USER}" ]; then
-                  NOTEBOOK_ARGS="--user=${JPY_USER} ${NOTEBOOK_ARGS}"
-              fi
-              if [ -n "${JPY_COOKIE_NAME}" ]; then
-                  NOTEBOOK_ARGS="--cookie-name=${JPY_COOKIE_NAME} ${NOTEBOOK_ARGS}"
-              fi
-              if [ -n "${JPY_BASE_URL}" ]; then
-                  NOTEBOOK_ARGS="--base-url=${JPY_BASE_URL} ${NOTEBOOK_ARGS}"
-              fi
-              if [ -n "${JPY_HUB_PREFIX}" ]; then
-                  NOTEBOOK_ARGS="--hub-prefix=${JPY_HUB_PREFIX} ${NOTEBOOK_ARGS}"
-              fi
-              if [ -n "${JPY_HUB_API_URL}" ]; then
-                  NOTEBOOK_ARGS="--hub-api-url=${JPY_HUB_API_URL} ${NOTEBOOK_ARGS}"
-              fi
-              NOTEBOOK_BIN="jupyterhub-singleuser"
-
-              # shellcheck disable=SC1091,SC2086,SC2090
-              . /usr/local/bin/start.sh "${NOTEBOOK_BIN}" ${NOTEBOOK_ARGS} "$@"
-    - start.sh:
-          destination: /usr/local/bin/
-          permissions: 775
-          source: |
-              #!/bin/bash
-              # Copyright (c) Jupyter Development Team.
-              # Distributed under the terms of the Modified BSD License.
-
-              set -e
-
-              # Exec the specified command or fall back on bash
-              if [ $# -eq 0 ]; then
-                  cmd=( "bash" )
-              else
-                  cmd=( "$@" )
-              fi
-
-              run-hooks () {
-                  # Source scripts or run executable files in a directory
-                  if [[ ! -d "$1" ]] ; then
-                      return
-                  fi
-                  echo "$0: running hooks in $1"
-                  for f in "$1/"*; do
-                      case "$f" in
-                          *.sh)
+              echo "$0: running hooks in $1"
+              for f in "$1/"*; do
+                  case "$f" in
+                      *.sh)
+                          echo "$0: running $f"
+                          source "$f"
+                          ;;
+                      *)
+                          if [[ -x "$f" ]] ; then
                               echo "$0: running $f"
-                              source "$f"
-                              ;;
-                          *)
-                              if [[ -x "$f" ]] ; then
-                                  echo "$0: running $f"
-                                  "$f"
-                              else
-                                  echo "$0: ignoring $f"
-                              fi
-                              ;;
-                      esac
-                  done
-                  echo "$0: done running hooks in $1"
-              }
-
-              run-hooks /usr/local/bin/start-notebook.d
-
-              # Handle special flags if we're root
-              if [ $(id -u) == 0 ] ; then
-
-                  # Only attempt to change the jovyan username if it exists
-                  if id jovyan &> /dev/null ; then
-                      echo "Set username to: $NB_USER"
-                      usermod -d /home/$NB_USER -l $NB_USER jovyan
-                  fi
-
-                  # Handle case where provisioned storage does not have the correct permissions by default
-                  # Ex: default NFS/EFS (no auto-uid/gid)
-                  if [[ "$CHOWN_HOME" == "1" || "$CHOWN_HOME" == 'yes' ]]; then
-                      echo "Changing ownership of /home/$NB_USER to $NB_UID:$NB_GID with options '${CHOWN_HOME_OPTS}'"
-                      chown $CHOWN_HOME_OPTS $NB_UID:$NB_GID /home/$NB_USER
-                  fi
-                  if [ ! -z "$CHOWN_EXTRA" ]; then
-                      for extra_dir in $(echo $CHOWN_EXTRA | tr ',' ' '); do
-                          echo "Changing ownership of ${extra_dir} to $NB_UID:$NB_GID with options '${CHOWN_EXTRA_OPTS}'"
-                          chown $CHOWN_EXTRA_OPTS $NB_UID:$NB_GID $extra_dir
-                      done
-                  fi
-
-                  # handle home and working directory if the username changed
-                  if [[ "$NB_USER" != "jovyan" ]]; then
-                      # changing username, make sure homedir exists
-                      # (it could be mounted, and we shouldn't create it if it already exists)
-                      if [[ ! -e "/home/$NB_USER" ]]; then
-                          echo "Relocating home dir to /home/$NB_USER"
-                          mv /home/jovyan "/home/$NB_USER"
-                      fi
-                      # if workdir is in /home/jovyan, cd to /home/$NB_USER
-                      if [[ "$PWD/" == "/home/jovyan/"* ]]; then
-                          newcwd="/home/$NB_USER/${PWD:13}"
-                          echo "Setting CWD to $newcwd"
-                          cd "$newcwd"
-                      fi
-                  fi
-
-                  # Change UID of NB_USER to NB_UID if it does not match
-                  if [ "$NB_UID" != $(id -u $NB_USER) ] ; then
-                      echo "Set $NB_USER UID to: $NB_UID"
-                      usermod -u $NB_UID $NB_USER
-                  fi
-
-                  # Set NB_USER primary gid to NB_GID (after making the group).  Set
-                  # supplementary gids to NB_GID and 100.
-                  if [ "$NB_GID" != $(id -g $NB_USER) ] ; then
-                      echo "Add $NB_USER to group: $NB_GID"
-                      groupadd -g $NB_GID -o ${NB_GROUP:-${NB_USER}}
-                      usermod  -g $NB_GID -aG 100 $NB_USER
-                  fi
-
-                  # Enable sudo if requested
-                  if [[ "$GRANT_SUDO" == "1" || "$GRANT_SUDO" == 'yes' ]]; then
-                      echo "Granting $NB_USER sudo access and appending $CONDA_DIR/bin to sudo PATH"
-                      echo "$NB_USER ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/notebook
-                  fi
-
-                  # Add $CONDA_DIR/bin to sudo secure_path
-                  sed -r "s#Defaults\s+secure_path=\"([^\"]+)\"#Defaults secure_path=\"\1:$CONDA_DIR/bin\"#" /etc/sudoers | grep secure_path > /etc/sudoers.d/path
-
-                  # Exec the command as NB_USER with the PATH and the rest of
-                  # the environment preserved
-                  run-hooks /usr/local/bin/before-notebook.d
-                  echo "Executing the command: ${cmd[@]}"
-                  exec sudo -E -H -u $NB_USER PATH=$PATH XDG_CACHE_HOME=/home/$NB_USER/.cache PYTHONPATH=${PYTHONPATH:-} "${cmd[@]}"
-              else
-                  if [[ "$NB_UID" == "$(id -u jovyan)" && "$NB_GID" == "$(id -g jovyan)" ]]; then
-                      # User is not attempting to override user/group via environment
-                      # variables, but they could still have overridden the uid/gid that
-                      # container runs as. Check that the user has an entry in the passwd
-                      # file and if not add an entry.
-                      STATUS=0 && whoami &> /dev/null || STATUS=$? && true
-                      if [[ "$STATUS" != "0" ]]; then
-                          if [[ -w /etc/passwd ]]; then
-                              echo "Adding passwd file entry for $(id -u)"
-                              cat /etc/passwd | sed -e "s/^jovyan:/nayvoj:/" > /tmp/passwd
-                              echo "jovyan:x:$(id -u):$(id -g):,,,:/home/jovyan:/bin/bash" >> /tmp/passwd
-                              cat /tmp/passwd > /etc/passwd
-                              rm /tmp/passwd
+                              "$f"
                           else
-                              echo 'Container must be run with group "root" to update passwd file'
+                              echo "$0: ignoring $f"
                           fi
-                      fi
+                          ;;
+                  esac
+              done
+              echo "$0: done running hooks in $1"
+          }
 
-                      # Warn if the user isn't going to be able to write files to $HOME.
-                      if [[ ! -w /home/jovyan ]]; then
-                          echo 'Container must be run with group "users" to update files'
-                      fi
-                  else
-                      # Warn if looks like user want to override uid/gid but hasn't
-                      # run the container as root.
-                      if [[ ! -z "$NB_UID" && "$NB_UID" != "$(id -u)" ]]; then
-                          echo 'Container must be run as root to set $NB_UID'
-                      fi
-                      if [[ ! -z "$NB_GID" && "$NB_GID" != "$(id -g)" ]]; then
-                          echo 'Container must be run as root to set $NB_GID'
-                      fi
-                  fi
+          run-hooks /usr/local/bin/start-notebook.d
 
-                  # Warn if looks like user want to run in sudo mode but hasn't run
-                  # the container as root.
-                  if [[ "$GRANT_SUDO" == "1" || "$GRANT_SUDO" == 'yes' ]]; then
-                      echo 'Container must be run as root to grant sudo permissions'
-                  fi
+          # Handle special flags if we're root
+          if [ $(id -u) == 0 ] ; then
 
-                  # Execute the command
-                  run-hooks /usr/local/bin/before-notebook.d
-                  echo "Executing the command: ${cmd[@]}"
-                  exec "${cmd[@]}"
+              # Only attempt to change the jovyan username if it exists
+              if id jovyan &> /dev/null ; then
+                  echo "Set username to: $NB_USER"
+                  usermod -d /home/$NB_USER -l $NB_USER jovyan
               fi
-    - jupyter_notebook_config.py:
-          destination: /etc/jupyter/
-          permissions: 775
-          source: |
-              # Copyright (c) Jupyter Development Team.
-              # Distributed under the terms of the Modified BSD License.
 
-              from jupyter_core.paths import jupyter_data_dir
-              import subprocess
-              import os
-              import errno
-              import stat
-              import logging
-              import requests
-              import sys
-              from pathlib import Path
-              from notebook.services.contents.filemanager import FileContentsManager
-              from traitlets import Any
-              from urllib.parse import urljoin
+              # Handle case where provisioned storage does not have the correct permissions by default
+              # Ex: default NFS/EFS (no auto-uid/gid)
+              if [[ "$CHOWN_HOME" == "1" || "$CHOWN_HOME" == 'yes' ]]; then
+                  echo "Changing ownership of /home/$NB_USER to $NB_UID:$NB_GID with options '${CHOWN_HOME_OPTS}'"
+                  chown $CHOWN_HOME_OPTS $NB_UID:$NB_GID /home/$NB_USER
+              fi
+              if [ ! -z "$CHOWN_EXTRA" ]; then
+                  for extra_dir in $(echo $CHOWN_EXTRA | tr ',' ' '); do
+                      echo "Changing ownership of ${extra_dir} to $NB_UID:$NB_GID with options '${CHOWN_EXTRA_OPTS}'"
+                      chown $CHOWN_EXTRA_OPTS $NB_UID:$NB_GID $extra_dir
+                  done
+              fi
 
-              c = get_config()  # noqa: F821
-              c.ServerApp.ip = '0.0.0.0'
-              c.ServerApp.port = 8888
-              c.NotebookApp.open_browser = False
+              # handle home and working directory if the username changed
+              if [[ "$NB_USER" != "jovyan" ]]; then
+                  # changing username, make sure homedir exists
+                  # (it could be mounted, and we shouldn't create it if it already exists)
+                  if [[ ! -e "/home/$NB_USER" ]]; then
+                      echo "Relocating home dir to /home/$NB_USER"
+                      mv /home/jovyan "/home/$NB_USER"
+                  fi
+                  # if workdir is in /home/jovyan, cd to /home/$NB_USER
+                  if [[ "$PWD/" == "/home/jovyan/"* ]]; then
+                      newcwd="/home/$NB_USER/${PWD:13}"
+                      echo "Setting CWD to $newcwd"
+                      cd "$newcwd"
+                  fi
+              fi
 
-              # https://github.com/jupyter/notebook/issues/3130
-              c.FileContentsManager.delete_to_trash = False
+              # Change UID of NB_USER to NB_UID if it does not match
+              if [ "$NB_UID" != $(id -u $NB_USER) ] ; then
+                  echo "Set $NB_USER UID to: $NB_UID"
+                  usermod -u $NB_UID $NB_USER
+              fi
 
-              # Generate a self-signed certificate
-              if "GEN_CERT" in os.environ:
-                  dir_name = jupyter_data_dir()
-                  pem_file = os.path.join(dir_name, "notebook.pem")
-                  try:
-                      os.makedirs(dir_name)
-                  except OSError as exc:  # Python >2.5
-                      if exc.errno == errno.EEXIST and os.path.isdir(dir_name):
-                          pass
-                      else:
-                          raise
+              # Set NB_USER primary gid to NB_GID (after making the group).  Set
+              # supplementary gids to NB_GID and 100.
+              if [ "$NB_GID" != $(id -g $NB_USER) ] ; then
+                  echo "Add $NB_USER to group: $NB_GID"
+                  groupadd -g $NB_GID -o ${NB_GROUP:-${NB_USER}}
+                  usermod  -g $NB_GID -aG 100 $NB_USER
+              fi
 
-                  # Generate an openssl.cnf file to set the distinguished name
-                  cnf_file = os.path.join(os.getenv("CONDA_DIR", "/usr/lib"), "ssl", "openssl.cnf")
-                  if not os.path.isfile(cnf_file):
-                      with open(cnf_file, "w") as fh:
-                          fh.write(
-                              """\
-              [req]
-              distinguished_name = req_distinguished_name
-              [req_distinguished_name]
+              # Enable sudo if requested
+              if [[ "$GRANT_SUDO" == "1" || "$GRANT_SUDO" == 'yes' ]]; then
+                  echo "Granting $NB_USER sudo access and appending $CONDA_DIR/bin to sudo PATH"
+                  echo "$NB_USER ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/notebook
+              fi
+
+              # Add $CONDA_DIR/bin to sudo secure_path
+              sed -r "s#Defaults\s+secure_path=\"([^\"]+)\"#Defaults secure_path=\"\1:$CONDA_DIR/bin\"#" /etc/sudoers | grep secure_path > /etc/sudoers.d/path
+
+              # Exec the command as NB_USER with the PATH and the rest of
+              # the environment preserved
+              run-hooks /usr/local/bin/before-notebook.d
+              echo "Executing the command: ${cmd[@]}"
+              exec sudo -E -H -u $NB_USER PATH=$PATH XDG_CACHE_HOME=/home/$NB_USER/.cache PYTHONPATH=${PYTHONPATH:-} "${cmd[@]}"
+          else
+              if [[ "$NB_UID" == "$(id -u jovyan)" && "$NB_GID" == "$(id -g jovyan)" ]]; then
+                  # User is not attempting to override user/group via environment
+                  # variables, but they could still have overridden the uid/gid that
+                  # container runs as. Check that the user has an entry in the passwd
+                  # file and if not add an entry.
+                  STATUS=0 && whoami &> /dev/null || STATUS=$? && true
+                  if [[ "$STATUS" != "0" ]]; then
+                      if [[ -w /etc/passwd ]]; then
+                          echo "Adding passwd file entry for $(id -u)"
+                          cat /etc/passwd | sed -e "s/^jovyan:/nayvoj:/" > /tmp/passwd
+                          echo "jovyan:x:$(id -u):$(id -g):,,,:/home/jovyan:/bin/bash" >> /tmp/passwd
+                          cat /tmp/passwd > /etc/passwd
+                          rm /tmp/passwd
+                      else
+                          echo 'Container must be run with group "root" to update passwd file'
+                      fi
+                  fi
+
+                  # Warn if the user isn't going to be able to write files to $HOME.
+                  if [[ ! -w /home/jovyan ]]; then
+                      echo 'Container must be run with group "users" to update files'
+                  fi
+              else
+                  # Warn if looks like user want to override uid/gid but hasn't
+                  # run the container as root.
+                  if [[ ! -z "$NB_UID" && "$NB_UID" != "$(id -u)" ]]; then
+                      echo 'Container must be run as root to set $NB_UID'
+                  fi
+                  if [[ ! -z "$NB_GID" && "$NB_GID" != "$(id -g)" ]]; then
+                      echo 'Container must be run as root to set $NB_GID'
+                  fi
+              fi
+
+              # Warn if looks like user want to run in sudo mode but hasn't run
+              # the container as root.
+              if [[ "$GRANT_SUDO" == "1" || "$GRANT_SUDO" == 'yes' ]]; then
+                  echo 'Container must be run as root to grant sudo permissions'
+              fi
+
+              # Execute the command
+              run-hooks /usr/local/bin/before-notebook.d
+              echo "Executing the command: ${cmd[@]}"
+              exec "${cmd[@]}"
+          fi
+  - jupyter_notebook_config.py: 
+      destination: /etc/jupyter/
+      permissions: 775
+      source: |
+          # Copyright (c) Jupyter Development Team.
+          # Distributed under the terms of the Modified BSD License.
+
+          from jupyter_core.paths import jupyter_data_dir
+          import subprocess
+          import os
+          import errno
+          import stat
+          import logging
+          import requests
+          import sys
+          from pathlib import Path
+          from notebook.services.contents.filemanager import FileContentsManager
+          from traitlets import Any
+          from urllib.parse import urljoin
+
+          c = get_config()  # noqa: F821
+          c.ServerApp.ip = '0.0.0.0'
+          c.ServerApp.port = 8888
+          c.NotebookApp.open_browser = False
+
+          # https://github.com/jupyter/notebook/issues/3130
+          c.FileContentsManager.delete_to_trash = False
+
+          # Generate a self-signed certificate
+          if "GEN_CERT" in os.environ:
+              dir_name = jupyter_data_dir()
+              pem_file = os.path.join(dir_name, "notebook.pem")
+              try:
+                  os.makedirs(dir_name)
+              except OSError as exc:  # Python >2.5
+                  if exc.errno == errno.EEXIST and os.path.isdir(dir_name):
+                      pass
+                  else:
+                      raise
+
+              # Generate an openssl.cnf file to set the distinguished name
+              cnf_file = os.path.join(os.getenv("CONDA_DIR", "/usr/lib"), "ssl", "openssl.cnf")
+              if not os.path.isfile(cnf_file):
+                  with open(cnf_file, "w") as fh:
+                      fh.write(
+                          """\
+          [req]
+          distinguished_name = req_distinguished_name
+          [req_distinguished_name]
+          """
+                      )
+
+              # Generate a certificate if one doesn't exist on disk
+              subprocess.check_call(
+                  [
+                      "openssl",
+                      "req",
+                      "-new",
+                      "-newkey=rsa:2048",
+                      "-days=365",
+                      "-nodes",
+                      "-x509",
+                      "-subj=/C=XX/ST=XX/L=XX/O=generated/CN=generated",
+                      f"-keyout={pem_file}",
+                      f"-out={pem_file}",
+                  ]
+              )
+              # Restrict access to the file
+              os.chmod(pem_file, stat.S_IRUSR | stat.S_IWUSR)
+              c.NotebookApp.certfile = pem_file
+
+          # Change default umask for all subprocesses of the notebook server if set in
+          # the environment
+          if "NB_UMASK" in os.environ:
+              os.umask(int(os.environ["NB_UMASK"], 8))
+
+          class HookFileContentsManager(FileContentsManager):
+              """ Jupyter Server Hook Class for database synchronization with Notebooks Hub
+              Note: os_path, os_old_path, and os_new_path only track relative file paths instead of absolute 
+              So we have to prepend the full path resolution with Path().resolve()
               """
-                          )
-
-                  # Generate a certificate if one doesn't exist on disk
-                  subprocess.check_call(
-                      [
-                          "openssl",
-                          "req",
-                          "-new",
-                          "-newkey=rsa:2048",
-                          "-days=365",
-                          "-nodes",
-                          "-x509",
-                          "-subj=/C=XX/ST=XX/L=XX/O=generated/CN=generated",
-                          f"-keyout={pem_file}",
-                          f"-out={pem_file}",
-                      ]
-                  )
-                  # Restrict access to the file
-                  os.chmod(pem_file, stat.S_IRUSR | stat.S_IWUSR)
-                  c.NotebookApp.certfile = pem_file
-
-              # Change default umask for all subprocesses of the notebook server if set in
-              # the environment
-              if "NB_UMASK" in os.environ:
-                  os.umask(int(os.environ["NB_UMASK"], 8))
-
-              class HookFileContentsManager(FileContentsManager):
-                  """ Jupyter Server Hook Class for database synchronization with Notebooks Hub
-                  Note: os_path, os_old_path, and os_new_path only track relative file paths instead of absolute 
-                  So we have to prepend the full path resolution with Path().resolve()
-                  """
-                  def __init__(self, *args, **kwargs): 
-                      super().__init__(*args, **kwargs)
-                      assert "POLUS_NOTEBOOKS_HUB_API" in os.environ
-                      
-                      polus_notebooks_hub_api = os.environ["POLUS_NOTEBOOKS_HUB_API"]
-                      self.delete_uri = urljoin(polus_notebooks_hub_api, '/file-data/delete-file')
-                      self.rename_uri = urljoin(polus_notebooks_hub_api, '/file-data/rename-file')
-                      self.save_uri = urljoin(polus_notebooks_hub_api, '/file-data/new-file')
-                      self.tracked_paths = ['/home/jovyan/work/', '/home/jovyan/shared/notebooks']
+              def __init__(self, *args, **kwargs): 
+                  super().__init__(*args, **kwargs)
+                  assert "POLUS_NOTEBOOKS_HUB_API" in os.environ
                   
-                  def is_inside_tracked_paths(self, path_to_test):
+                  polus_notebooks_hub_api = os.environ["POLUS_NOTEBOOKS_HUB_API"]
+                  self.delete_uri = urljoin(polus_notebooks_hub_api, '/file-data/delete-file')
+                  self.rename_uri = urljoin(polus_notebooks_hub_api, '/file-data/rename-file')
+                  self.save_uri = urljoin(polus_notebooks_hub_api, '/file-data/new-file')
+                  self.tracked_paths = ['/home/jovyan/work/', '/home/jovyan/shared/notebooks']
+              
+              def is_inside_tracked_paths(self, path_to_test):
 
-                      for path in self.tracked_paths:
-                          if os.path.samefile(os.path.commonpath([path, path_to_test]), path):
-                              return True 
-                      
-                      return False
+                  for path in self.tracked_paths:
+                      if os.path.samefile(os.path.commonpath([path, path_to_test]), path):
+                          return True 
                   
-                  def script_post_delete(self, os_path):
+                  return False
+              
+              def script_post_delete(self, os_path):
 
-                      os_path = str(Path().resolve()) + os_path
-                      
-                      if not (self.is_inside_tracked_paths(os_path)):
-                          return
-                      
+                  os_path = str(Path().resolve()) + os_path
+                  
+                  if not (self.is_inside_tracked_paths(os_path)):
+                      return
+                  
+                  try:
+                      r = requests.post(self.delete_uri, json={"user": os.getenv("JUPYTERHUB_USER"), "filePath": os_path}, timeout=1)
+                  except Exception as e:
+                      logging.getLogger().error(f"Failed to delete {os_path} from Notebooks Hub", exc_info=e)
+
+              def script_post_save(self, os_path):
+                  
+                  os_path = str(Path().resolve()) + os_path
+
+                  if not (self.is_inside_tracked_paths(os_path)):
+                      return
+
+                  try:
+                      r = requests.post(self.save_uri, json={"user": os.getenv("JUPYTERHUB_USER"), "filePath": os_path}, timeout=1)
+                  except Exception as e:
+                      logging.getLogger().error(f"Failed to register {os_path} with Notebooks Hub", exc_info=e)
+
+              def script_post_rename(self, os_old_path, os_new_path):
+                  
+                  os_old_path = str(Path().resolve()) + '/' + os_old_path
+                  os_new_path = str(Path().resolve()) + '/' + os_new_path
+
+                  #If the new path is not in the tracked paths, delete the old path.
+                  if not (self.is_inside_tracked_paths(os_new_path)):
                       try:
-                          r = requests.post(self.delete_uri, json={"user": os.getenv("JUPYTERHUB_USER"), "filePath": os_path}, timeout=1)
+                          r = requests.post(self.delete_uri, json={"user": os.getenv("JUPYTERHUB_USER"), "filePath": os_old_path}, timeout=1)
+                          return
                       except Exception as e:
                           logging.getLogger().error(f"Failed to delete {os_path} from Notebooks Hub", exc_info=e)
 
-                  def script_post_save(self, os_path):
-                      
-                      os_path = str(Path().resolve()) + os_path
+                  #If the new path is inside the tracked paths, create the new path and disregard the old path since it does not exist in our db.
+                  try:
+                      r = requests.post(self.rename_uri, json={"user": os.getenv("JUPYTERHUB_USER"), "oldPath": os_old_path, "newPath": os_new_path}, timeout=1)
+                  except Exception as e:
+                      logging.getLogger().error(f"Failed to change path from {os_old_path} to {os_new_path} with Notebooks Hub", exc_info=e)
 
-                      if not (self.is_inside_tracked_paths(os_path)):
-                          return
+              def delete(self, os_path):
+                  returned = super(HookFileContentsManager, self).delete_file(os_path)
+                  self.script_post_delete(os_path)
+                  return returned
 
-                      try:
-                          r = requests.post(self.save_uri, json={"user": os.getenv("JUPYTERHUB_USER"), "filePath": os_path}, timeout=1)
-                      except Exception as e:
-                          logging.getLogger().error(f"Failed to register {os_path} with Notebooks Hub", exc_info=e)
+              def save(self, model, os_path):
+                  returned = super(HookFileContentsManager, self).save(model, path=os_path)
+                  self.script_post_save(os_path)
+                  return returned
 
-                  def script_post_rename(self, os_old_path, os_new_path):
-                      
-                      os_old_path = str(Path().resolve()) + '/' + os_old_path
-                      os_new_path = str(Path().resolve()) + '/' + os_new_path
+              def rename(self, os_old_path, os_new_path):
+                  returned = super(HookFileContentsManager, self).rename_file(os_old_path, os_new_path)
+                  self.script_post_rename(os_old_path, os_new_path)
+                  return returned
 
-                      #If the new path is not in the tracked paths, delete the old path.
-                      if not (self.is_inside_tracked_paths(os_new_path)):
-                          try:
-                              r = requests.post(self.delete_uri, json={"user": os.getenv("JUPYTERHUB_USER"), "filePath": os_old_path}, timeout=1)
-                              return
-                          except Exception as e:
-                              logging.getLogger().error(f"Failed to delete {os_path} from Notebooks Hub", exc_info=e)
-
-                      #If the new path is inside the tracked paths, create the new path and disregard the old path since it does not exist in our db.
-                      try:
-                          r = requests.post(self.rename_uri, json={"user": os.getenv("JUPYTERHUB_USER"), "oldPath": os_old_path, "newPath": os_new_path}, timeout=1)
-                      except Exception as e:
-                          logging.getLogger().error(f"Failed to change path from {os_old_path} to {os_new_path} with Notebooks Hub", exc_info=e)
-
-                  def delete(self, os_path):
-                      returned = super(HookFileContentsManager, self).delete_file(os_path)
-                      self.script_post_delete(os_path)
-                      return returned
-
-                  def save(self, model, os_path):
-                      returned = super(HookFileContentsManager, self).save(model, path=os_path)
-                      self.script_post_save(os_path)
-                      return returned
-
-                  def rename(self, os_old_path, os_new_path):
-                      returned = super(HookFileContentsManager, self).rename_file(os_old_path, os_new_path)
-                      self.script_post_rename(os_old_path, os_new_path)
-                      return returned
-
-              #### Set contents manager class ####   
-              if os.getenv("POLUS_NOTEBOOKS_HUB_FILE_LOGGING_ENABLED") == "True":
-                  c.NotebookApp.contents_manager_class = HookFileContentsManager
-    - z01_StdEnv.sh:
-          destination: /etc/profile.d
-          permissions: 775
-          source: |
-              if [ -z "$__Init_Default_Modules" ]; then
-                 export __Init_Default_Modules=1;
-                 
-                 module --initial_load restore
-              else
-                 module refresh
-              fi
+          #### Set contents manager class ####   
+          if os.getenv("POLUS_NOTEBOOKS_HUB_FILE_LOGGING_ENABLED") == "True":
+              c.NotebookApp.contents_manager_class = HookFileContentsManager
+  - z01_StdEnv.sh: 
+      destination: /etc/profile.d
+      permissions: 775
+      source: |
+          if [ -z "$__Init_Default_Modules" ]; then
+             export __Init_Default_Modules=1;
+             
+             module --initial_load restore
+          else
+             module refresh
+          fi
