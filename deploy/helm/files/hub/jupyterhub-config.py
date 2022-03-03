@@ -216,6 +216,31 @@ roles.append({
     'scopes': ['inherit'],
 })
 
+roles.append({
+    "name": "admin-role",
+    "scopes": [
+        "admin:users",
+        "admin:groups",
+        "admin:servers"
+    ],
+    "services": [
+        "service-token"
+    ],
+})
+
+roles.append({
+    "name": "cull-idle-role",
+    "scopes": [
+        "list:users",
+        "read:users:activity",
+        "read:servers",
+        "delete:servers",
+    ],
+    "services": [
+        "cull-idle",
+    ],
+})
+
 c.JupyterHub.load_groups = groups
 c.JupyterHub.load_roles = roles
 
@@ -243,17 +268,16 @@ if get_config("hub.polusNotebooksHub.enabled"):
         'POLUS_NOTEBOOKS_HUB_FILE_LOGGING_ENABLED': True
     })
 
+# Configure JupyterHub services
 c.JupyterHub.services = [
     {
         # Service to shutdown inactive Notebook servers after --timeout seconds
         'name': 'cull-idle',
-        'admin': True,
         'command': [sys.executable, '/srv/jupyterhub/config/cull-idle-servers.py', '--timeout=3600'],
     },
     {
         # Service admin token (used in Notebooks Hub and config-wrapper)
         'name': 'service-token',
-        'admin': True,
         'api_token': get_secret_value("adminToken"),
     }
 ]
