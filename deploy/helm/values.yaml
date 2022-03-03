@@ -6,9 +6,9 @@ global:
 hub:
   image:
     name: labshare/jupyterhub
-    tag: "0.8.1.18"
+    tag: "0.8.2.3"
 
-  notebookVersion: 0.9.0
+  notebookVersion: 0.9.1
 
   storage:
     storagePerUser: 1Gi
