@@ -60,8 +60,9 @@ hub:
 # Configurations for PostgreSQL dependency
 postgresql:
   enabled: true
-  postgresqlDatabase: postgresdb
-  postgresqlUsername: postgres
-  postgresqlPassword: postgres
+  auth:
+    database: postgresd
+    username: postgres
+    password: postgres
   persistence:
     size: 1Gi

@@ -127,10 +127,10 @@ c.JupyterHub.hub_connect_ip='jupyterhub-internal'
 
 # configure the JupyterHub database
 if get_config("postgresql.enabled"):
-    postgres_db = get_config("postgresql.postgresqlDatabase")
-    postgres_user = get_config("postgresql.postgresqlUsername")
-    postgres_password = get_config("postgresql.postgresqlPassword")
-    c.JupyterHub.db_url = 'postgresql://' + postgres_user + ':' + postgres_password + '@' + release_name + '-postgresql-headless' + '/' + postgres_db
+    postgres_db = get_config("postgresql.auth.database")
+    postgres_user = get_config("postgresql.auth.username")
+    postgres_password = get_config("postgresql.auth.password")
+    c.JupyterHub.db_url = 'postgresql://' + postgres_user + ':' + postgres_password + '@' + release_name + '-postgresql-hl' + '/' + postgres_db
 else:
     c.JupyterHub.db_url = "sqlite:///jupyterhub.sqlite"
 
