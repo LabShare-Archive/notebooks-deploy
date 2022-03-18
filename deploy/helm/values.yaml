@@ -1,8 +1,3 @@
-# Global chart configuration
-global:
-  # Preconfigured Kubernetes Storage Class
-  storageClass: aws-efs
-
 hub:
   image:
     name: labshare/jupyterhub
@@ -11,6 +6,7 @@ hub:
   notebookVersion: 0.9.1
 
   storage:
+    storageClass: aws-efs
     storagePerUser: 1Gi
     sharedNotebooksStorage: 5Gi
     modulesStorage: 100Gi
@@ -64,5 +60,8 @@ postgresql:
     database: postgresd
     username: postgres
     password: postgres
-  persistence:
-    size: 1Gi
+  primary:
+    persistence:
+      # Storage class might be different from hub.storage.storageClass to accomodate the issue in EFS CSI driver
+      storageClass: aws-efs
+      size: 1Gi

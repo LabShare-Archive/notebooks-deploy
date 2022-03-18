@@ -33,7 +33,7 @@ c.KubeSpawner.pod_name_template = f'{release_name}-{chart_name}-lab-{{username}}
 
 # Per-user storage configuration
 c.KubeSpawner.pvc_name_template = 'claim-{username}'
-c.KubeSpawner.storage_class = get_config("global.storageClass")
+c.KubeSpawner.storage_class = get_config("hub.storage.storageClass")
 c.KubeSpawner.storage_capacity = get_config("hub.storage.storagePerUser")
 c.KubeSpawner.storage_access_modes = ['ReadWriteOnce']
 c.KubeSpawner.storage_pvc_ensure = True

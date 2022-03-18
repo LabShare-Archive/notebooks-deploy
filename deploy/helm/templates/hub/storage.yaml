@@ -6,7 +6,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: {{include "jupyterhub.hub-shared-notebooks-pvc.fullname" .}}
 spec:
-  storageClassName: {{.Values.global.storageClass}}
+  storageClassName: {{.Values.hub.storage.storageClass}}
   accessModes:
     - ReadWriteMany
   resources:
@@ -21,7 +21,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: {{include "jupyterhub.hub-modules-pvc.fullname" .}}
 spec:
-  storageClassName: {{.Values.global.storageClass}}
+  storageClassName: {{.Values.hub.storage.storageClass}}
   accessModes:
     - ReadWriteMany
   resources:
