@@ -158,6 +158,21 @@ else:
     # Fallback to DummyAuthenticator if no auth is configured
     c.JupyterHub.authenticator_class = DummyAuthenticator
 
+# Configure JupyterHub services
+c.JupyterHub.services = [
+    {
+        # Service to shutdown inactive Notebook servers after --timeout seconds
+        'name': 'cull-idle',
+        'command': [sys.executable, '/srv/jupyterhub/config/cull-idle-servers.py', '--timeout=36000'],
+    },
+    {
+        # Service admin token (used in Notebooks Hub and config-wrapper)
+        'name': 'service-token',
+        'api_token': get_secret_value("adminToken"),
+    }
+]
+
+
 # Read the users and groups backed up by config-wrapper
 try:
     infile = open('users.pkl','rb')
@@ -267,17 +282,3 @@ if get_config("hub.polusNotebooksHub.enabled"):
         'POLUS_NOTEBOOKS_HUB_API': 'POLUS_NOTEBOOKS_HUB_API_VALUE',
         'POLUS_NOTEBOOKS_HUB_FILE_LOGGING_ENABLED': True
     })
-
-# Configure JupyterHub services
-c.JupyterHub.services = [
-    {
-        # Service to shutdown inactive Notebook servers after --timeout seconds
-        'name': 'cull-idle',
-        'command': [sys.executable, '/srv/jupyterhub/config/cull-idle-servers.py', '--timeout=3600'],
-    },
-    {
-        # Service admin token (used in Notebooks Hub and config-wrapper)
-        'name': 'service-token',
-        'api_token': get_secret_value("adminToken"),
-    }
-]
