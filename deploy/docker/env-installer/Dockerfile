@@ -6,6 +6,12 @@ RUN chmod +x /usr/bin/jq
 
 USER $NB_UID
 
+USER root
+RUN wget https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 -O /usr/bin/jq
+RUN chmod +x /usr/bin/jq
+
+USER $NB_UID
+
 # Install easybuild
 ENV EASYBUILD_PREFIX=/opt/modules \
     EASYBUILD_BUILDPATH=/tmp/easybuild
