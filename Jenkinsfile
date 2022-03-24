@@ -88,9 +88,9 @@ pipeline {
                             sh 'mkdir -p manifests'
 
                             // CPU-based image
-                            sh "railyard assemble -t Dockerfile.template -b base.yaml -p manifests"
+                            sh "railyard assemble -t Dockerfile.template -b base.yaml -a values.yaml -p manifests"
                             // GPU-based image
-                            // sh "railyard assemble -t Dockerfile.template -b base-gpu.yaml " + stacks.collect{"-a " + it}.join(" ") + " -p manifests"
+                            // sh "railyard assemble -t Dockerfile.template -b base_gpu.yaml -a values.yaml -p manifests"
                         }
                     }
                 }
@@ -176,18 +176,6 @@ pipeline {
                 }
             }
         }
-        // stage('Deploy JupyterHub to NCATS') {
-        //     agent {
-        //         node { label 'ls-api-ci.ncats' }
-        //     }
-        //     steps {
-        //         configFileProvider([configFile(fileId: 'env-single-node', targetLocation: '.env')]) {
-        //             withKubeConfig([credentialsId: 'ncats_polus2']) {
-        //                 sh "bash ./deploy.sh"
-        //             }
-        //         }
-        //     }
-        // }
     }
     post {
         always {

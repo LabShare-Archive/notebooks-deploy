@@ -29,9 +29,9 @@ User documentation is available [here](docs/source/index.md).
 ## CI and versioning
 
 ### Notebook image versioning
-Modular notebook images are built in two steps: base image for a given VERSION: `labshare/polyglot-notebook:base-VERSION` and modular images built on top of base: `labshare/polyglot-notebook:HASH`. Base image contains package managers (conda, pip, etc), Jupyter and commonly used packages. Modular images contain additional packages and scripts to install, mainly to enable different Jupyter kernels and basic functionality for different programming languages. Modular images are built according to Dockerfile.template and collection of "stacks" - .yaml files containing dependencies to be included in modular images. Stacks are combined together and their dependencies are put in Dockerfile.template to create a working Docker build directory using the `polus-railyard` tool.
+JupyterLab server Docker images are built for a given semantic VERSION=major.minor.patch: `labshare/polyglot-notebook:VERSION`. Notebook image contains package managers (conda, pip, etc), Jupyter and some essential packages. Starting with VERSION=0.9.0 all software dependencies and various Jupyter kernels for running notebook cells are provided by environment modules (Lmod), which are built and installed separately on a mounted volume.
 
-Both base and modular images are going to get built by CI when `deploy/docker/notebook/VERSION` is changed. VERSION is updated for any changes in either base or any of the stacks. Build will take a long time since there is a large number of stack combinations involved.
+Notebook image is built by CI every time `deploy/docker/notebook/VERSION` is changed.
 
 ### Rolling out new version
-The notebook version deployed is controlled separately through release tag and config variable `NOTEBOOK_VERSION_DEPLOY`. To deploy new version, you need to tag the commit where VERSION was changed with tag `notebook-x.y.z`, then update config variable `NOTEBOOK_VERSION_DEPLOY=notebook-x.y.z` and rerun the CI pipeline. Stacks from that tagged commit will now be mounted to the JupyterHub container.
+The notebook version deployed to the cluster is controlled separately via config variable `NOTEBOOK_VERSION_DEPLOY`. To deploy new version, you need to update config variable `NOTEBOOK_VERSION_DEPLOY=x.y.z` and rerun the CI pipeline.
