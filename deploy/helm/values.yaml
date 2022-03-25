@@ -40,16 +40,30 @@ hub:
     adminUsers: null
   
   # Environment modules to be installed by the post-install Hook
-  envModules: 
+  envModules:
     {}
-    # maven:
-    #   - 3.6.3
+    # cpp:
+    #   - 0.1.0
     # java:
     #   - 1.8.0_312
     #   - 11.0.13
     #   - 17.0.1
-    # cpp:
+    # js:
     #   - 0.1.0
+    # julia:
+    #   - 0.1.0
+    # maven:
+    #   - 3.6.3
+    # octave:
+    #   - 0.1.0
+    # pyimagej:
+    #   - 0.1.0
+    # pythonDataScience:
+    #   - 0.1.0
+    # r:
+    #   - 0.1.0
+    # rdkit:
+    #   - 0.1.0 
 
   wipp:
     enabled: false
