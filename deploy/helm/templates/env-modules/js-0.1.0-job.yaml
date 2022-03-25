@@ -1,9 +1,9 @@
-{{- if hasKey .Values.hub.envModules "cpp" }}
-{{- if has "0.1.0" .Values.hub.envModules.cpp }}
+{{- if hasKey .Values.hub.envModules "js" }}
+{{- if has "0.1.0" .Values.hub.envModules.js }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-env-installer-cpp-0-1-0-conda-env
+  name: {{ .Release.Name }}-env-installer-js-0-1-0-conda-env
   labels:
     app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
@@ -15,7 +15,7 @@ metadata:
     "helm.sh/hook-delete-policy": hook-succeeded
 data:
   conda-environment-definition.yaml: |
-    name: cpp-env
+    name: js-env
 
     channels:
       - conda-forge
@@ -23,40 +23,38 @@ data:
       - defaults
 
     dependencies:
-      - xeus-cling=0.11.0
-      - xwidgets=0.24.2
-      - xtensor=0.21.10
-      - xtl=0.6.23
-      - xframe=0.3.0
+      - nodejs
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-env-installer-cpp-0-1-0-modulefile
+  name: {{ .Release.Name }}-env-installer-js-0-1-0-modulefile
   labels:
     app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
     app.kubernetes.io/version: {{ .Chart.AppVersion }}
     helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
   annotations:
+    # This is what defines this resource as a hook. Without this line, the
+    # job is considered part of the release.
     "helm.sh/hook": post-install
     "helm.sh/hook-weight": "-6"
     "helm.sh/hook-delete-policy": hook-succeeded
 data:
   modulefile.lua: |
     help([[
-    Conda environment with C++ kernels
+    JavaScript
     ]])
 
     whatis("Version: 0.1.0")
-    whatis("Keywords: C++")
+    whatis("Keywords: Scientific/Engineering, JavaScript")
 
-    prepend_path("JUPYTER_PATH", "/opt/modules/conda-envs/cpp-0.1.0/share/jupyter")
+    prepend_path("JUPYTER_PATH", "/opt/modules/conda-envs/js-0.1.0/share/jupyter")
 ---
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ .Release.Name }}-env-installer-cpp-0-1-0-installer
+  name: {{ .Release.Name }}-env-installer-js-0-1-0-installer
   labels:
     app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
@@ -82,15 +80,22 @@ spec:
           args:
             - mkdir -p $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION;
               mamba env create --prefix $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION --file /home/jovyan/conda-environment-definition.yaml;
+              $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/bin/npm --prefix $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION install -g ijavascript;
+              $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/bin/ijsinstall --spec-path=full;
+              mkdir -p $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/share/jupyter/kernels/$ENV_MODULE_NAME;
+              mv /home/jovyan/.local/share/jupyter/kernels/javascript/* $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/share/jupyter/kernels/$ENV_MODULE_NAME;
+              jq --arg kn "$KERNEL_DISPLAY_NAME" --arg node_exec "$EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/bin/node" '.display_name = $kn | .argv[0] = $node_exec' $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/share/jupyter/kernels/$ENV_MODULE_NAME/kernel.json > tmp.$$.json && mv tmp.$$.json $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/share/jupyter/kernels/$ENV_MODULE_NAME/kernel.json;
               mkdir -p $EXT_MOD_PATH/modulefiles/$ENV_MODULE_NAME;
               cp /home/jovyan/modulefile.lua $EXT_MOD_PATH/modulefiles/$ENV_MODULE_NAME/$ENV_MODULE_VERSION.lua
           env:
             - name: EXT_MOD_PATH
               value: /opt/modules
             - name: ENV_MODULE_NAME
-              value: cpp
+              value: js
             - name: ENV_MODULE_VERSION
               value: 0.1.0
+            - name: KERNEL_DISPLAY_NAME
+              value: "JavaScript 0.1.0"
           volumeMounts:
             - mountPath: /opt/modules
               name: modules-volume
@@ -107,13 +112,13 @@ spec:
             claimName: {{ .Release.Name }}-{{ .Chart.Name }}-hub-{{ .Values.hub.storage.modulesClaimName }}
         - name: conda-environment-definition
           configMap:
-            name: {{ .Release.Name }}-env-installer-cpp-0-1-0-conda-env
+            name: {{ .Release.Name }}-env-installer-js-0-1-0-conda-env
             items:
               - key: conda-environment-definition.yaml
                 path: conda-environment-definition.yaml
         - name: modulefile
           configMap:
-            name: {{ .Release.Name }}-env-installer-cpp-0-1-0-modulefile
+            name: {{ .Release.Name }}-env-installer-js-0-1-0-modulefile
             items:
               - key: modulefile.lua
                 path: modulefile.lua

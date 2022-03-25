@@ -1,9 +1,9 @@
-{{- if hasKey .Values.hub.envModules "cpp" }}
-{{- if has "0.1.0" .Values.hub.envModules.cpp }}
+{{- if hasKey .Values.hub.envModules "octave" }}
+{{- if has "0.1.0" .Values.hub.envModules.octave }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-env-installer-cpp-0-1-0-conda-env
+  name: {{ .Release.Name }}-env-installer-octave-0-1-0-conda-env
   labels:
     app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
@@ -15,7 +15,7 @@ metadata:
     "helm.sh/hook-delete-policy": hook-succeeded
 data:
   conda-environment-definition.yaml: |
-    name: cpp-env
+    name: octave-env
 
     channels:
       - conda-forge
@@ -23,16 +23,14 @@ data:
       - defaults
 
     dependencies:
-      - xeus-cling=0.11.0
-      - xwidgets=0.24.2
-      - xtensor=0.21.10
-      - xtl=0.6.23
-      - xframe=0.3.0
+      - octave=6.4.0
+      - octave_kernel=0.34.0
+      - texinfo=6.8
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-env-installer-cpp-0-1-0-modulefile
+  name: {{ .Release.Name }}-env-installer-octave-0-1-0-modulefile
   labels:
     app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
@@ -45,19 +43,22 @@ metadata:
 data:
   modulefile.lua: |
     help([[
-    Conda environment with C++ kernels
+    Octave
     ]])
 
     whatis("Version: 0.1.0")
-    whatis("Keywords: C++")
+    whatis("Keywords: Scientific/Engineering, Octave")
 
-    prepend_path("JUPYTER_PATH", "/opt/modules/conda-envs/cpp-0.1.0/share/jupyter")
+    prepend_path("PATH", "/opt/modules/conda-envs/octave-0.1.0/aliases")
+    setenv("DISPLAY", ":0.0")
+    prepend_path("JUPYTER_PATH", "/opt/modules/conda-envs/octave-0.1.0/share/jupyter")
+
 ---
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ .Release.Name }}-env-installer-cpp-0-1-0-installer
-  labels:
+  name: {{ .Release.Name }}-env-installer-octave-0-1-0-installer
+    labels:
     app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
     app.kubernetes.io/version: {{ .Chart.AppVersion }}
@@ -82,15 +83,23 @@ spec:
           args:
             - mkdir -p $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION;
               mamba env create --prefix $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION --file /home/jovyan/conda-environment-definition.yaml;
+              mkdir -p $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/aliases;
+              ln -s $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/bin/octave $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/aliases/octave;
+              rm -rf $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/share/jupyter/labextensions;
+              rm -rf $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/share/jupyter/nbextensions;
+              rm -rf $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/share/jupyter/kernels/python3;
+              jq --arg kn "$KERNEL_DISPLAY_NAME" --arg py_exec "$EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/bin/python" '.display_name = $kn | .argv[0] = $py_exec' $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/share/jupyter/kernels/$ENV_MODULE_NAME/kernel.json > tmp.$$.json && mv tmp.$$.json $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/share/jupyter/kernels/$ENV_MODULE_NAME/kernel.json;
               mkdir -p $EXT_MOD_PATH/modulefiles/$ENV_MODULE_NAME;
               cp /home/jovyan/modulefile.lua $EXT_MOD_PATH/modulefiles/$ENV_MODULE_NAME/$ENV_MODULE_VERSION.lua
           env:
             - name: EXT_MOD_PATH
               value: /opt/modules
             - name: ENV_MODULE_NAME
-              value: cpp
+              value: octave
             - name: ENV_MODULE_VERSION
               value: 0.1.0
+            - name: KERNEL_DISPLAY_NAME
+              value: "Octave 0.1.0"
           volumeMounts:
             - mountPath: /opt/modules
               name: modules-volume
@@ -107,13 +116,13 @@ spec:
             claimName: {{ .Release.Name }}-{{ .Chart.Name }}-hub-{{ .Values.hub.storage.modulesClaimName }}
         - name: conda-environment-definition
           configMap:
-            name: {{ .Release.Name }}-env-installer-cpp-0-1-0-conda-env
+            name: {{ .Release.Name }}-env-installer-octave-0-1-0-conda-env
             items:
               - key: conda-environment-definition.yaml
                 path: conda-environment-definition.yaml
         - name: modulefile
           configMap:
-            name: {{ .Release.Name }}-env-installer-cpp-0-1-0-modulefile
+            name: {{ .Release.Name }}-env-installer-octave-0-1-0-modulefile
             items:
               - key: modulefile.lua
                 path: modulefile.lua

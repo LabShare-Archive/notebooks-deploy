@@ -1,38 +1,9 @@
-{{- if hasKey .Values.hub.envModules "cpp" }}
-{{- if has "0.1.0" .Values.hub.envModules.cpp }}
+{{- if hasKey .Values.hub.envModules "julia" }}
+{{- if has "0.1.0" .Values.hub.envModules.julia }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-env-installer-cpp-0-1-0-conda-env
-  labels:
-    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
-    app.kubernetes.io/instance: {{ .Release.Name | quote }}
-    app.kubernetes.io/version: {{ .Chart.AppVersion }}
-    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-  annotations:
-    "helm.sh/hook": post-install
-    "helm.sh/hook-weight": "-6"
-    "helm.sh/hook-delete-policy": hook-succeeded
-data:
-  conda-environment-definition.yaml: |
-    name: cpp-env
-
-    channels:
-      - conda-forge
-      - bioconda
-      - defaults
-
-    dependencies:
-      - xeus-cling=0.11.0
-      - xwidgets=0.24.2
-      - xtensor=0.21.10
-      - xtl=0.6.23
-      - xframe=0.3.0
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ .Release.Name }}-env-installer-cpp-0-1-0-modulefile
+  name: {{ .Release.Name }}-env-installer-julia-0-1-0-modulefile
   labels:
     app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
@@ -45,18 +16,19 @@ metadata:
 data:
   modulefile.lua: |
     help([[
-    Conda environment with C++ kernels
+    Julia
     ]])
 
     whatis("Version: 0.1.0")
-    whatis("Keywords: C++")
+    whatis("Keywords: Scientific/Engineering, Julia")
 
-    prepend_path("JUPYTER_PATH", "/opt/modules/conda-envs/cpp-0.1.0/share/jupyter")
+    prepend_path("JULIA_DEPOT_PATH", "/opt/modules/julia-0.1.0/pkg")
+    prepend_path("JUPYTER_PATH", "/opt/modules/julia-0.1.0/share/jupyter")
 ---
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ .Release.Name }}-env-installer-cpp-0-1-0-installer
+  name: {{ .Release.Name }}-env-installer-julia-0-1-0-installer
   labels:
     app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
@@ -80,23 +52,30 @@ spec:
           image: labshare/polyglot-notebook:env-installer-0.9.1
           command: ["sh", "-c"]
           args:
-            - mkdir -p $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION;
-              mamba env create --prefix $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION --file /home/jovyan/conda-environment-definition.yaml;
+            - mkdir -p $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION;
+              curl -fL -o julia.tar.gz "https://julialang-s3.julialang.org/bin/linux/x64/1.7/julia-1.7.2-linux-x86_64.tar.gz";
+              tar -xzf julia.tar.gz -C $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION --strip-components 1;
+              mkdir -p $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/pkg;
+              $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/bin/julia -e 'import Pkg; Pkg.update(); Pkg.add([(;name="Feather"), (;name="DataFrames"), (;name="NamedArrays"), (;name="RDatasets"), (;name="IJulia"), (;name="InstantiateFromURL"), (;name="HDF5"), (;name="LanguageServer")])';
+              mkdir -p $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/share/jupyter/kernels/julia;
+              mv /home/jovyan/.local/share/jupyter/kernels/julia-1.7/* $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/share/jupyter/kernels/$ENV_MODULE_NAME;
+              jq --arg kn "$KERNEL_DISPLAY_NAME" '.display_name = $kn' $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/share/jupyter/kernels/$ENV_MODULE_NAME/kernel.json > tmp.$$.json && mv tmp.$$.json $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/share/jupyter/kernels/$ENV_MODULE_NAME/kernel.json;
               mkdir -p $EXT_MOD_PATH/modulefiles/$ENV_MODULE_NAME;
               cp /home/jovyan/modulefile.lua $EXT_MOD_PATH/modulefiles/$ENV_MODULE_NAME/$ENV_MODULE_VERSION.lua
           env:
             - name: EXT_MOD_PATH
               value: /opt/modules
             - name: ENV_MODULE_NAME
-              value: cpp
+              value: julia
             - name: ENV_MODULE_VERSION
               value: 0.1.0
+            - name: KERNEL_DISPLAY_NAME
+              value: "Julia 0.1.0"
+            - name: JULIA_DEPOT_PATH
+              value: /opt/modules/julia-0.1.0/pkg
           volumeMounts:
             - mountPath: /opt/modules
               name: modules-volume
-            - mountPath: /home/jovyan/conda-environment-definition.yaml
-              name: conda-environment-definition
-              subPath: conda-environment-definition.yaml
             - mountPath: /home/jovyan/modulefile.lua
               name: modulefile
               subPath: modulefile.lua
@@ -105,15 +84,9 @@ spec:
         - name: modules-volume
           persistentVolumeClaim:
             claimName: {{ .Release.Name }}-{{ .Chart.Name }}-hub-{{ .Values.hub.storage.modulesClaimName }}
-        - name: conda-environment-definition
-          configMap:
-            name: {{ .Release.Name }}-env-installer-cpp-0-1-0-conda-env
-            items:
-              - key: conda-environment-definition.yaml
-                path: conda-environment-definition.yaml
         - name: modulefile
           configMap:
-            name: {{ .Release.Name }}-env-installer-cpp-0-1-0-modulefile
+            name: {{ .Release.Name }}-env-installer-julia-0-1-0-modulefile
             items:
               - key: modulefile.lua
                 path: modulefile.lua
