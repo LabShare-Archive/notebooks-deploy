@@ -1,0 +1,123 @@
+{{- if hasKey .Values.hub.envModules "cpp" }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-env-installer-cpp-0-1-0-conda-env
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "-6"
+    "helm.sh/hook-delete-policy": hook-succeeded
+data:
+  conda-environment-definition.yaml: |
+    name: cpp-env
+
+    channels:
+      - conda-forge
+      - bioconda
+      - defaults
+
+    dependencies:
+      - xeus-cling=0.11.0
+      - xwidgets=0.24.2
+      - xtensor=0.21.10
+      - xtl=0.6.23
+      - xframe=0.3.0
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-env-installer-cpp-0-1-0-modulefile
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+  annotations:
+    # This is what defines this resource as a hook. Without this line, the
+    # job is considered part of the release.
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "-6"
+    "helm.sh/hook-delete-policy": hook-succeeded
+data:
+  modulefile.lua: |
+    help([[
+    Conda environment with C++ kernels
+    ]])
+
+    whatis("Version: 0.1.0")
+    whatis("Keywords: C++")
+
+    prepend_path("JUPYTER_PATH", "/opt/modules/conda-envs/cpp-0.1.0/share/jupyter")
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-env-installer-cpp-0-1-0-installer
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      name: "{{ .Release.Name }}"
+      labels:
+        app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+        app.kubernetes.io/instance: {{ .Release.Name | quote }}
+        helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    spec:
+      containers:
+        - name: env-installer-test
+          image: labshare/polyglot-notebook:env-installer-0.9.1
+          command: ["sh", "-c"]
+          args:
+            - mkdir -p $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION;
+              mamba env create --prefix $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION --file /home/jovyan/conda-environment-definition.yaml;
+              mkdir -p $EXT_MOD_PATH/modulefiles/$ENV_MODULE_NAME;
+              cp /home/jovyan/modulefile.lua $EXT_MOD_PATH/modulefiles/$ENV_MODULE_NAME/$ENV_MODULE_VERSION.lua
+          env:
+            - name: EXT_MOD_PATH
+              value: /opt/modules
+            - name: ENV_MODULE_NAME
+              value: cpp
+            - name: ENV_MODULE_VERSION
+              value: 0.1.0
+          volumeMounts:
+            - mountPath: /opt/modules
+              name: modules-volume
+            - mountPath: /home/jovyan/conda-environment-definition.yaml
+              name: conda-environment-definition
+              subPath: conda-environment-definition.yaml
+            - mountPath: /home/jovyan/modulefile.lua
+              name: modulefile
+              subPath: modulefile.lua
+      restartPolicy: Never
+      volumes:
+        - name: modules-volume
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-{{ .Chart.Name }}-hub-{{ .Values.hub.storage.modulesClaimName }}
+        - name: conda-environment-definition
+          configMap:
+            name: {{ .Release.Name }}-env-installer-cpp-0-1-0-conda-env
+            items:
+              - key: conda-environment-definition.yaml
+                path: conda-environment-definition.yaml
+        - name: modulefile
+          configMap:
+            name: {{ .Release.Name }}-env-installer-cpp-0-1-0-modulefile
+            items:
+              - key: modulefile.lua
+                path: modulefile.lua
+  backoffLimit: 4
+{{- end }}
