@@ -40,7 +40,8 @@ hub:
     adminUsers: null
   
   # Environment modules to be installed by the post-install Hook
-  envModules:
+  envModules: 
+    {}
     # maven:
     #   - 3.6.3
     # java:
