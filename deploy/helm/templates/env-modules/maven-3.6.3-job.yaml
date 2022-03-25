@@ -12,7 +12,7 @@ metadata:
   annotations:
     # This is what defines this resource as a hook. Without this line, the
     # job is considered part of the release.
-    "helm.sh/hook": post-install
+    "helm.sh/hook": post-install, post-upgrade
     "helm.sh/hook-weight": "-6"
     "helm.sh/hook-delete-policy": hook-succeeded
 data:
@@ -40,7 +40,7 @@ metadata:
   annotations:
     # This is what defines this resource as a hook. Without this line, the
     # job is considered part of the release.
-    "helm.sh/hook": post-install
+    "helm.sh/hook": post-install, post-upgrade
     "helm.sh/hook-weight": "-5"
     "helm.sh/hook-delete-policy": hook-succeeded
 spec:
@@ -57,11 +57,14 @@ spec:
           image: labshare/polyglot-notebook:env-installer-0.9.1
           command: ["sh", "-c"]
           args:
-            - mkdir -p $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION;
-              wget https://archive.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz;
-              tar xvf apache-maven-3.6.3-bin.tar.gz -C $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION;
-              mkdir -p $EXT_MOD_PATH/modulefiles/$ENV_MODULE_NAME;
-              cp /home/jovyan/modulefile.lua $EXT_MOD_PATH/modulefiles/$ENV_MODULE_NAME/$ENV_MODULE_VERSION.lua
+            - if [ ! -d "$EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION" ];
+              then
+                  mkdir -p $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION;
+                  wget https://archive.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz;
+                  tar xvf apache-maven-3.6.3-bin.tar.gz -C $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION;
+                  mkdir -p $EXT_MOD_PATH/modulefiles/$ENV_MODULE_NAME;
+                  cp /home/jovyan/modulefile.lua $EXT_MOD_PATH/modulefiles/$ENV_MODULE_NAME/$ENV_MODULE_VERSION.lua;
+              fi
           env:
             - name: EXT_MOD_PATH
               value: /opt/modules

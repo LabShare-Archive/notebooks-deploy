@@ -10,7 +10,7 @@ metadata:
     app.kubernetes.io/version: {{ .Chart.AppVersion }}
     helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
   annotations:
-    "helm.sh/hook": post-install
+    "helm.sh/hook": post-install, post-upgrade
     "helm.sh/hook-weight": "-6"
     "helm.sh/hook-delete-policy": hook-succeeded
 data:
@@ -35,7 +35,7 @@ metadata:
     app.kubernetes.io/version: {{ .Chart.AppVersion }}
     helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
   annotations:
-    "helm.sh/hook": post-install
+    "helm.sh/hook": post-install, post-upgrade
     "helm.sh/hook-weight": "-5"
     "helm.sh/hook-delete-policy": hook-succeeded
 spec:
@@ -52,16 +52,19 @@ spec:
           image: labshare/polyglot-notebook:env-installer-0.9.1
           command: ["sh", "-c"]
           args:
-            - mkdir -p $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION;
-              curl -fL -o julia.tar.gz "https://julialang-s3.julialang.org/bin/linux/x64/1.7/julia-1.7.2-linux-x86_64.tar.gz";
-              tar -xzf julia.tar.gz -C $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION --strip-components 1;
-              mkdir -p $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/pkg;
-              $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/bin/julia -e 'import Pkg; Pkg.update(); Pkg.add([(;name="Feather"), (;name="DataFrames"), (;name="NamedArrays"), (;name="RDatasets"), (;name="IJulia"), (;name="InstantiateFromURL"), (;name="HDF5"), (;name="LanguageServer")])';
-              mkdir -p $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/share/jupyter/kernels/julia;
-              mv /home/jovyan/.local/share/jupyter/kernels/julia-1.7/* $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/share/jupyter/kernels/$ENV_MODULE_NAME;
-              jq --arg kn "$KERNEL_DISPLAY_NAME" '.display_name = $kn' $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/share/jupyter/kernels/$ENV_MODULE_NAME/kernel.json > tmp.$$.json && mv tmp.$$.json $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/share/jupyter/kernels/$ENV_MODULE_NAME/kernel.json;
-              mkdir -p $EXT_MOD_PATH/modulefiles/$ENV_MODULE_NAME;
-              cp /home/jovyan/modulefile.lua $EXT_MOD_PATH/modulefiles/$ENV_MODULE_NAME/$ENV_MODULE_VERSION.lua
+            - if [ ! -d "$EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION" ];
+              then
+                  mkdir -p $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION;
+                  curl -fL -o julia.tar.gz "https://julialang-s3.julialang.org/bin/linux/x64/1.7/julia-1.7.2-linux-x86_64.tar.gz";
+                  tar -xzf julia.tar.gz -C $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION --strip-components 1;
+                  mkdir -p $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/pkg;
+                  $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/bin/julia -e 'import Pkg; Pkg.update(); Pkg.add([(;name="Feather"), (;name="DataFrames"), (;name="NamedArrays"), (;name="RDatasets"), (;name="IJulia"), (;name="InstantiateFromURL"), (;name="HDF5"), (;name="LanguageServer")])';
+                  mkdir -p $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/share/jupyter/kernels/julia;
+                  mv /home/jovyan/.local/share/jupyter/kernels/julia-1.7/* $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/share/jupyter/kernels/$ENV_MODULE_NAME;
+                  jq --arg kn "$KERNEL_DISPLAY_NAME" '.display_name = $kn' $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/share/jupyter/kernels/$ENV_MODULE_NAME/kernel.json > tmp.$$.json && mv tmp.$$.json $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/share/jupyter/kernels/$ENV_MODULE_NAME/kernel.json;
+                  mkdir -p $EXT_MOD_PATH/modulefiles/$ENV_MODULE_NAME;
+                  cp /home/jovyan/modulefile.lua $EXT_MOD_PATH/modulefiles/$ENV_MODULE_NAME/$ENV_MODULE_VERSION.lua;
+              fi
           env:
             - name: EXT_MOD_PATH
               value: /opt/modules

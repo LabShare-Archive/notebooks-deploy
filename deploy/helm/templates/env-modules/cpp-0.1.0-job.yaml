@@ -10,7 +10,7 @@ metadata:
     app.kubernetes.io/version: {{ .Chart.AppVersion }}
     helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
   annotations:
-    "helm.sh/hook": post-install
+    "helm.sh/hook": post-install, post-upgrade
     "helm.sh/hook-weight": "-6"
     "helm.sh/hook-delete-policy": hook-succeeded
 data:
@@ -39,7 +39,7 @@ metadata:
     app.kubernetes.io/version: {{ .Chart.AppVersion }}
     helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
   annotations:
-    "helm.sh/hook": post-install
+    "helm.sh/hook": post-install, post-upgrade
     "helm.sh/hook-weight": "-6"
     "helm.sh/hook-delete-policy": hook-succeeded
 data:
@@ -63,7 +63,7 @@ metadata:
     app.kubernetes.io/version: {{ .Chart.AppVersion }}
     helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
   annotations:
-    "helm.sh/hook": post-install
+    "helm.sh/hook": post-install, post-upgrade
     "helm.sh/hook-weight": "-5"
     "helm.sh/hook-delete-policy": hook-succeeded
 spec:
@@ -80,10 +80,13 @@ spec:
           image: labshare/polyglot-notebook:env-installer-0.9.1
           command: ["sh", "-c"]
           args:
-            - mkdir -p $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION;
-              mamba env create --prefix $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION --file /home/jovyan/conda-environment-definition.yaml;
-              mkdir -p $EXT_MOD_PATH/modulefiles/$ENV_MODULE_NAME;
-              cp /home/jovyan/modulefile.lua $EXT_MOD_PATH/modulefiles/$ENV_MODULE_NAME/$ENV_MODULE_VERSION.lua
+            - if [ ! -d "$EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION" ];
+              then
+                  mkdir -p $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION;
+                  mamba env create --prefix $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION --file /home/jovyan/conda-environment-definition.yaml;
+                  mkdir -p $EXT_MOD_PATH/modulefiles/$ENV_MODULE_NAME;
+                  cp /home/jovyan/modulefile.lua $EXT_MOD_PATH/modulefiles/$ENV_MODULE_NAME/$ENV_MODULE_VERSION.lua;
+              fi
           env:
             - name: EXT_MOD_PATH
               value: /opt/modules
