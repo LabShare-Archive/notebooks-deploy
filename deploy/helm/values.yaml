@@ -10,8 +10,8 @@ hub:
     storagePerUser: 1Gi
     sharedNotebooksStorage: 5Gi
     modulesStorage: 100Gi
-    sharedNotebooksClaimName: shared-notebooks-pv-claim
-    modulesClaimName: modules-pv-claim
+    sharedNotebooksClaimName: shared-notebooks
+    modulesClaimName: modules
   
   # JupyterHub external Service configuration
   service:
@@ -38,7 +38,15 @@ hub:
     clientSecret: null
     callbackURL: null
     adminUsers: null
-    
+  
+  # Environment modules to be installed by the post-install Hook
+  envModules:
+    maven:
+      - 3.6.3
+    java:
+      - 11.0.3
+    cpp:
+      - 0.1.0
 
   wipp:
     enabled: false

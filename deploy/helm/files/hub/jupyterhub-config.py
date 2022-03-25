@@ -32,7 +32,7 @@ c.KubeSpawner.singleuser_image_pull_policy= 'Always'
 c.KubeSpawner.pod_name_template = f'{release_name}-{chart_name}-lab-{{username}}--{{servername}}'
 
 # Per-user storage configuration
-c.KubeSpawner.pvc_name_template = 'claim-{username}'
+c.KubeSpawner.pvc_name_template = f'{release_name}-{chart_name}-hub-{{username}}'
 c.KubeSpawner.storage_class = get_config("hub.storage.storageClass")
 c.KubeSpawner.storage_capacity = get_config("hub.storage.storagePerUser")
 c.KubeSpawner.storage_access_modes = ['ReadWriteOnce']
@@ -43,7 +43,7 @@ c.KubeSpawner.volumes = [
     {
         'name': 'volume-{username}',
         'persistentVolumeClaim': {
-            'claimName': 'claim-{username}'
+            'claimName': f'{release_name}-{chart_name}-hub-{{username}}'
         }
     },
     {
