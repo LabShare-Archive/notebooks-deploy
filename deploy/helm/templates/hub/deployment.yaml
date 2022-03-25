@@ -44,7 +44,7 @@ spec:
             - name: OAUTH_CALLBACK_URL
               value: {{ .Values.hub.auth.callbackURL }}
             - name: ADMIN_USERS
-              value: {{ .Values.hub.auth.adminUsers }}
+              value: {{ join ";" .Values.hub.auth.adminUsers }}
             - name: OAUTH2_AUTHORIZE_URL
               value: "$(AUTH_URL)/auth/$(TENANT)/authorize"
             - name: OAUTH2_TOKEN_URL
