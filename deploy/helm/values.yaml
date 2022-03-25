@@ -41,12 +41,14 @@ hub:
   
   # Environment modules to be installed by the post-install Hook
   envModules:
-    maven:
-      - 3.6.3
-    java:
-      - 11.0.3
-    cpp:
-      - 0.1.0
+    # maven:
+    #   - 3.6.3
+    # java:
+    #   - 1.8.0_312
+    #   - 11.0.13
+    #   - 17.0.1
+    # cpp:
+    #   - 0.1.0
 
   wipp:
     enabled: false
