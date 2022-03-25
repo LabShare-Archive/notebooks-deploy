@@ -1,4 +1,5 @@
 {{- if hasKey .Values.hub.envModules "maven" }}
+{{- if has "3.6.3" .Values.hub.envModules.maven }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -86,4 +87,5 @@ spec:
               - key: modulefile.lua
                 path: modulefile.lua
   backoffLimit: 4
+{{- end }}
 {{- end }}

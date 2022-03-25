@@ -1,4 +1,5 @@
 {{- if hasKey .Values.hub.envModules "java" }}
+{{- if has "11.0.13" .Values.hub.envModules.java }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -90,4 +91,5 @@ spec:
               - key: modulefile.lua
                 path: modulefile.lua
   backoffLimit: 4
+{{- end }}
 {{- end }}
