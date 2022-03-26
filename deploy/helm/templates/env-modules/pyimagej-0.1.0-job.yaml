@@ -88,7 +88,7 @@ spec:
           image: labshare/polyglot-notebook:env-installer-0.9.1
           command: ["sh", "-c"]
           args:
-            - if [ ! -d "$EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION" ];
+            - if [ ! -f "$EXT_MOD_PATH/modulefiles/$ENV_MODULE_NAME/$ENV_MODULE_VERSION.lua" ];
               then
                   mkdir -p $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION;
                   mamba env create --prefix $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION --file /home/jovyan/conda-environment-definition.yaml;

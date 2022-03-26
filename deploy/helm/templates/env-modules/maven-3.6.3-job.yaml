@@ -57,7 +57,7 @@ spec:
           image: labshare/polyglot-notebook:env-installer-0.9.1
           command: ["sh", "-c"]
           args:
-            - if [ ! -d "$EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION" ];
+            - if [ ! -f "$EXT_MOD_PATH/modulefiles/$ENV_MODULE_NAME/$ENV_MODULE_VERSION.lua" ];
               then
                   mkdir -p $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION;
                   wget https://archive.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz;

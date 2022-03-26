@@ -40,6 +40,10 @@ hub:
     adminUsers: null
   
   # Environment modules to be installed by the post-install Hook
+  # When installing or upgrading with Environment modules, please specify --timeout 2h
+  # NOTE: when adding new installers to the list, the will be installed, existing ones will be skipped
+  #       However, there is no deletion functionality yet. 
+  #       You will need to manually delete files created by the installer
   envModules:
     {}
     # cpp:
