@@ -97,6 +97,7 @@ conda:
   - typing-extensions: 4.1.1
   - jupyterhub: 2.1.1
   - voila: 0.3.4
+  - jinja2: 3.0.3
   - panel: 0.12.6
   - texlab: 3.3.2
   - chktex: 1.7.6
