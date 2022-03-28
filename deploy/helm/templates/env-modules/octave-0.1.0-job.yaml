@@ -58,7 +58,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: {{ .Release.Name }}-env-installer-octave-0-1-0-installer
-    labels:
+  labels:
     app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
     app.kubernetes.io/version: {{ .Chart.AppVersion }}
