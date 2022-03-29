@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: maven-3-6-3-modulefile
+data:
+  modulefile.lua: |
+    help([[
+    Maven package manager
+    ]])
+
+    whatis("Version: 3.6.3")
+    whatis("Keywords: Scientific/Engineering, Java, Maven")
+
+    prepend_path("PATH", "/opt/modules/maven-3.6.3/apache-maven-3.6.3/bin")
+    setenv("MAVEN_HOME", "/opt/modules/maven-3.6.3/apache-maven-3.6.3")
+    setenv("MAVEN_CONFIG", "$HOME/.m2")
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: maven-3-6-3-installer-job
+spec:
+  template:
+    spec:
+      containers:
+        - name: env-installer-test
+          image: labshare/polyglot-notebook:env-installer-0.9.1
+          command: ["sh", "-c"]
+          args:
+            - mkdir -p $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION;
+              wget https://archive.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz;
+              tar xvf apache-maven-3.6.3-bin.tar.gz -C $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION;
+              mkdir -p $EXT_MOD_PATH/modulefiles/$ENV_MODULE_NAME;
+              cp /home/jovyan/modulefile.lua $EXT_MOD_PATH/modulefiles/$ENV_MODULE_NAME/$ENV_MODULE_VERSION.lua
+          env:
+            - name: EXT_MOD_PATH
+              value: /opt/modules
+            - name: ENV_MODULE_NAME
+              value: maven
+            - name: ENV_MODULE_VERSION
+              value: 3.6.3
+          volumeMounts:
+            - mountPath: /opt/modules
+              name: modules-volume
+            - mountPath: /home/jovyan/modulefile.lua
+              name: modulefile
+              subPath: modulefile.lua
+      restartPolicy: Never
+      volumes:
+        - name: modules-volume
+          persistentVolumeClaim:
+            claimName: modules-pv-claim
+        - name: modulefile
+          configMap:
+            name: maven-3-6-3-modulefile
+            items:
+              - key: modulefile.lua
+                path: modulefile.lua
+  backoffLimit: 4

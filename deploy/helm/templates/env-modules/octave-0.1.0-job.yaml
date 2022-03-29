@@ -1,0 +1,134 @@
+{{- if hasKey .Values.hub.envModules "octave" }}
+{{- if has "0.1.0" .Values.hub.envModules.octave }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-env-installer-octave-0-1-0-conda-env
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+  annotations:
+    "helm.sh/hook": post-install, post-upgrade
+    "helm.sh/hook-weight": "-6"
+    "helm.sh/hook-delete-policy": hook-succeeded
+data:
+  conda-environment-definition.yaml: |
+    name: octave-env
+
+    channels:
+      - conda-forge
+      - bioconda
+      - defaults
+
+    dependencies:
+      - octave=6.4.0
+      - octave_kernel=0.34.0
+      - texinfo=6.8
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-env-installer-octave-0-1-0-modulefile
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+  annotations:
+    "helm.sh/hook": post-install, post-upgrade
+    "helm.sh/hook-weight": "-6"
+    "helm.sh/hook-delete-policy": hook-succeeded
+data:
+  modulefile.lua: |
+    help([[
+    Octave
+    ]])
+
+    whatis("Version: 0.1.0")
+    whatis("Keywords: Scientific/Engineering, Octave")
+
+    prepend_path("PATH", "/opt/modules/conda-envs/octave-0.1.0/aliases")
+    setenv("DISPLAY", ":0.0")
+    prepend_path("JUPYTER_PATH", "/opt/modules/conda-envs/octave-0.1.0/share/jupyter")
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-env-installer-octave-0-1-0-installer
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+  annotations:
+    "helm.sh/hook": post-install, post-upgrade
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    metadata:
+      name: "{{ .Release.Name }}"
+      labels:
+        app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+        app.kubernetes.io/instance: {{ .Release.Name | quote }}
+        helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    spec:
+      containers:
+        - name: env-installer-test
+          image: labshare/polyglot-notebook:env-installer-0.9.1
+          command: ["sh", "-c"]
+          args:
+            - if [ ! -f "$EXT_MOD_PATH/modulefiles/$ENV_MODULE_NAME/$ENV_MODULE_VERSION.lua" ];
+              then
+                  mkdir -p $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION;
+                  mamba env create --prefix $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION --file /home/jovyan/conda-environment-definition.yaml;
+                  mkdir -p $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/aliases;
+                  ln -s $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/bin/octave $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/aliases/octave;
+                  rm -rf $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/share/jupyter/labextensions;
+                  rm -rf $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/share/jupyter/nbextensions;
+                  rm -rf $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/share/jupyter/kernels/python3;
+                  jq --arg kn "$KERNEL_DISPLAY_NAME" --arg py_exec "$EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/bin/python" '.display_name = $kn | .argv[0] = $py_exec' $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/share/jupyter/kernels/$ENV_MODULE_NAME/kernel.json > tmp.$$.json && mv tmp.$$.json $EXT_MOD_PATH/conda-envs/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/share/jupyter/kernels/$ENV_MODULE_NAME/kernel.json;
+                  mkdir -p $EXT_MOD_PATH/modulefiles/$ENV_MODULE_NAME;
+                  cp /home/jovyan/modulefile.lua $EXT_MOD_PATH/modulefiles/$ENV_MODULE_NAME/$ENV_MODULE_VERSION.lua;
+              fi
+          env:
+            - name: EXT_MOD_PATH
+              value: /opt/modules
+            - name: ENV_MODULE_NAME
+              value: octave
+            - name: ENV_MODULE_VERSION
+              value: 0.1.0
+            - name: KERNEL_DISPLAY_NAME
+              value: "Octave 0.1.0"
+          volumeMounts:
+            - mountPath: /opt/modules
+              name: modules-volume
+            - mountPath: /home/jovyan/conda-environment-definition.yaml
+              name: conda-environment-definition
+              subPath: conda-environment-definition.yaml
+            - mountPath: /home/jovyan/modulefile.lua
+              name: modulefile
+              subPath: modulefile.lua
+      restartPolicy: Never
+      volumes:
+        - name: modules-volume
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-{{ .Chart.Name }}-hub-{{ .Values.hub.storage.modulesClaimName }}
+        - name: conda-environment-definition
+          configMap:
+            name: {{ .Release.Name }}-env-installer-octave-0-1-0-conda-env
+            items:
+              - key: conda-environment-definition.yaml
+                path: conda-environment-definition.yaml
+        - name: modulefile
+          configMap:
+            name: {{ .Release.Name }}-env-installer-octave-0-1-0-modulefile
+            items:
+              - key: modulefile.lua
+                path: modulefile.lua
+  backoffLimit: 4
+{{- end }}
+{{- end }}

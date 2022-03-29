@@ -1,0 +1,98 @@
+{{- if hasKey .Values.hub.envModules "julia" }}
+{{- if has "0.1.0" .Values.hub.envModules.julia }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-env-installer-julia-0-1-0-modulefile
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+  annotations:
+    "helm.sh/hook": post-install, post-upgrade
+    "helm.sh/hook-weight": "-6"
+    "helm.sh/hook-delete-policy": hook-succeeded
+data:
+  modulefile.lua: |
+    help([[
+    Julia
+    ]])
+
+    whatis("Version: 0.1.0")
+    whatis("Keywords: Scientific/Engineering, Julia")
+
+    prepend_path("JULIA_DEPOT_PATH", "/opt/modules/julia-0.1.0/pkg")
+    prepend_path("JUPYTER_PATH", "/opt/modules/julia-0.1.0/share/jupyter")
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-env-installer-julia-0-1-0-installer
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+  annotations:
+    "helm.sh/hook": post-install, post-upgrade
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    metadata:
+      name: "{{ .Release.Name }}"
+      labels:
+        app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+        app.kubernetes.io/instance: {{ .Release.Name | quote }}
+        helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    spec:
+      containers:
+        - name: env-installer-test
+          image: labshare/polyglot-notebook:env-installer-0.9.1
+          command: ["sh", "-c"]
+          args:
+            - if [ ! -f "$EXT_MOD_PATH/modulefiles/$ENV_MODULE_NAME/$ENV_MODULE_VERSION.lua" ];
+              then
+                  mkdir -p $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION;
+                  curl -fL -o julia.tar.gz "https://julialang-s3.julialang.org/bin/linux/x64/1.7/julia-1.7.2-linux-x86_64.tar.gz";
+                  tar -xzf julia.tar.gz -C $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION --strip-components 1;
+                  mkdir -p $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/pkg;
+                  $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/bin/julia -e 'import Pkg; Pkg.update(); Pkg.add([(;name="Feather"), (;name="DataFrames"), (;name="NamedArrays"), (;name="RDatasets"), (;name="IJulia"), (;name="InstantiateFromURL"), (;name="HDF5"), (;name="LanguageServer")])';
+                  mkdir -p $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/share/jupyter/kernels/julia;
+                  mv /home/jovyan/.local/share/jupyter/kernels/julia-1.7/* $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/share/jupyter/kernels/$ENV_MODULE_NAME;
+                  jq --arg kn "$KERNEL_DISPLAY_NAME" '.display_name = $kn' $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/share/jupyter/kernels/$ENV_MODULE_NAME/kernel.json > tmp.$$.json && mv tmp.$$.json $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION/share/jupyter/kernels/$ENV_MODULE_NAME/kernel.json;
+                  mkdir -p $EXT_MOD_PATH/modulefiles/$ENV_MODULE_NAME;
+                  cp /home/jovyan/modulefile.lua $EXT_MOD_PATH/modulefiles/$ENV_MODULE_NAME/$ENV_MODULE_VERSION.lua;
+              fi
+          env:
+            - name: EXT_MOD_PATH
+              value: /opt/modules
+            - name: ENV_MODULE_NAME
+              value: julia
+            - name: ENV_MODULE_VERSION
+              value: 0.1.0
+            - name: KERNEL_DISPLAY_NAME
+              value: "Julia 0.1.0"
+            - name: JULIA_DEPOT_PATH
+              value: /opt/modules/julia-0.1.0/pkg
+          volumeMounts:
+            - mountPath: /opt/modules
+              name: modules-volume
+            - mountPath: /home/jovyan/modulefile.lua
+              name: modulefile
+              subPath: modulefile.lua
+      restartPolicy: Never
+      volumes:
+        - name: modules-volume
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-{{ .Chart.Name }}-hub-{{ .Values.hub.storage.modulesClaimName }}
+        - name: modulefile
+          configMap:
+            name: {{ .Release.Name }}-env-installer-julia-0-1-0-modulefile
+            items:
+              - key: modulefile.lua
+                path: modulefile.lua
+  backoffLimit: 4
+{{- end }}
+{{- end }}
