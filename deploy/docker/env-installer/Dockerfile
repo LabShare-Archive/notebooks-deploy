@@ -1,7 +1,7 @@
 FROM python:3.9
 RUN pip wheel easybuild-easyconfigs==4.5.3
 
-FROM labshare/polyglot-notebook:0.9.3
+FROM labshare/polyglot-notebook:NOTEBOOK_VERSION_LATEST_VALUE
 
 USER root
 RUN wget https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 -O /usr/bin/jq
