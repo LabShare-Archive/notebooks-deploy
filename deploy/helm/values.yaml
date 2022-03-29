@@ -1,0 +1,96 @@
+hub:
+  image:
+    name: labshare/jupyterhub
+    tag: "0.8.2.3"
+
+  notebookVersion: 0.9.1
+
+  storage:
+    storageClass: aws-efs
+    storagePerUser: 1Gi
+    sharedNotebooksStorage: 5Gi
+    modulesStorage: 100Gi
+    sharedNotebooksClaimName: shared-notebooks
+    modulesClaimName: modules
+  
+  # JupyterHub external Service configuration
+  service:
+    # Kubernetes Service type (NodePort, ClusterIP, LoadBalancer, ExternalName)
+    type: LoadBalancer
+
+  # JupyterHub Ingress configuration for external access, uses Nginx Ingress by default
+  # TODO: Enable configuration for alternative Ingress solutions  
+  ingress:
+    # Using Ingress is optional and requires preconfiguration within the cluster
+    enabled: false
+    # Host name for external access
+    hostName: null
+  
+  # LabShare Auth configurations
+  auth:
+    enabled: false
+    # Auth service url
+    url: null
+    # Unique tenant configured in LS-Auth
+    tenant: null
+    # Unique client ID configured in the above tenant
+    clientID: null
+    clientSecret: null
+    callbackURL: null
+    adminUsers: null
+  
+  # Environment modules to be installed by the post-install Hook
+  # When installing or upgrading with Environment modules, please specify --timeout 2h
+  # NOTE: when adding new installers to the list, the will be installed, existing ones will be skipped
+  #       However, there is no deletion functionality yet. 
+  #       You will need to manually delete files created by the installer
+  envModules:
+    {}
+    # cpp:
+    #   - 0.1.0
+    # java:
+    #   - 1.8.0_312
+    #   - 11.0.13
+    #   - 17.0.1
+    # js:
+    #   - 0.1.0
+    # julia:
+    #   - 0.1.0
+    # maven:
+    #   - 3.6.3
+    # octave:
+    #   - 0.1.0
+    # pyimagej:
+    #   - 0.1.0
+    # pythonDataScience:
+    #   - 0.1.0
+    # r:
+    #   - 0.1.0
+    # rdkit:
+    #   - 0.1.0 
+
+  wipp:
+    enabled: false
+    storageClaimName: wipp-pv-claim
+    mountPath: /opt/shared/wipp
+    apiURL: http://wipp-backend:8080/api
+    UIValue: null
+    tempNotebooksRelPath: temp/notebooks
+    tempPluginsRelPath: temp/plugins
+  
+  polusNotebooksHub:
+    enabled: false
+    apiURL: null
+
+# Configurations for PostgreSQL dependency
+postgresql:
+  enabled: true
+  auth:
+    database: postgresd
+    username: postgres
+    password: postgres
+  primary:
+    persistence:
+      # Storage class might be different from hub.storage.storageClass to accomodate the issue in EFS CSI driver
+      storageClass: aws-efs
+      size: 1Gi

@@ -1,0 +1,25 @@
+# Internal JupyterHub API Service definition
+apiVersion: v1
+kind: Service
+metadata:
+  name: jupyterhub-internal
+spec:
+  ports:
+    - port: 8081
+      name: http
+      # Use named container port.
+      targetPort: jupyter-in
+  selector: {{- include "jupyterhub.matchLabels" . | nindent 4}}
+---
+# External JupyterHub UI Service definition
+apiVersion: v1
+kind: Service
+metadata:
+  name: jupyterhub
+spec:
+  type: {{.Values.hub.service.type}}
+  ports:
+    - port: 80
+      name: http
+      targetPort: jupyter-http
+  selector: {{- include "jupyterhub.matchLabels" . | nindent 4}}

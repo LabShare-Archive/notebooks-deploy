@@ -1,0 +1,94 @@
+{{- if hasKey .Values.hub.envModules "maven" }}
+{{- if has "3.6.3" .Values.hub.envModules.maven }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-env-installer-maven-3-6-3-modulefile
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+  annotations:
+    # This is what defines this resource as a hook. Without this line, the
+    # job is considered part of the release.
+    "helm.sh/hook": post-install, post-upgrade
+    "helm.sh/hook-weight": "-6"
+    "helm.sh/hook-delete-policy": hook-succeeded
+data:
+  modulefile.lua: |
+    help([[
+    Maven package manager
+    ]])
+
+    whatis("Version: 3.6.3")
+    whatis("Keywords: Scientific/Engineering, Java, Maven")
+
+    prepend_path("PATH", "/opt/modules/maven-3.6.3/apache-maven-3.6.3/bin")
+    setenv("MAVEN_HOME", "/opt/modules/maven-3.6.3/apache-maven-3.6.3")
+    setenv("MAVEN_CONFIG", "$HOME/.m2")
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-env-installer-maven-3-6-3
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+  annotations:
+    # This is what defines this resource as a hook. Without this line, the
+    # job is considered part of the release.
+    "helm.sh/hook": post-install, post-upgrade
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    metadata:
+      name: "{{ .Release.Name }}"
+      labels:
+        app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+        app.kubernetes.io/instance: {{ .Release.Name | quote }}
+        helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    spec:
+      containers:
+        - name: env-installer-test
+          image: labshare/polyglot-notebook:env-installer-0.9.1
+          command: ["sh", "-c"]
+          args:
+            - if [ ! -f "$EXT_MOD_PATH/modulefiles/$ENV_MODULE_NAME/$ENV_MODULE_VERSION.lua" ];
+              then
+                  mkdir -p $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION;
+                  wget https://archive.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz;
+                  tar xvf apache-maven-3.6.3-bin.tar.gz -C $EXT_MOD_PATH/$ENV_MODULE_NAME-$ENV_MODULE_VERSION;
+                  mkdir -p $EXT_MOD_PATH/modulefiles/$ENV_MODULE_NAME;
+                  cp /home/jovyan/modulefile.lua $EXT_MOD_PATH/modulefiles/$ENV_MODULE_NAME/$ENV_MODULE_VERSION.lua;
+              fi
+          env:
+            - name: EXT_MOD_PATH
+              value: /opt/modules
+            - name: ENV_MODULE_NAME
+              value: maven
+            - name: ENV_MODULE_VERSION
+              value: 3.6.3
+          volumeMounts:
+            - mountPath: /opt/modules
+              name: modules-volume
+            - mountPath: /home/jovyan/modulefile.lua
+              name: modulefile
+              subPath: modulefile.lua
+      restartPolicy: Never
+      volumes:
+        - name: modules-volume
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-{{ .Chart.Name }}-hub-{{ .Values.hub.storage.modulesClaimName }}
+        - name: modulefile
+          configMap:
+            name: {{ .Release.Name }}-env-installer-maven-3-6-3-modulefile
+            items:
+              - key: modulefile.lua
+                path: modulefile.lua
+  backoffLimit: 4
+{{- end }}
+{{- end }}
