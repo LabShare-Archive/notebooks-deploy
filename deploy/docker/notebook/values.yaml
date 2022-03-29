@@ -493,8 +493,14 @@ addfiles:
                       r = requests.get(self.retrieve_uri, params={"email": os.getenv("JUPYTERHUB_USER"), "path": os_path}, timeout=1)
                   except Exception as e:
                       logging.getLogger().error(f"Failed to retrieve {os_path} from Notebooks Hub", exc_info=e)
-                  file_id = r.json()[0]["_id"]
-                  return file_id
+                      raise e
+
+                  if len(r.json()) == 1:
+                      return r.json()[0]["_id"]
+                  elif len(r.json()) == 0:
+                      raise ValueError('File Id was not found')
+                  else:
+                      raise ValueError('Multiple File Ids for the same path were found')
               
               def script_post_delete(self, os_path):
 
@@ -503,9 +509,8 @@ addfiles:
                   if not (self.is_inside_tracked_paths(os_path)):
                       return
                   
-                  file_id = self.script_get_file_id(os_path)
-                  
                   try:
+                      file_id = self.script_get_file_id(os_path)
                       r = requests.delete(self.delete_uri, params={"fileId": file_id}, timeout=1)
                   except Exception as e:
                       logging.getLogger().error(f"Failed to delete {os_path} from Notebooks Hub", exc_info=e)
@@ -529,8 +534,8 @@ addfiles:
 
                   #If the new path is not in the tracked paths, delete the old path.
                   if not (self.is_inside_tracked_paths(os_new_path)):
-                      file_id = self.script_get_file_id(os_old_path)
                       try:
+                          file_id = self.script_get_file_id(os_old_path)
                           r = requests.delete(self.delete_uri, params={"fileId": file_id}, timeout=1)
                           return
                       except Exception as e:
