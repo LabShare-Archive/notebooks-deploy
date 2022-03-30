@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: env-installer
-          image: labshare/polyglot-notebook:env-installer-NOTEBOOK_VERSION_DEPLOY_VALUE
+          image: polusai/notebook-env-module-installer:NOTEBOOK_VERSION_DEPLOY_VALUE
           volumeMounts:
             - mountPath: /opt/modules
               name: modules-volume
