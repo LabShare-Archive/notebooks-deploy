@@ -476,9 +476,8 @@ addfiles:
                   assert "POLUS_NOTEBOOKS_HUB_API" in os.environ
                   
                   polus_notebooks_hub_api = os.environ["POLUS_NOTEBOOKS_HUB_API"]
-                  self.delete_uri = urljoin(polus_notebooks_hub_api, '/file-data/delete-file')
-                  self.rename_uri = urljoin(polus_notebooks_hub_api, '/file-data/rename-file')
-                  self.save_uri = urljoin(polus_notebooks_hub_api, '/file-data/new-file')
+                  self.retrieve_uri = self.rename_uri = urljoin(polus_notebooks_hub_api, '/files')
+                  self.delete_uri = self.save_uri = urljoin(polus_notebooks_hub_api, '/file')
                   self.tracked_paths = ['/home/jovyan/work/', '/home/jovyan/shared/notebooks']
               
               def is_inside_tracked_paths(self, path_to_test):
@@ -488,6 +487,20 @@ addfiles:
                           return True 
                   
                   return False
+
+              def script_get_file_id(self, os_path):
+                  try:
+                      r = requests.get(self.retrieve_uri, params={"email": os.getenv("JUPYTERHUB_USER"), "path": os_path}, timeout=1)
+                  except Exception as e:
+                      logging.getLogger().error(f"Failed to retrieve {os_path} from Notebooks Hub", exc_info=e)
+                      raise e
+
+                  if len(r.json()) == 1:
+                      return r.json()[0]["_id"]
+                  elif len(r.json()) == 0:
+                      raise ValueError('File Id was not found')
+                  else:
+                      raise ValueError('Multiple File Ids for the same path were found')
               
               def script_post_delete(self, os_path):
 
@@ -497,7 +510,8 @@ addfiles:
                       return
                   
                   try:
-                      r = requests.post(self.delete_uri, json={"user": os.getenv("JUPYTERHUB_USER"), "filePath": os_path}, timeout=1)
+                      file_id = self.script_get_file_id(os_path)
+                      r = requests.delete(self.delete_uri, params={"fileId": file_id}, timeout=1)
                   except Exception as e:
                       logging.getLogger().error(f"Failed to delete {os_path} from Notebooks Hub", exc_info=e)
 
@@ -509,7 +523,7 @@ addfiles:
                       return
 
                   try:
-                      r = requests.post(self.save_uri, json={"user": os.getenv("JUPYTERHUB_USER"), "filePath": os_path}, timeout=1)
+                      r = requests.post(self.save_uri, json={"creator": os.getenv("JUPYTERHUB_USER"), "path": os_path}, timeout=1)
                   except Exception as e:
                       logging.getLogger().error(f"Failed to register {os_path} with Notebooks Hub", exc_info=e)
 
@@ -521,14 +535,16 @@ addfiles:
                   #If the new path is not in the tracked paths, delete the old path.
                   if not (self.is_inside_tracked_paths(os_new_path)):
                       try:
-                          r = requests.post(self.delete_uri, json={"user": os.getenv("JUPYTERHUB_USER"), "filePath": os_old_path}, timeout=1)
+                          file_id = self.script_get_file_id(os_old_path)
+                          r = requests.delete(self.delete_uri, params={"fileId": file_id}, timeout=1)
                           return
                       except Exception as e:
                           logging.getLogger().error(f"Failed to delete {os_path} from Notebooks Hub", exc_info=e)
 
                   #If the new path is inside the tracked paths, create the new path and disregard the old path since it does not exist in our db.
                   try:
-                      r = requests.post(self.rename_uri, json={"user": os.getenv("JUPYTERHUB_USER"), "oldPath": os_old_path, "newPath": os_new_path}, timeout=1)
+                      file_id = self.script_get_file_id(os_old_path)
+                      r = requests.patch(self.rename_uri, params={"fileId": file_id}, json={"path": os_new_path}, timeout=1)
                   except Exception as e:
                       logging.getLogger().error(f"Failed to change path from {os_old_path} to {os_new_path} with Notebooks Hub", exc_info=e)
 
