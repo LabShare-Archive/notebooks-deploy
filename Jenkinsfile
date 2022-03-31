@@ -136,7 +136,7 @@ pipeline {
                     sh """echo '{"experimental": "enabled"}' > ~/config.json"""
                     sh """sed -i.bak -e "s/NOTEBOOK_VERSION_LATEST_VALUE/${NOTEBOOK_VERSION_LATEST}/g" deploy/docker/env-installer/Dockerfile"""
                     dir('deploy/docker/env-installer') {
-                        docker.withRegistry('https://registry-1.docker.io/v2/', 'f16c74f9-0a60-4882-b6fd-bec3b0136b84') {
+                        docker.withRegistry('https://registry-1.docker.io/v2/', 'swazoo_dockerhub') {
                             def tag = NOTEBOOK_VERSION_LATEST
                             println """Building container image: polusai/notebook-env-module-installer:${tag}..."""
                             def image = docker.build("""polusai/notebook-env-module-installer:${tag}""", '--no-cache ./')
