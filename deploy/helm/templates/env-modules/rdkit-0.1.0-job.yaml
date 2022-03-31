@@ -79,7 +79,7 @@ spec:
     spec:
       containers:
         - name: env-installer-rdkit-0-1-0
-          image: labshare/polyglot-notebook:env-installer-0.9.1
+          image: polusai/notebook-env-module-installer:{{ .Values.hub.notebookVersion }}
           command: ["sh", "-c"]
           args:
             - if [ ! -f "$EXT_MOD_PATH/modulefiles/$ENV_MODULE_NAME/$ENV_MODULE_VERSION.lua" ];
