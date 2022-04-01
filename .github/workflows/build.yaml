@@ -24,12 +24,13 @@ jobs:
         mkdir -p manifests
         railyard assemble -t Dockerfile.template -b base.yaml -a values.yaml -p manifests
         ls -la manifests
+        dir=$(find manifests -mindepth 1 -maxdepth 1 -type d)
       working-directory: deploy/docker/notebook
     
     - name: Debug Docker context
       run: |
-        ls -la .
-      working-directory: deploy/docker/notebook/manifests/*/
+        echo "$dir"
+      working-directory: deploy/docker/notebook/manifests/
 
 
     # - name: Build Notebook Docker image
