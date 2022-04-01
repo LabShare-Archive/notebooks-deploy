@@ -1,0 +1,31 @@
+name: Build Docker image
+
+on:
+  push:
+    branches:
+      - main
+      - feature/github-actions-docker-build
+  pull_request:
+    branches: [ master ]
+    types: [closed]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Assemble Notebook Dockerfile
+      run: |
+        npm install -g polus-railyard@0.3.2
+        mkdir -p manifests
+        railyard assemble -t Dockerfile.template -b base.yaml -a values.yaml -p manifests
+        ls -la manifests
+      working-directory: deploy/docker/notebook
+
+
+    # - name: Build the Docker image
+    #   run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
