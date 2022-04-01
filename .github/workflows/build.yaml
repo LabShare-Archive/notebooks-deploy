@@ -31,8 +31,8 @@ jobs:
     
     - name: Debug Docker context
       run: |
-        echo "${{ env.docker_context }}"
-      working-directory: deploy/docker/notebook/manifests/
+        ls -la .
+      working-directory: ${{ env.docker_context }}
 
 
     # - name: Build Notebook Docker image
