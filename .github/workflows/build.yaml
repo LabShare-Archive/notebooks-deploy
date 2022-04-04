@@ -3,18 +3,18 @@ name: Build Docker image
 on:
   push:
     branches:
-      - main
-      - feature/github-actions-docker-build
+    paths:
+    - 'deploy/docker/notebook/VERSION'
   pull_request:
     branches: [ master ]
     types: [closed]
+    paths:
+    - 'deploy/docker/notebook/VERSION'
 
 jobs:
 
-  build:
-
+  notebook-docker-build:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v3
 
