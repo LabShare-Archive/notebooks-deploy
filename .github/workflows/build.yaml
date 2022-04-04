@@ -18,6 +18,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Get Notebook Version
+      run: echo "notebook_version=`cat deploy/docker/notebook/VERSION`" >> $GITHUB_ENV
+
     - name: Assemble Notebook Dockerfile
       run: |
         npm install -g polus-railyard@0.3.2
@@ -40,4 +43,4 @@ jobs:
       with:
           context: ${{ env.docker_context }}
           push: true
-          tags: labshare/polyglot-notebook:latest
+          tags: labshare/polyglot-notebook:${{ env.notebook_version }}
