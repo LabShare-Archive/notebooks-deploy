@@ -38,15 +38,19 @@ jobs:
         username: ktaletsk
         password: ${{ secrets.PERSONAL_DOCKER_TOKEN }}
 
-    # - name: Build Notebook Docker image
-    #   uses: docker/build-push-action@v2
-    #   with:
-    #       context: ${{ env.docker_context }}
-    #       push: true
-    #       tags: labshare/polyglot-notebook:${{ env.notebook_version }}
+    - name: Build Notebook Docker image
+      uses: docker/build-push-action@v2
+      with:
+          context: ${{ env.docker_context }}
+          push: true
+          tags: labshare/polyglot-notebook:${{ env.notebook_version }}
     
     - name: Prepare Environment Module Installer Dockerfile
       run: sed -i.bak -e "s/NOTEBOOK_VERSION_LATEST_VALUE/${{ env.notebook_version }}/g" deploy/docker/env-installer/Dockerfile
 
     - name: Build Environment Module Installer Docker image
-      run: cat deploy/docker/env-installer/Dockerfile
+      uses: docker/build-push-action@v2
+      with:
+          context: deploy/docker/env-installer
+          push: true
+          tags: polusai/notebook-env-module-installer:${{ env.notebook_version }}
