@@ -32,7 +32,7 @@ pipeline {
                             sh "helm repo add bitnami https://charts.bitnami.com/bitnami"
                             sh "helm dependency update"
                             sh "helm dependency build"
-                            sh "helm upgrade --install ${HELM_DEPLOYMENT_NAME} . --values ci-values.yaml --namespace ${KUBERNETES_NAMESPACE}"
+                            sh "helm upgrade --install ${HELM_DEPLOYMENT_NAME} . --values ci-values.yaml --namespace ${KUBERNETES_NAMESPACE} --timeout 2h" 
                         }
                     }
                 }
