@@ -6,6 +6,7 @@ pipeline {
     parameters {
         string(name: 'AWS_REGION', defaultValue: 'us-east-1', description: 'AWS Region to deploy')
         string(name: 'KUBERNETES_CLUSTER_NAME', defaultValue: 'kube-eks-ci-compute', description: 'Kubernetes Cluster to deploy')
+        string(name: 'KUBERNETES_NAMESPACE', defaultValue: 'polus-helm-sandbox', description: 'Cluster Namespace to deploy')
     }
     environment {
         PROJECT_NAME = "labshare/notebooks-deploy"
@@ -30,7 +31,7 @@ pipeline {
                             sh "helm repo add bitnami https://charts.bitnami.com/bitnami"
                             sh "helm dependency update"
                             sh "helm dependency build"
-                            sh "helm install . --values ci-values.yaml --generate-name --dry-run --namespace polus-helm-sandbox"
+                            sh "helm install jupyterhub . --values ci-values.yaml --dry-run --namespace ${KUBERNETES_NAMESPACE}"
                         }
                     }
                 }
