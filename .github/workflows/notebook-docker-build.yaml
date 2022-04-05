@@ -1,0 +1,56 @@
+name: Build Docker images
+
+on:
+  push:
+    branches:
+    paths:
+    - 'deploy/docker/notebook/VERSION'
+  pull_request:
+    branches: [ master ]
+    types: [closed]
+    paths:
+    - 'deploy/docker/notebook/VERSION'
+
+jobs:
+
+  notebook-docker-build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Get Notebook Version
+      run: echo "notebook_version=`cat deploy/docker/notebook/VERSION`" >> $GITHUB_ENV
+
+    - name: Prepare Notebook Dockerfile
+      run: |
+        npm install -g polus-railyard@0.3.2
+        mkdir -p manifests
+        railyard assemble -t Dockerfile.template -b base.yaml -a values.yaml -p manifests
+        ls -la manifests
+        dir=$(find manifests -mindepth 1 -maxdepth 1 -type d)
+        echo "$dir"
+        echo "docker_context=deploy/docker/notebook/$dir" >> $GITHUB_ENV
+      working-directory: deploy/docker/notebook
+    
+    - name: Login to Docker Hub
+      uses: docker/login-action@v1
+      with:
+        username: polusbot
+        password: ${{ secrets.POLUS_DOCKER_TOKEN }}
+
+    - name: Build Notebook Docker image
+      uses: docker/build-push-action@v2
+      with:
+          context: ${{ env.docker_context }}
+          push: true
+          tags: labshare/polyglot-notebook:${{ env.notebook_version }}
+    
+    - name: Prepare Environment Module Installer Dockerfile
+      run: sed -i.bak -e "s/NOTEBOOK_VERSION_LATEST_VALUE/${{ env.notebook_version }}/g" deploy/docker/env-installer/Dockerfile
+
+    - name: Build Environment Module Installer Docker image
+      uses: docker/build-push-action@v2
+      with:
+          context: deploy/docker/env-installer
+          push: true
+          tags: polusai/notebook-env-module-installer:${{ env.notebook_version }}
