@@ -1,16 +1,14 @@
 pipeline {
     agent {
-        node { label 'aws && ci && linux && polus' }
+        node { label 'aws && build && linux && ubuntu' }
     }
     options { timestamps () }
     parameters {
-        booleanParam(name: 'SKIP_BUILD', defaultValue: false, description: 'Skips Docker builds')
-	string(name: 'AWS_REGION', defaultValue: 'us-east-1', description: 'AWS Region to deploy')
-	string(name: 'KUBERNETES_CLUSTER_NAME', defaultValue: 'kube-eks-ci-compute', description: 'Kubernetes Cluster to deploy')
+        string(name: 'AWS_REGION', defaultValue: 'us-east-1', description: 'AWS Region to deploy')
+        string(name: 'KUBERNETES_CLUSTER_NAME', defaultValue: 'kube-eks-ci-compute', description: 'Kubernetes Cluster to deploy')
     }
     environment {
         PROJECT_NAME = "labshare/notebooks-deploy"
-        WIPP_STORAGE_PVC = "wipp-pv-claim"
     }
     triggers {
         pollSCM('H/5 * * * *')
