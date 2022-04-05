@@ -39,10 +39,7 @@ pipeline {
                     configFileProvider([configFile(fileId: 'jupyterhub-helm-values', targetLocation: 'ci-values.yaml')]) {               
                         withAWS(credentials:'aws-jenkins-eks') {
                             sh "aws --region ${AWS_REGION} eks update-kubeconfig --name ${KUBERNETES_CLUSTER_NAME}"
-                            sh "ls -la ."
-                            sh "helm list"
-                            
-                            // sh "bash ./deploy.sh"
+                            sh "helm list --namespace polus-helm-sandbox"
                         }
                     }
                 }
