@@ -14,18 +14,6 @@ pipeline {
         pollSCM('H/5 * * * *')
     }
     stages {
-        stage('Build Version'){
-            steps{
-                script {
-                    BUILD_VERSION_GENERATED = VersionNumber(
-                        versionNumberString: 'v${BUILD_YEAR, XX}.${BUILD_MONTH, XX}${BUILD_DAY, XX}.${BUILDS_TODAY}',
-                        projectStartDate:    '1970-01-01',
-                        skipFailedBuilds:    true)
-                    currentBuild.displayName = BUILD_VERSION_GENERATED
-                    env.BUILD_VERSION = BUILD_VERSION_GENERATED
-               }
-            }
-        }
         stage('Checkout source code') {
             steps {
                 cleanWs()
@@ -39,7 +27,7 @@ pipeline {
                     configFileProvider([configFile(fileId: 'jupyterhub-helm-values', targetLocation: 'ci-values.yaml')]) {               
                         withAWS(credentials:'aws-jenkins-eks') {
                             sh "aws --region ${AWS_REGION} eks update-kubeconfig --name ${KUBERNETES_CLUSTER_NAME}"
-                            sh "helm list --namespace polus-helm-sandbox"
+                            sh "helm install . --values ci-values.yaml --generate-name --dry-run --namespace polus-helm-sandbox"
                         }
                     }
                 }
