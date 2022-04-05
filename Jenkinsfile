@@ -36,12 +36,14 @@ pipeline {
         }
         stage('Deploy JupyterHub to AWS CI') {
             steps {
-                // Config JSON file is stored in Jenkins and should contain sensitive environment values.
-                configFileProvider([configFile(fileId: 'env-ci', targetLocation: '.env')]) {               
+                // Helm values are stored in yaml file in Jenkins
+                configFileProvider([configFile(fileId: 'jupyterhub-helm-values', targetLocation: 'ci-values.yaml')]) {               
                     withAWS(credentials:'aws-jenkins-eks') {
                         sh "aws --region ${AWS_REGION} eks update-kubeconfig --name ${KUBERNETES_CLUSTER_NAME}"
-
-                        sh "bash ./deploy.sh"
+                        sh "ls -la ."
+                        sh "cat ci-values.yaml"
+                        
+                        // sh "bash ./deploy.sh"
                     }
                 }
             }
