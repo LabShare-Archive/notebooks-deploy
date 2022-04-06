@@ -1,9 +1,9 @@
 hub:
   image:
     name: labshare/jupyterhub
-    tag: "0.8.2.3"
+    tag: "0.8.1.18"
 
-  notebookVersion: 0.9.1
+  notebookVersion: 0.9.4
 
   storage:
     storageClass: aws-efs

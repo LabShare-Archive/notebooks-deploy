@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: jupyterhub-internal
+  name: {{ include "jupyterhub.fullname" . }}-internal
 spec:
   ports:
     - port: 8081
@@ -15,7 +15,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: jupyterhub
+  name: {{ include "jupyterhub.fullname" . }}
 spec:
   type: {{.Values.hub.service.type}}
   ports:

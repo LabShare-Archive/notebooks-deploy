@@ -27,7 +27,7 @@ c.KubeSpawner.uid = 1000 #uid 1000 corresponds to jovyan, uid 0 to root
 c.KubeSpawner.cmd = ['jupyter-labhub']
 c.KubeSpawner.args = ['--collaborative']
 c.KubeSpawner.working_dir = '/home/jovyan'
-c.KubeSpawner.service_account='jupyteruser-sa'
+c.KubeSpawner.service_account= f'{release_name}-{chart_name}-user'
 c.KubeSpawner.singleuser_image_pull_policy= 'Always'
 c.KubeSpawner.pod_name_template = f'{release_name}-{chart_name}-lab-{{username}}--{{servername}}'
 
@@ -123,7 +123,7 @@ c.JupyterHub.ip='0.0.0.0'
 c.JupyterHub.hub_ip='0.0.0.0'
 
 # Required for AWS
-c.JupyterHub.hub_connect_ip='jupyterhub-internal'
+c.JupyterHub.hub_connect_ip=f'{release_name}-{chart_name}-internal'
 
 # configure the JupyterHub database
 if get_config("postgresql.enabled"):
