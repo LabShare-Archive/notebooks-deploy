@@ -6,8 +6,8 @@ pipeline {
     parameters {
         string(name: 'AWS_REGION', defaultValue: 'us-east-1', description: 'AWS Region to deploy')
         string(name: 'KUBERNETES_CLUSTER_NAME', defaultValue: 'kube-eks-ci-compute', description: 'Kubernetes Cluster to deploy')
-        string(name: 'KUBERNETES_NAMESPACE', defaultValue: 'polus-helm-sandbox', description: 'Cluster Namespace to deploy')
-        string(name: 'HELM_DEPLOYMENT_NAME', defaultValue: 'jupyterhub', description: 'Helm Deployment Name')
+        string(name: 'KUBERNETES_NAMESPACE', defaultValue: 'default', description: 'Cluster Namespace to deploy')
+        string(name: 'HELM_DEPLOYMENT_NAME', defaultValue: 'ci-jupyterhub', description: 'Helm Deployment Name')
     }
     environment {
         PROJECT_NAME = "labshare/notebooks-deploy"
