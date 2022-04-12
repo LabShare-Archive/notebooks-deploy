@@ -64,7 +64,7 @@ data:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ .Release.Name }}-env-installer-0-1-0-installer
+  name: {{ .Release.Name }}-env-installer-pyimagej-0-1-0-installer
   labels:
     app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
