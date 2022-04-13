@@ -10,6 +10,7 @@ on:
     types: [closed]
     paths:
     - 'deploy/docker/jupyterhub/VERSION'
+  workflow_dispatch:
 
 jobs:
 
