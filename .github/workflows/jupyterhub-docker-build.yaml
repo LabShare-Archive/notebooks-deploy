@@ -1,4 +1,4 @@
-name: Build Docker images
+name: Build JupyterHub Docker images
 
 on:
   push:
