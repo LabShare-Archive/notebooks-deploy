@@ -1,4 +1,4 @@
-name: Build Docker images
+name: Build JupyterHub Docker images
 
 on:
   push:
@@ -10,6 +10,7 @@ on:
     types: [closed]
     paths:
     - 'deploy/docker/jupyterhub/VERSION'
+  workflow_dispatch:
 
 jobs:
 
