@@ -93,15 +93,20 @@ if wipp_enabled:
 
 c.KubeSpawner.image =  'labshare/polyglot-notebook:' + get_config("hub.notebookVersion")
 
+# Create profiles based on hardware options
+c.KubeSpawner.profile_list = []
+for _,hardwareOption in get_config("hub.hardwareOptions").items():
+    c.KubeSpawner.profile_list.append({
+        'display_name': f'JupyterLab {hardwareOption["nameSuffix"]}',
+        'slug': f'jupyterlab{hardwareOption["slugSuffix"]}',
+        'kubespawner_override': {
+            'image': f'labshare/polyglot-notebook:{get_config("hub.notebookVersion")}{hardwareOption["imageTagSuffix"]}',
+            **(lambda nameSuffix, slugSuffix, imageTagSuffix, **kw: kw)(**hardwareOption)
+        }
+    })
+
 if polus_notebooks_hub_enabled:
-    c.KubeSpawner.profile_list = [
-        {
-            'display_name': 'JupyterLab',
-            'slug': 'jupyterlab',
-            'kubespawner_override': {
-                'image': c.KubeSpawner.image
-            }
-        },
+    c.KubeSpawner.profile_list.extend([
         {
             'display_name': 'Streamlit Dashboard',
             'slug': 'jhsingle-streamlit-variable',
@@ -116,7 +121,7 @@ if polus_notebooks_hub_enabled:
                 'image': 'polusai/hub-voila'
             }
         }
-    ]
+    ])
 
 c.JupyterHub.allow_named_servers=True
 c.JupyterHub.ip='0.0.0.0'
