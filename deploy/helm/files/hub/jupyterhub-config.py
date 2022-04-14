@@ -277,6 +277,7 @@ if get_config("hub.wipp.enabled"):
     })
 
 # Set up Polus Notebooks Hub environment variables
+print(get_config("hub.polusNotebooksHub.apiURL"))
 # if get_config("hub.polusNotebooksHub.enabled"):
 #     c.KubeSpawner.environment.update({
 #         'POLUS_NOTEBOOKS_HUB_API': get_config("hub.polusNotebooksHub.apiURL"),
