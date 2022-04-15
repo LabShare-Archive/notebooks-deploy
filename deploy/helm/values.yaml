@@ -69,7 +69,7 @@ hub:
     # rdkit:
     #   - 0.1.0 
 
-hardwareOptions:
+  hardwareOptions:
     default:
       nameSuffix: ""
       slugSuffix: ""
