@@ -17,7 +17,7 @@ from z2jh import (
 release_name = get_config("Release.Name")
 chart_name = get_config("Chart.Name")
 wipp_enabled = get_config("hub.wipp.enabled")
-polus_notebooks_hub_enabled = get_config("hub.polusNotebooks.enabled")
+polus_notebooks_hub_enabled = get_config("hub.polusNotebooksHub.enabled")
 
 c.JupyterHub.spawner_class = 'kubespawner.KubeSpawner'
 c.KubeSpawner.start_timeout=1000
@@ -273,7 +273,7 @@ c.KubeSpawner.environment = {
 }
 
 # Set up WIPP-related environment variables
-if get_config("hub.wipp.enabled"):
+if wipp_enabled:
     c.KubeSpawner.environment.update({
         'WIPP_UI_URL': get_config("hub.wipp.UIValue"),
         'WIPP_API_INTERNAL_URL': get_config("hub.wipp.apiURL"),
@@ -282,7 +282,7 @@ if get_config("hub.wipp.enabled"):
     })
 
 # Set up Polus Notebooks Hub environment variables
-if get_config("hub.polusNotebooksHub.enabled"):
+if polus_notebooks_hub_enabled:
     c.KubeSpawner.environment.update({
         'POLUS_NOTEBOOKS_HUB_API': get_config("hub.polusNotebooksHub.apiURL"),
         'POLUS_NOTEBOOKS_HUB_FILE_LOGGING_ENABLED': 'True'
