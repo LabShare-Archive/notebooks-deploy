@@ -19,7 +19,20 @@ spec:
         checksum/config-map: {{ include (print .Template.BasePath "/hub/configmap.yaml") . | sha256sum }}
         checksum/secret: {{ include (print .Template.BasePath "/hub/secret.yaml") . | sha256sum }}
     spec:
-      serviceAccountName: jupyterhub-sa
+      serviceAccountName: {{ include "jupyterhub.fullname" . }}-hub
+{{- if .Values.postgresql.enabled }}
+      initContainers:
+        - name: wait-postgres-db
+          image: foobic/pg_isready:latest
+          env:
+            - name: HOST
+              value: {{ .Release.Name }}-postgresql-hl.{{ .Release.Namespace }}.svc.cluster.local
+            - name: DBNAME
+              value: {{ .Values.postgresql.auth.database }}
+            - name: RETRIES
+              value: "1000"
+          command: ['/scripts/pg_isready.sh']
+{{- end }}
       containers:
         - name: jupyterhub
           image: {{ .Values.hub.image.name }}:{{ .Values.hub.image.tag }}

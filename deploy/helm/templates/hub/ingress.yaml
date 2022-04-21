@@ -16,7 +16,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: jupyterhub
+                name: {{ include "jupyterhub.fullname" . }}
                 port:
                   number: 80
             

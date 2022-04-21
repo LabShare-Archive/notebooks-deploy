@@ -1,33 +1,21 @@
 pipeline {
     agent {
-        node { label 'aws && ci && linux && polus' }
+        node { label 'aws && build && linux && ubuntu' }
     }
     options { timestamps () }
     parameters {
-        booleanParam(name: 'SKIP_BUILD', defaultValue: false, description: 'Skips Docker builds')
-	string(name: 'AWS_REGION', defaultValue: 'us-east-1', description: 'AWS Region to deploy')
-	string(name: 'KUBERNETES_CLUSTER_NAME', defaultValue: 'kube-eks-ci-compute', description: 'Kubernetes Cluster to deploy')
+        string(name: 'AWS_REGION', defaultValue: 'us-east-1', description: 'AWS Region to deploy')
+        string(name: 'KUBERNETES_CLUSTER_NAME', defaultValue: 'kube-eks-ci-compute', description: 'Kubernetes Cluster to deploy')
+        string(name: 'KUBERNETES_NAMESPACE', defaultValue: 'default', description: 'Cluster Namespace to deploy')
+        string(name: 'HELM_DEPLOYMENT_NAME', defaultValue: 'ci-jupyterhub', description: 'Helm Deployment Name')
     }
     environment {
         PROJECT_NAME = "labshare/notebooks-deploy"
-        WIPP_STORAGE_PVC = "wipp-pv-claim"
     }
     triggers {
         pollSCM('H/5 * * * *')
     }
     stages {
-        stage('Build Version'){
-            steps{
-                script {
-                    BUILD_VERSION_GENERATED = VersionNumber(
-                        versionNumberString: 'v${BUILD_YEAR, XX}.${BUILD_MONTH, XX}${BUILD_DAY, XX}.${BUILDS_TODAY}',
-                        projectStartDate:    '1970-01-01',
-                        skipFailedBuilds:    true)
-                    currentBuild.displayName = BUILD_VERSION_GENERATED
-                    env.BUILD_VERSION = BUILD_VERSION_GENERATED
-               }
-            }
-        }
         stage('Checkout source code') {
             steps {
                 cleanWs()
@@ -36,12 +24,16 @@ pipeline {
         }
         stage('Deploy JupyterHub to AWS CI') {
             steps {
-                // Config JSON file is stored in Jenkins and should contain sensitive environment values.
-                configFileProvider([configFile(fileId: 'env-ci', targetLocation: '.env')]) {               
-                    withAWS(credentials:'aws-jenkins-eks') {
-                        sh "aws --region ${AWS_REGION} eks update-kubeconfig --name ${KUBERNETES_CLUSTER_NAME}"
-
-                        sh "bash ./deploy.sh"
+                dir('deploy/helm') {
+                    // Helm values are stored in yaml file in Jenkins
+                    configFileProvider([configFile(fileId: 'jupyterhub-helm-values', targetLocation: 'ci-values.yaml')]) {               
+                        withAWS(credentials:'aws-jenkins-eks') {
+                            sh "aws --region ${AWS_REGION} eks update-kubeconfig --name ${KUBERNETES_CLUSTER_NAME}"
+                            sh "helm repo add bitnami https://charts.bitnami.com/bitnami"
+                            sh "helm dependency update"
+                            sh "helm dependency build"
+                            sh "helm upgrade --install ${HELM_DEPLOYMENT_NAME} . --values ci-values.yaml --namespace ${KUBERNETES_NAMESPACE} --timeout 2h" 
+                        }
                     }
                 }
             }
