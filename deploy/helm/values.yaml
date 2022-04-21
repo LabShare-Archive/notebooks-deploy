@@ -12,20 +12,20 @@ hub:
     modulesStorage: 100Gi
     sharedNotebooksClaimName: shared-notebooks
     modulesClaimName: modules
-  
+
   # JupyterHub external Service configuration
   service:
     # Kubernetes Service type (NodePort, ClusterIP, LoadBalancer, ExternalName)
     type: LoadBalancer
 
   # JupyterHub Ingress configuration for external access, uses Nginx Ingress by default
-  # TODO: Enable configuration for alternative Ingress solutions  
+  # TODO: Enable configuration for alternative Ingress solutions
   ingress:
     # Using Ingress is optional and requires preconfiguration within the cluster
     enabled: false
     # Host name for external access
     hostName: null
-  
+
   # LabShare Auth configurations
   auth:
     enabled: false
@@ -38,11 +38,11 @@ hub:
     clientSecret: null
     callbackURL: null
     adminUsers: null
-  
+
   # Environment modules to be installed by the post-install Hook
   # When installing or upgrading with Environment modules, please specify --timeout 2h
   # NOTE: when adding new installers to the list, the will be installed, existing ones will be skipped
-  #       However, there is no deletion functionality yet. 
+  #       However, there is no deletion functionality yet.
   #       You will need to manually delete files created by the installer
   envModules:
     {}
@@ -67,7 +67,7 @@ hub:
     # r:
     #   - 0.1.0
     # rdkit:
-    #   - 0.1.0 
+    #   - 0.1.0
 
   hardwareOptions:
     default:
@@ -93,7 +93,7 @@ hub:
     UIValue: null
     tempNotebooksRelPath: temp/notebooks
     tempPluginsRelPath: temp/plugins
-  
+
   polusNotebooksHub:
     enabled: false
     apiURL: null
@@ -102,8 +102,8 @@ hub:
 postgresql:
   enabled: true
   auth:
-    database: postgresd
-    username: postgres
+    database: jupyterhub
+    username: jupyter
     password: postgres
   primary:
     persistence:
