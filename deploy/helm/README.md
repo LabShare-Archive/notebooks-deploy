@@ -32,6 +32,8 @@ Following the install or upgrade of the Helm Chart, you have the option to run t
 | Kernel              | Key name in hub.envModules | Version   |
 | ------------------- | -------------------------- | --------- |
 | Python Data Science | `pythonDataScience`        | 0.1.1     |
+| Python Data Science | `pythonDataScience`        | 0.1.2     |
+| Python Data Science | `pythonDataScience`        | 0.1.3     |
 | R                   | `r`                        | 0.1.0     |
 | Chemoinformatics    | `rdkit`                    | 0.1.0     |
 | PyImageJ            | `pyimagej`                 | 0.1.0     |
