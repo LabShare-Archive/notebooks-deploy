@@ -1,11 +1,8 @@
-FROM frolvlad/alpine-miniconda3:python3.7@sha256:bf5c88b66776e27b6745a7489104263d4ec05748eb447e7a292a0c4b5ed6c074
+FROM continuumio/miniconda3:4.10.3p0-alpine@sha256:dc976a37da75088ab3d458ab266910b0b5afa2c9d971b01ae0cdcd4cc3a97247
 LABEL maintainer="Labshare <konstantin.taletskiy@labshare.org>"
 
 # Track semantic versioning
 COPY VERSION /
-
-# Copy cull-idle script
-COPY cull-idle-servers.py /srv/jupyterhub/config/cull-idle-servers.py
 
 RUN conda install --yes -c conda-forge \
       git \
@@ -18,12 +15,12 @@ RUN conda install --yes -c conda-forge \
       nodejs=12 \
       configurable-http-proxy \
       escapism=1.0.1 \
-      jupyterhub=2.0.0 \
-      python-kubernetes=20.13.0 \
-      jupyterhub-kubespawner=2.0.0 && \
+      jupyterhub=2.3.0 \
+      jupyterhub-kubespawner=4.1.0 \
+      psycopg2-binary==2.9.1 && \
     pip install \
-      psycopg2-binary==2.9.1 \
-      oauthenticator==14.2.0
+      oauthenticator==14.2.0 \
+      jupyterhub-idle-culler==1.2.1
 
 RUN mkdir -p /srv/jupyterhub/
 COPY config-wrapper.py /srv/jupyterhub/config-wrapper.py
