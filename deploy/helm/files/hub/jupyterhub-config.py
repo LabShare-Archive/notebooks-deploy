@@ -168,7 +168,7 @@ c.JupyterHub.services = [
     {
         # Service to shutdown inactive Notebook servers after --timeout seconds
         'name': 'cull-idle',
-        'command': [sys.executable, '/srv/jupyterhub/config/cull-idle-servers.py', '--timeout=36000'],
+        'command': [sys.executable, '-m', 'jupyterhub_idle_culler', '--timeout=36000'],
     },
     {
         # Service admin token (used in Notebooks Hub and config-wrapper)
