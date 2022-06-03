@@ -91,19 +91,51 @@ if wipp_enabled:
         }
     )
 
-c.KubeSpawner.image =  'labshare/polyglot-notebook:' + get_config("hub.notebookVersion")
+c.KubeSpawner.image = "labshare/polyglot-notebook:" + get_config("hub.notebookVersion")
+
+# Create Hub profiles
+jupyterlab_profile = {
+    "display_name": f"JupyterLab",
+    "slug": f"jupyterlab",
+    "profile_options": {},
+    "default": True,
+}
 
 # Create profiles based on hardware options
+hardware_options = {}
+if get_config("hub.hardwareOptions"):
+    for hardwareOptionName, hardwareOption in get_config("hub.hardwareOptions").items():
+        hardware_options.update(
+            {
+                hardwareOptionName: {
+                    "display_name": hardwareOption["name"],
+                    "slug": f'jupyterlab{hardwareOption["slugSuffix"]}',
+                    "kubespawner_override": {
+                        "image": f'labshare/polyglot-notebook:{get_config("hub.notebookVersion")}{hardwareOption["imageTagSuffix"]}',
+                        **(lambda name, slugSuffix, imageTagSuffix, **kw: kw)(
+                            **hardwareOption
+                        ),
+                    },
+                }
+            }
+        )
+
+if hardware_options:
+    # Single hardware option
+    if len(hardware_options) == 1:
+        single_hardware_option = next(iter(hardware_options.values()))
+        jupyterlab_profile["slug"] = single_hardware_option["slug"]
+        jupyterlab_profile["kubespawner_override"] = single_hardware_option[
+            "kubespawner_override"
+        ]
+    # Multiple hardware options
+    if len(hardware_options) > 1:
+        jupyterlab_profile["profile_options"].update(
+            {"hardwareOptions": {"display_name": "Memory", "choices": hardware_options}}
+        )
+
 c.KubeSpawner.profile_list = []
-for _,hardwareOption in get_config("hub.hardwareOptions").items():
-    c.KubeSpawner.profile_list.append({
-        'display_name': f'JupyterLab {hardwareOption["nameSuffix"]}',
-        'slug': f'jupyterlab{hardwareOption["slugSuffix"]}',
-        'kubespawner_override': {
-            'image': f'labshare/polyglot-notebook:{get_config("hub.notebookVersion")}{hardwareOption["imageTagSuffix"]}',
-            **(lambda nameSuffix, slugSuffix, imageTagSuffix, **kw: kw)(**hardwareOption)
-        }
-    })
+c.KubeSpawner.profile_list.append(jupyterlab_profile)
 
 if polus_notebooks_hub_enabled:
     c.KubeSpawner.profile_list.extend([

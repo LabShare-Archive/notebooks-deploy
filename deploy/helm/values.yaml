@@ -69,21 +69,17 @@ hub:
     # rdkit:
     #   - 0.1.0
 
-  hardwareOptions:
-    default:
-      nameSuffix: ""
-      slugSuffix: ""
-      imageTagSuffix: ""
-    # cpuMedium:
-    #   nameSuffix: "Medium (4 CPU, 7.5Gb RAM)"
-    #   slugSuffix: "-cpu-medium"
-    #   imageTagSuffix: ""
-    #   node_affinity_required:
-    #       - matchExpressions:
-    #           - key: node.kubernetes.io/instance-type
-    #             operator: In
-    #             values:
-    #               - c4.xlarge
+  # hardwareOptions:
+  #   cpuMedium:
+  #     name: "Medium (4 CPU, 7.5Gb RAM)"
+  #     slugSuffix: "-cpu-medium"
+  #     imageTagSuffix: ""
+  #     node_affinity_required:
+  #         - matchExpressions:
+  #             - key: node.kubernetes.io/instance-type
+  #               operator: In
+  #               values:
+  #                 - c4.xlarge
 
   wipp:
     enabled: false
