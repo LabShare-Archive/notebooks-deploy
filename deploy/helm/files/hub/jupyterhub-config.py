@@ -273,7 +273,8 @@ roles.append({
     "scopes": [
         "admin:users",
         "admin:groups",
-        "admin:servers"
+        "admin:servers",
+        "read:metrics"
     ],
     "services": [
         "service-token"
