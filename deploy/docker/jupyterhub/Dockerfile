@@ -18,9 +18,9 @@ RUN conda install --yes -c conda-forge \
       jupyterhub=2.3.1 \
       jupyterhub-kubespawner=4.1.0 \
       psycopg2-binary==2.9.3 \
-      oauthenticator=15.0.1 && \
-    pip install \
-      jupyterhub-idle-culler==1.2.1
+      oauthenticator=15.0.1 \
+      jupyterhub-idle-culler=1.2.1
+
 
 RUN mkdir -p /srv/jupyterhub/
 COPY config-wrapper.py /srv/jupyterhub/config-wrapper.py
