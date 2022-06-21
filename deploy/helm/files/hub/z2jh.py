@@ -46,7 +46,7 @@ def get_secret_value(key, default="never-explicitly-set"):
     """Load value from the user managed k8s Secret or the default k8s Secret
     given a key."""
 
-    for source in ("admin-token-secret", "existing-secret", "secret"):
+    for source in ("admin-token-secret", "monitoring-secret", "existing-secret", "secret"):
         path = f"/usr/local/etc/jupyterhub/{source}/{key}"
         if os.path.exists(path):
             with open(path) as f:

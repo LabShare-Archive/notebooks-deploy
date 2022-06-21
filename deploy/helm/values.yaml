@@ -8,9 +8,9 @@ hub:
   storage:
     storageClass: aws-efs
     storagePerUser: 1Gi
-    sharedNotebooksStorage: 5Gi
-    modulesStorage: 100Gi
-    sharedNotebooksClaimName: shared-notebooks
+    notebooksStorage: 1Ti
+    modulesStorage: 1Ti
+    notebooksClaimName: notebooks
     modulesClaimName: modules
 
   # JupyterHub external Service configuration
@@ -93,6 +93,15 @@ hub:
   polusNotebooksHub:
     enabled: false
     apiURL: null
+
+  monitoring:
+    enabled: false
+    namespace: monitoring
+    interval: 5s
+
+  culling:
+    # Timeout in hours after which the JupyterLab server is shut down
+    timeout: 10
 
 # Configurations for PostgreSQL dependency
 postgresql:

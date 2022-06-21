@@ -94,8 +94,8 @@
 {{- end }}
 
 {{- /* Shared Notebooks PVC */}}
-{{- define "jupyterhub.hub-shared-notebooks-pvc.fullname" -}}
-    {{- include "jupyterhub.hub.fullname" . }}-{{ .Values.hub.storage.sharedNotebooksClaimName }}
+{{- define "jupyterhub.hub-notebooks-pvc.fullname" -}}
+    {{- include "jupyterhub.hub.fullname" . }}-{{ .Values.hub.storage.notebooksClaimName }}
 {{- end }}
 
 {{- /* Modules PVC */}}
