@@ -3,7 +3,7 @@ hub:
     name: labshare/jupyterhub
     tag: "0.8.1.18"
 
-  notebookVersion: 0.9.4
+  notebookVersion: 0.9.5
 
   storage:
     storageClass: aws-efs
