@@ -1,6 +1,3 @@
-FROM python:3.9
-RUN pip wheel easybuild-easyconfigs==4.5.3
-
 FROM labshare/polyglot-notebook:NOTEBOOK_VERSION_LATEST_VALUE
 
 USER root
@@ -9,9 +6,7 @@ RUN chmod +x /usr/bin/jq
 
 USER $NB_UID
 
-COPY --from=0 /easybuild* .
-
 # Install easybuild
 ENV EASYBUILD_PREFIX=/opt/modules \
     EASYBUILD_BUILDPATH=/tmp/easybuild
-RUN pip install easybuild_easyconfigs-4.5.3-py3-none-any.whl easybuild==4.5.3
+RUN pip install easybuild==4.5.5
