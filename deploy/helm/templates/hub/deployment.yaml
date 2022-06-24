@@ -83,6 +83,10 @@ spec:
               name: secret
             - mountPath: /usr/local/etc/jupyterhub/admin-token-secret/
               name: admin-token-secret
+{{- if .Values.hub.monitoring.enabled }}
+            - mountPath: /usr/local/etc/jupyterhub/monitoring-secret/
+              name: monitoring-secret
+{{- end }}
       volumes:
         - name: config
           configMap:
@@ -93,3 +97,8 @@ spec:
         - name: admin-token-secret
           secret:
             secretName: {{ include "jupyterhub.hub.fullname" . }}-admin-token
+{{- if .Values.hub.monitoring.enabled }}
+        - name: monitoring-secret
+          secret:
+            secretName: {{ include "jupyterhub.hub.fullname" . }}-monitoring-token
+{{- end }}

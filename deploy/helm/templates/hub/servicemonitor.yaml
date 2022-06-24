@@ -1,0 +1,25 @@
+{{- if .Values.hub.monitoring.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    release: prom-operator
+    env: staging
+  name: jupyterhub
+  namespace:  {{ .Values.hub.monitoring.namespace }}
+spec:
+  endpoints:
+  - interval: {{ .Values.hub.monitoring.interval }}
+    port: http
+    path: /hub/metrics
+    bearerTokenSecret: 
+      key: monitoringToken
+      name: {{ include "jupyterhub.hub.fullname" . }}-monitoring-token
+  selector:
+    matchLabels:
+      app: {{ include "jupyterhub.fullname" . }}
+  namespaceSelector:
+    matchNames:
+    - {{ .Release.Namespace }}
+
+{{- end }}

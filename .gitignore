@@ -78,3 +78,5 @@ SharePointSelfSignedCert.key
 # Helm installed dependencies
 deploy/helm/charts
 deploy/helm/Chart.lock
+
+pages
