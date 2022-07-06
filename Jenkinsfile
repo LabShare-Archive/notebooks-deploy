@@ -1,6 +1,9 @@
 pipeline {
     agent {
-        node { label 'aws && build && linux && ubuntu' }
+        docker { 
+            image 'polusai/helm-jenkins:0.1.1'
+            label 'linux && build && aws'
+        }
     }
     options { timestamps () }
     parameters {
