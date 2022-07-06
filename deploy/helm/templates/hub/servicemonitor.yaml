@@ -5,7 +5,7 @@ metadata:
   labels:
     release: prom-operator
     env: staging
-  name: jupyterhub
+  name: {{ include "jupyterhub.hub.fullname" . }}-jupyterhub
   namespace:  {{ .Values.hub.monitoring.namespace }}
 spec:
   endpoints:
