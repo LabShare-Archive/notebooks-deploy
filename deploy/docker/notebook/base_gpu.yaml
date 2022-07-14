@@ -1,2 +1,2 @@
 name: base_gpu
-base: "labshare/polus-cuda-base:focal-20210416-cuda-11-3@sha256:92c5f7c88f1cc2661a2a652733ee766f41c03b2d9a33b206c3d47d6bf81a6517"
+base: "labshare/polus-cuda-base:jammy-20220531-cuda-11-7@sha256:b7b2f315aa4596bf651f883abe4d0bb578c4b743b3244088942e9fff93f9e6d5"
